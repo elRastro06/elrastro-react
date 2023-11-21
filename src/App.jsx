@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import './assets/css/App.css'
 
 import Chat from "./components/Chats/chat.jsx";
 import Chats from "./components/Chats/chats.jsx";
