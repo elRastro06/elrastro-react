@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import Carousel from "react-bootstrap/Carousel";
 import "bootstrap/dist/css/bootstrap.min.css";
-import CarouselCaption from "react-bootstrap/esm/CarouselCaption";
+import "../../assets/styles/map.css";
 
 const Map = () => {
   const defaultPosition = [36.602274, -4.531727];
@@ -27,13 +27,13 @@ const Map = () => {
       const res = await axios.get(
         `http://localhost:5001/v1?userID=${user._id}`
       );
-      setClientes((prevClientes) => {
-        return prevClientes.map((prevUser) =>
+      setClientes((prevClientes) =>
+        prevClientes.map((prevUser) =>
           prevUser.id === user.id
             ? { ...prevUser, products: res.data }
             : prevUser
-        );
-      });
+        )
+      );
       setLoading(false);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -51,7 +51,40 @@ const Map = () => {
 
   return (
     <div>
-      <h1>Map</h1>
+      <style>
+        {`
+          .popup-container {
+            border: 1px solid black;
+            border-radius: 9px;
+            overflow: hidden;
+            padding: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+          }
+
+          .carousel-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid lightblue;
+          }
+
+          .product-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center; /* Added to center text horizontally */
+          }
+
+          .product-image {
+            width: 100%;
+            height: 250px;
+          }
+        `}
+      </style>
+
       <MapContainer
         center={defaultPosition}
         zoom={13}
@@ -72,55 +105,40 @@ const Map = () => {
             }}
           >
             <Popup>
-              <div>
-                <div
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "black",
-                    borderStyle: "solid",
-                    borderRadius: 9,
-                    overflow: "hidden",
-                    padding: 5,
-                    alignItems: "center",
-                    flex: 1,
-                  }}
-                >
-                  <h2>{cliente.name}</h2>
-                  <h3>{cliente.email}</h3>
-                </div>
+              <div className="popup-container">
+                <h2>{cliente.name}</h2>
+                <h3>{cliente.email}</h3>
                 {loading ? (
                   <p>Loading products...</p>
                 ) : (
-                  <div>
-                    <Carousel>
-                      {cliente.products ? (
-                        cliente.products.map((product) => (
+                  <div className="carousel-container">
+                    {cliente.products && cliente.products.length > 0 ? (
+                      <Carousel>
+                        {cliente.products.map((product) => (
                           <Carousel.Item key={product._id}>
-                            <div>
-                              <a href={"/products/" + product._id}>
+                            <div className="product-info">
+                              <a href={`/products/${product._id}`}>
+                                <h3>{product.name}</h3>
                                 <img
-                                  className="d-block w-100"
+                                  className="product-image"
                                   src={
                                     product.images
                                       ? product.images[0].url
                                       : "https://via.placeholder.com/150"
                                   }
                                   alt="Product Slide"
-                                  width={100}
-                                  height={250}
                                 />
-                                <h3>{product.name}</h3>
                                 <p>Descripción: {product.description}</p>
                                 <p>Precio: {product.price}</p>
                                 <p>Fecha: {product.date}</p>
                               </a>
                             </div>
                           </Carousel.Item>
-                        ))
-                      ) : (
-                        <p>No products</p>
-                      )}
-                    </Carousel>
+                        ))}
+                      </Carousel>
+                    ) : (
+                      <p>No products</p>
+                    )}
                   </div>
                 )}
               </div>
