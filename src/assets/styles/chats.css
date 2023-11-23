@@ -1,45 +1,126 @@
-/* Estilo principal para la lista de chats */
-.chats-container {
+body {
+  font-family: Arial, sans-serif;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f4f4f4;
+}
+
+h1 {
+  font-size: 7vh; /* Adjust as needed */ 
+  position: relative; /* Position the h1 independently of other elements */
+  left: 50%; /* Center the h1 horizontally */
+  transform: translateX(-50%); /* Ensure the center of the h1 is at the center of the page */
+}
+
+.chat-table {
+  display: flex;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 40px;
+  overflow: hidden;
+  
+  width: 65vw; 
+  height: 200px;
+  margin-top: 30px;
+}
+
+.product-info-column{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.chat-details-column {
+  flex: 7;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: #fff;
+  text-align: left; /* Align text to the right */
+}
+
+.product-info{
+  padding: 10px;
+}
+.chat-details {
+  padding: 10px;
+}
+
+/* Increase font size for larger screens */
+@media (min-width: 1024px) {
+  .product-info{
+    font-size: 1.1vw;
+  }
+  .chat-details {
+    font-size: 1.3vw;
+  }
+}
+
+/* Adjust font size for medium screens */
+@media (min-width: 600px) and (max-width: 1024px) {
+  .product-info,
+  .chat-details {
+    font-size: 2vw;
+  }
+}
+
+/* Reduce font size for smaller screens */
+@media (max-width: 600px) {
+  .product-info,
+  .chat-details {
+    font-size: 3vw;
+  }
+}
+
+
+
+/* Estilos adicionales según tu preferencia */
+.product-info p,
+.chat-details p {
+  margin: 5px;
+}
+
+.product-info p {
+  font-weight: bold;
+  text-align: center; /* Center the text */
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.chat-details p:last-child {
+  font-style: italic;
+  color: #888;
+}
+
+.chat-table .product-info-column img {
+  width: 150px;
+  height: 150px;
+  border-radius: 5px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+/* CSS for smaller screens */
+@media (max-width: 600px) {
+  .chat-table .product-info-column img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .chat-table {
     display: flex;
-    flex-direction: column;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    
+    width: 80vw; 
+    height: 130px;
+    margin-top: 30px;
   }
-  
-  /* Estilo para cada tarjeta de chat */
-  .chat-card {
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin: 10px;
-    background-color: #fff;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Estilo para el encabezado del chat */
-  .chat-card h3 {
-    margin-bottom: 5px;
-  }
-  
-  /* Estilo para los mensajes */
-  .chat-message {
-    margin-top: 5px;
-    padding: 5px;
-    border: 1px solid #ddd;
-    background-color: #f5f5f5;
-  }
-  
-  /* Estilo para el remitente del mensaje */
-  .sender {
-    font-weight: bold;
-    color: #007bff; /* Azul brillante, puedes cambiar el color según tus preferencias */
-  }
-  
-  /* Estilo para el contenido del mensaje */
-  .content {
-    margin-top: 5px;
-  }
-  
-  /* Estilo para la marca de tiempo del mensaje */
-  .timestamp {
-    color: #777;
-    font-size: 12px;
-  }
-  
+}

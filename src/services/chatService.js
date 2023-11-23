@@ -2,6 +2,7 @@ import Axios from "axios";
 
 const url_chats = 'http://localhost:5007/v1/chats';
 const url_chat = 'http://localhost:5007/v1/chat';
+const url_product = 'http://localhost:5001/v1';
 
 const getAllChatsFromUser = async (userId) => {
     const response = await Axios.get(url_chats + '/' + userId);
@@ -13,7 +14,12 @@ const getOneChat = async (chatId) => {
     return response.data;
 }
 
+const getProductPicture = async (productId) => {
+    const response = await Axios.get(url_product + '/' + productId);
+    return response.data;
+}
 
-const chatService = { getAllChatsFromUser, getOneChat }
+
+const chatService = { getAllChatsFromUser, getOneChat, getProductPicture }
 
 export default chatService;
