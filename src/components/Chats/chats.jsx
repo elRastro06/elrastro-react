@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
 import chatService from "../../services/chatService";
@@ -9,16 +10,23 @@ import "../../assets/styles/chats.css";
 export default function Chats() {
 
     const [chats, setChats] = useState([]);
+    const navigate = useNavigate();
+
+    const handleChatClick = (chatId) => {
+        navigate(`/chats/${chatId}`);
+    }
+
 
     const fetchData = async () => {
         try {
             // Obtener la lista de chats
             const chatResponse = await chatService.getAllChatsFromUser("userID1");
-
+            
             // Para cada chat, obtener la información del producto
             const chatsWithProductInfo = await Promise.all(chatResponse.map(async (chat) => {
                 const productInfo = await chatService.getProductPicture(chat.productId);
                 // Agregar la información del producto al chat
+
                 return {
                     ...chat,
                     productInfo: productInfo,
@@ -27,7 +35,6 @@ export default function Chats() {
 
             // Actualizar el estado con la lista de chats que ahora incluye información del producto
             setChats(chatsWithProductInfo);
-            console.log(chatsWithProductInfo[0].productInfo.images[0]);
         } catch (error) {
             console.error('Error al obtener la información del chat:', error);
         }
@@ -41,10 +48,10 @@ export default function Chats() {
     return (
         <div>
             <h1>Chats</h1>
-
-            <div className="chats-container">
+            
+            <div className="chats-container" >
                 {chats.map((chat) => (
-                    <div key={chat._id} className="chat-table">
+                    <div key={chat._id} className="chat-table" onClick={() => handleChatClick(chat._id)}>
 
                         <div className="product-info-column">
                             <div className="product-info">
