@@ -78,8 +78,12 @@ const Map = () => {
           >
             <Popup>
               <div className="popup-container">
-                <h2>{cliente.name}</h2>
-                <h3>{cliente.email}</h3>
+                <div class="container">
+                  <div class="user-profile">
+                    <h1 class="user-name">{cliente.name}</h1>
+                    <p class="user-email">{cliente.email}</p>
+                  </div>
+                </div>
                 {/* // if the products are still loading, show a loading message */}
                 {loading ? (
                   <p>Loading products...</p>
@@ -101,12 +105,19 @@ const Map = () => {
                                       ? product.images[0].url
                                       : "https://via.placeholder.com/150"
                                   }
-                                  alt="Product Slide"
+                                  alt="Product Image"
                                 />
-                                <p>Descripción: {product.description}</p>
-                                <p>Precio: {product.price}</p>
-                                <p>Fecha: {product.date}</p>
                               </a>
+                              <p>
+                                <strong>Descripción:</strong>{" "}
+                                {product.description}
+                                <br></br>
+                                <strong>Precio:</strong> {product.price}
+                                <br></br>
+                                <strong>Fecha:</strong>{" "}
+                                {new Date(product.date).toLocaleDateString()}
+                                <br></br>
+                              </p>
                             </div>
                           </Carousel.Item>
                         ))}
