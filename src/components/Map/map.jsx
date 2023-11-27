@@ -7,11 +7,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../../assets/styles/map.css";
 
 const Map = () => {
+  // TODO (when login implemented) : get the user's location and set it as the default position
   const defaultPosition = [36.602274, -4.531727];
 
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // simple get request to get the clients
   const getPosicionesClientes = async () => {
     try {
       const res = await axios.get("http://localhost:5000/v1");
@@ -21,6 +23,7 @@ const Map = () => {
     }
   };
 
+  // get the products of the clicked client and update the state
   const getProducts = async (user) => {
     try {
       setLoading(true);
@@ -51,40 +54,7 @@ const Map = () => {
 
   return (
     <div>
-      <style>
-        {`
-          .popup-container {
-            border: 1px solid black;
-            border-radius: 9px;
-            overflow: hidden;
-            padding: 5px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 1;
-          }
-
-          .carousel-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 3px solid lightblue;
-          }
-
-          .product-info {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center; /* Added to center text horizontally */
-          }
-
-          .product-image {
-            width: 100%;
-            height: 250px;
-          }
-        `}
-      </style>
-
+      {/* Map itself */}
       <MapContainer
         center={defaultPosition}
         zoom={13}
@@ -95,9 +65,11 @@ const Map = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         {clientes.map((cliente) => (
+          // each client has a marker on the map
           <Marker
             key={cliente.id}
             position={[cliente.lat, cliente.long]}
+            // when the marker is clicked, the products of the client are fetched from the API
             eventHandlers={{
               click: () => {
                 handleMarkerClick(cliente);
@@ -108,13 +80,16 @@ const Map = () => {
               <div className="popup-container">
                 <h2>{cliente.name}</h2>
                 <h3>{cliente.email}</h3>
+                {/* // if the products are still loading, show a loading message */}
                 {loading ? (
                   <p>Loading products...</p>
                 ) : (
                   <div className="carousel-container">
                     {cliente.products && cliente.products.length > 0 ? (
+                      // if the client has products, show them in a carousel
                       <Carousel>
                         {cliente.products.map((product) => (
+                          // each product is a slide in the carousel
                           <Carousel.Item key={product._id}>
                             <div className="product-info">
                               <a href={`/products/${product._id}`}>
