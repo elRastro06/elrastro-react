@@ -9,15 +9,13 @@ import chatService from "../../services/chatService";
 import "../../assets/styles/chat.css";
 
 export default function Chat() {
-
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
         setTimeout(() => {
             messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-          }, 100);
+        }, 100);
     }
-
 
     const chatId = useParams().id;
     const userLogged = "userID1";
@@ -25,11 +23,32 @@ export default function Chat() {
     const navigate = useNavigate();
     const [newMessage, setNewMessage] = useState('');
     const [productInfo, setProductInfo] = useState({});
+    const [otherUserInfo, setOtherUserInfo] = useState({});
     const [messages, setMessages] = useState([]);
 
     const handleChatsClick = () => {
         navigate(`/chats`);
     }
+
+    const handleProductClick = () => {
+        navigate(`/product/${productInfo._id}`);
+    }
+
+    const formatearFecha = (timestamp) => {
+        // Crear un objeto de fecha a partir de la cadena de fecha
+        const fechaObjeto = new Date(timestamp);
+
+        // Verificar si la fecha es válida antes de formatearla
+        if (!isNaN(fechaObjeto.getTime())) {
+            // Formatear la fecha con hora y minutos
+            const opciones = { hour: 'numeric', minute: 'numeric', hour12: false };
+            const horaYMinutos = fechaObjeto.toLocaleTimeString('es-ES', opciones);
+            return horaYMinutos;
+        } else {
+            console.error('La cadena de fecha no es válida.');
+            return ''; // Puedes devolver una cadena vacía o algún valor predeterminado en caso de error
+        }
+    };
 
     const handleSendMessage = async () => {
         if (newMessage.trim() !== '') {
@@ -37,6 +56,7 @@ export default function Chat() {
                 _id: messages.length + 1,
                 content: newMessage,
                 sender: userLogged,
+                timestamp: new Date(),
             };
 
 
@@ -68,9 +88,12 @@ export default function Chat() {
             const productInfo = await chatService.getProductPicture(chatResponse.productId);
             setProductInfo(productInfo);
 
+            // Obtener la información del otro usuario
+            const otherUserInfo = await chatService.getOneClient(productInfo.userID);
+            setOtherUserInfo(otherUserInfo);
+
             // Para cada mensaje habría que añadir como atributo cual es suyo y cual no
             for (const message of chatResponse.messages) {
-                console.log(message.sender + " " + userLogged);
                 if (message.sender === userLogged) {
                     message.sender = 'user';
                 } else {
@@ -91,7 +114,6 @@ export default function Chat() {
 
     useEffect(() => {
         fetchData();
-        console.log(messages);
     }, []);
 
     return (
@@ -99,14 +121,14 @@ export default function Chat() {
 
             <div className="chat-container">
                 <div className="chat-header">
-                    <span className="material-icons" onClick={handleChatsClick}>
+                    <span className="material-icons arrow-back" onClick={handleChatsClick}>
                         arrow_back
                     </span>
 
-                    <span className="chat-name">Nombre del usuario</span>
+                    <span className="chat-name">{otherUserInfo.name}</span>
 
-                    <div className="product-info">
-                        <span className="product-name">{productInfo.name}</span>
+                    <div className="product-info" onClick={() => handleProductClick()}>
+                        <p className="product-name">{productInfo.name}</p>
                         <img className="product-img" src={productInfo.images && productInfo.images[0].secure_url}></img>
                     </div>
 
@@ -115,9 +137,15 @@ export default function Chat() {
 
                 <div className="messages-container">
                     {messages.map((message, i) => (
+
+                        
                         <div key={i} className={`message ${message.sender}`}>
                             {message.content}
+                            <div className={`timestamp-${message.sender}`}> 
+                                {formatearFecha(message.timestamp)}
+                            </div>
                             {i === messages.length - 1 ? <div ref={messagesEndRef} /> : null}
+                            
                         </div>
                     ))}
                 </div>
@@ -128,7 +156,9 @@ export default function Chat() {
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                     />
-                    <button onClick={handleSendMessage}>Enviar</button>
+                    <span className="material-icons arrow-back" onClick={handleSendMessage}>
+                        send
+                    </span>
                 </div>
 
             </div>

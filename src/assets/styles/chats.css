@@ -31,6 +31,16 @@ h1 {
   margin-bottom: 30px;
 }
 
+.chat-details-column:hover {
+  background-color: rgba(0, 0, 0, 0.1); /* Cambia el color de fondo al pasar el ratón */
+  cursor: pointer; /* Cambia el cursor al pasar el ratón */
+}
+
+.product-info:hover {
+  background-color: rgba(0, 0, 0, 0.1); /* Cambia el color de fondo al pasar el ratón */
+  cursor: pointer; /* Cambia el cursor al pasar el ratón */
+}
+
 .product-info-column{
   flex: 1;
   display: flex;
@@ -51,6 +61,7 @@ h1 {
 
 .product-info{
   padding: 10px;
+  display: block;
 }
 .chat-details {
   padding: 10px;
@@ -105,9 +116,10 @@ h1 {
 .chat-table .product-info-column img {
   width: 150px;
   height: 150px;
-  border-radius: 5px;
+  border-radius: 40px;
   object-fit: cover;
   margin-bottom: 10px;
+  border: 2px solid #ccc;  
 }
 
 /* CSS for smaller screens */

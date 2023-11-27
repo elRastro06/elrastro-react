@@ -1,52 +1,70 @@
 .chat-container {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Asegura que ocupe al menos el 100% de la altura de la ventana */
+    min-height: 100vh;
+    /* Asegura que ocupe al menos el 100% de la altura de la ventana */
     background-color: #fff;
 }
 
-.product-img{
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-    border-radius: 50%;
+.product-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    align-items: center;
 }
 
-.messages-container {
-    height: 72vh; /* Ajusta la altura deseada */
-    overflow-y: auto; /* Añade un scroll vertical cuando sea necesario */
-    padding: 20px;
-    padding: 10px;
+
+.product-info:hover {
     background-color: #f4f4f4;
-}
-
-.chat-header {
-    padding: 20px;
-    background-color: #fff;
-    border-bottom: 1px solid #ccc;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.product-info{
-    display: flex;
-    align-items: center;
+    cursor: pointer;
 }
 
 .product-name {
-    padding-right: 10px; /* Ajusta según sea necesario */
+    text-align: center;
+    font-size: small;
+}
+
+.product-img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+}
+
+.messages-container {
+    height: 70vh;
+    /* Ajusta la altura deseada */
+    overflow-y: auto;
+    /* Añade un scroll vertical cuando sea necesario */
+    padding: 20px;
+    padding: 10px;
+    background-color: #f4f4f4;
+
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+.chat-header {
+    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-left: 15vb;
+    margin-right: 15vb;
+
 }
 
 .input-container {
     padding: 20px;
     background-color: #fff;
-    border-top: 1px solid #ccc;
     display: flex;
+    
+    margin-left: 15vb;
+    margin-right: 15vb;
 }
-
-/* Resto del código permanece igual */
-
 
 .message {
     display: flex;
@@ -58,12 +76,27 @@
     margin-top: 20px;
     margin-bottom: 10px;
     border-radius: 10px;
+
+    margin-left: 15vb;
+    margin-right: 15vb;
+}
+
+@media (max-width: 620px) {
+    .message {
+        margin-left: 1vb;
+        margin-right: 1vb;
+    }
+    .chat-header {
+        margin-left: 1vb;
+        margin-right: 1vb;
+    }
 }
 
 .user {
     align-self: flex-end;
     background-color: #c6f8d7;
-    margin-left: auto; /* Ajusta la distancia al margen izquierdo */
+    margin-left: auto;
+    /* Ajusta la distancia al margen izquierdo */
     text-align: right;
 }
 
@@ -99,4 +132,18 @@ button:hover {
 .message-input::placeholder {
     font-family: Arial, sans-serif;
 
+}
+
+.timestamp-user, .timestamp-other {
+    margin-top: 2px;
+    font-size: smaller;
+    font-weight: bold;
+}
+
+.arrow-back{
+    padding: 20px;
+}
+.arrow-back:hover{
+    background-color: #f4f4f4;
+    cursor: pointer;
 }
