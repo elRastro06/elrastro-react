@@ -1,38 +1,77 @@
 .chat-container {
     display: flex;
     flex-direction: column;
-    height: 80vh;
+    min-height: 100vh; /* Asegura que ocupe al menos el 100% de la altura de la ventana */
+    background-color: #fff;
+}
+
+.product-img{
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .messages-container {
-    flex: 1;
-    overflow-y: auto;
+    height: 72vh; /* Ajusta la altura deseada */
+    overflow-y: auto; /* Añade un scroll vertical cuando sea necesario */
     padding: 20px;
+    padding: 10px;
+    background-color: #f4f4f4;
 }
 
+.chat-header {
+    padding: 20px;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-info{
+    display: flex;
+    align-items: center;
+}
+
+.product-name {
+    padding-right: 10px; /* Ajusta según sea necesario */
+}
+
+.input-container {
+    padding: 20px;
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+    display: flex;
+}
+
+/* Resto del código permanece igual */
+
+
 .message {
-    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+
+    max-width: 60%;
     padding: 10px;
+    margin-top: 20px;
+    margin-bottom: 10px;
     border-radius: 10px;
-    max-width: 70%;
 }
 
 .user {
     align-self: flex-end;
-    background-color: #DCF8C6;
+    background-color: #c6f8d7;
+    margin-left: auto; /* Ajusta la distancia al margen izquierdo */
+    text-align: right;
 }
 
 .other {
     align-self: flex-start;
-    background-color: #ECE5DD;
+    background-color: #e0dfdd;
 }
 
-.input-container {
-    display: flex;
-    padding: 10px;
-    background-color: #fff;
-    border-top: 1px solid #ccc;
-}
 
 textarea {
     flex: 1;
@@ -51,6 +90,7 @@ button {
     border-radius: 5px;
     cursor: pointer;
 }
+
 
 button:hover {
     background-color: #45a049;

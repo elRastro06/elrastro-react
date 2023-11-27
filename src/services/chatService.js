@@ -19,7 +19,12 @@ const getProductPicture = async (productId) => {
     return response.data;
 }
 
+const sendMessage = async (chatId, message) => {
+    const response = await Axios.post(url_chat + '/' + chatId + "/message", message);
+    return response.data;
+}
 
-const chatService = { getAllChatsFromUser, getOneChat, getProductPicture }
+
+const chatService = { getAllChatsFromUser, getOneChat, getProductPicture, sendMessage }
 
 export default chatService;

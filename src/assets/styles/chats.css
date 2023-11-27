@@ -1,17 +1,21 @@
 body {
   font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+
+}
+
+h1 {
+  position: relative; /* Position the h1 independently of other elements */
+  text-align: center;
+  font-size: 40px; /* Adjust as needed */ 
+}
+
+#chats{
   padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f4f4f4;
-}
-
-h1 {
-  font-size: 7vh; /* Adjust as needed */ 
-  position: relative; /* Position the h1 independently of other elements */
-  left: 50%; /* Center the h1 horizontally */
-  transform: translateX(-50%); /* Ensure the center of the h1 is at the center of the page */
 }
 
 .chat-table {
@@ -24,6 +28,7 @@ h1 {
   width: 65vw; 
   height: 200px;
   margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .product-info-column{

@@ -21,7 +21,7 @@ export default function Chats() {
         try {
             // Obtener la lista de chats
             const chatResponse = await chatService.getAllChatsFromUser("userID1");
-            
+
             // Para cada chat, obtener la información del producto
             const chatsWithProductInfo = await Promise.all(chatResponse.map(async (chat) => {
                 const productInfo = await chatService.getProductPicture(chat.productId);
@@ -46,52 +46,47 @@ export default function Chats() {
 
 
     return (
-        <div>
+        <>
             <h1>Chats</h1>
-            
-            <div className="chats-container" >
-                {chats.map((chat) => (
-                    <div key={chat._id} className="chat-table" onClick={() => handleChatClick(chat._id)}>
+            <div id="chats">
 
-                        <div className="product-info-column">
-                            <div className="product-info">
-                                <p>{chat.productInfo.name}</p>
-                                <img src={chat.productInfo.images[0].secure_url}></img>
+                <div className="chats-container" >
+                    {chats.map((chat) => (
+                        <div key={chat._id} className="chat-table" onClick={() => handleChatClick(chat._id)}>
+
+                            <div className="product-info-column">
+                                <div className="product-info">
+                                    <p>{chat.productInfo.name}</p>
+                                    <img src={chat.productInfo.images[0].secure_url}></img>
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="chat-details-column">
-                            <div className="chat-details">
-                                <p>Vendedor: {chat.productInfo.userID}</p>
-                                {/* <p>Último Mensaje: Hola, ¿estás interesado en comprar el producto?</p>
+                            <div className="chat-details-column">
+                                <div className="chat-details">
+                                    <p>Vendedor: {chat.productInfo.userID}</p>
+                                    {/* <p>Último Mensaje: Hola, ¿estás interesado en comprar el producto?</p>
                                 <p>Fecha del Último Mensaje: 23 de Noviembre, 2023</p> */}
-                                {chat.messages.length > 0 && (
-                                    <>
-                                        <p>
-                                            <strong> {chat.messages[0].sender}: </strong>
-                                            {chat.messages[0].content}
-                                        </p>
-                                        <p>
-                                            {chat.messages[0].timestamp}
-                                        </p>
+                                    {chat.messages.length > 0 && (
+                                        <>
+                                            <p>
+                                                <strong> {chat.messages[0].sender}: </strong>
+                                                {chat.messages[0].content}
+                                            </p>
+                                            <p>
+                                                {chat.messages[0].timestamp}
+                                            </p>
 
-                                    </>
-                                )}
+                                        </>
+                                    )}
+                                </div>
                             </div>
+
                         </div>
+                    ))}
+                </div>
 
-                    </div>
-                ))}
             </div>
+        </>
 
-
-
-
-
-
-
-
-
-        </div>
     )
 }
