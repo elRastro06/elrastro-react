@@ -1,18 +1,35 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import "../../assets/styles/products.css";
 
 export default function Products() {
+  const navigate = useNavigate();
+
   const [products, setProducts] = useState([]);
   const [bids, setBids] = useState([]);
-  const [filter, setFilter] = useState(""); // New state for filtering
+  const [clients, setClients] = useState([]);
+  const [filter, setFilter] = useState("");
+  const [currentFilteredProducts, setCurrentFilteredProducts] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/v1/")
+      .then((response) => {
+        setClients(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   useEffect(() => {
     axios
       .get("http://localhost:5001/v1/")
       .then((response) => {
         setProducts(response.data);
+        setCurrentFilteredProducts(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -44,6 +61,14 @@ export default function Products() {
     product.name.toLowerCase().includes(filter.toLowerCase())
   );
 
+  const getUser = (productId) => {
+    return clients.find(
+      (cliente) =>
+        products.find((product) => product._id === productId).userID ===
+        cliente._id
+    );
+  };
+
   return (
     <div>
       <h1 className="products-title">El Rastro</h1>
@@ -52,23 +77,45 @@ export default function Products() {
         <input
           className="products-filter-input"
           type="text"
-          placeholder="Filter by name"
+          placeholder="Buscar producto..."
           value={filter}
-          onChange={(e) => setFilter(e.target.value)}
+          onChange={(e) => {
+            setFilter(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              setCurrentFilteredProducts(filteredProducts);
+            }
+          }}
         />
+        <span
+          className="material-icons"
+          onClick={() => {
+            setCurrentFilteredProducts(filteredProducts);
+          }}
+        >
+          search
+        </span>
       </div>
 
       <div className="products">
-        {filteredProducts.map((product) => {
+        {currentFilteredProducts.map((product) => {
           const bid = getHighestBid(product._id);
+          const user = getUser(product._id);
 
           return (
             <div className="product" key={product._id}>
+              <div
+                className="product-user"
+                onClick={() => {
+                  navigate("/profile/" + user._id);
+                }}
+              >
+                <img src="user.jpg"></img>
+                <p className="product-user-name">{user.name}</p>
+              </div>
               <div className="product-info">
                 <h2 className="product-name">{product.name}</h2>
-                <h3 className="product-price">
-                  Original price: {product.price}€
-                </h3>
                 <p className="product-description">{product.description}</p>
               </div>
               {product.images ? (
@@ -81,8 +128,23 @@ export default function Products() {
                 </div>
               )}
               <div className="product-bids">
-                <p>Highest Bid: {bid !== 0 ? `${bid}€` : "No bids yet"}</p>
-                <button className="product-bid-button">Place a bid</button>
+                <p className="product-price">
+                  Precio original: {product.price}€
+                </p>
+                <p className="product-bid-highest">
+                  Puja más alta: {bid !== 0 ? `${bid}€` : "Sin pujas todavia"}
+                </p>
+              </div>
+              <div className="product-buttons">
+                <button
+                  className="product-button"
+                  onClick={() => {
+                    navigate("/product/" + product._id);
+                  }}
+                >
+                  Ver producto
+                </button>
+                <button className="product-bid-button">Pujar</button>
               </div>
             </div>
           );

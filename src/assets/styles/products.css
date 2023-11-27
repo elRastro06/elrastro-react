@@ -14,6 +14,7 @@ body {
 .products-filter {
   max-width: 300px;
   margin: 0 auto;
+  display: flex;
 }
 
 .products-filter-input {
@@ -22,6 +23,15 @@ body {
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 5px;
+}
+
+.products-filter span {
+  padding: 10px;
+  margin-left: 5px;
+  background-color: black;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .products {
@@ -54,8 +64,9 @@ body {
 }
 
 .product-price {
-  font-size: 1.2em;
-  color: #007bff;
+  font-size: medium;
+  color: red;
+  text-decoration: line-through;
 }
 
 .product-description {
@@ -64,11 +75,13 @@ body {
 
 .product-image {
   margin-top: 10px;
+  text-align: center;
 }
 
 .product-image img {
   max-width: 100%;
-  height: auto;
+  height: 200px;
+  object-fit: cover;
   border-radius: 5px;
 }
 
@@ -77,19 +90,51 @@ body {
   text-align: center;
 }
 
-.product-bids p {
-  color: #555;
+.product-bid-highest {
+  font-weight: bold;
+  font-size: larger;
 }
 
-.product-bid-button {
-  background-color: #007bff;
-  color: #fff;
-  padding: 8px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.product-buttons {
+  display: flex;
+  justify-content: space-around;
   margin-top: 10px;
 }
+
+.product-button,
+.product-bid-button {
+  background-color: white;
+  color: black;
+  border: 3px solid black;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  font-size: large;
+  transition-duration: 0.4s;
+}
+
+.product-button:hover {
+  background-color: lightgray;
+}
+
+.product-bid-button:hover {
+  background-color: lightskyblue;
+}
+
+.product-user{
+  display: flex;
+  margin-top: 5px;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.product-user img{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 
 /* Responsive Styles */
 
