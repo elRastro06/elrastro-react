@@ -78,10 +78,10 @@ const Map = () => {
           >
             <Popup>
               <div className="popup-container">
-                <div class="container">
-                  <div class="user-profile">
-                    <h1 class="user-name">{cliente.name}</h1>
-                    <p class="user-email">{cliente.email}</p>
+                <div className="container">
+                  <div className="user-profile">
+                    <h1 className="user-name">{cliente.name}</h1>
+                    <p className="user-email">{cliente.email}</p>
                   </div>
                 </div>
                 {/* // if the products are still loading, show a loading message */}
@@ -95,11 +95,11 @@ const Map = () => {
                         {cliente.products.map((product) => (
                           // each product is a slide in the carousel
                           <Carousel.Item key={product._id}>
-                            <div className="product-info">
+                            <div className="map-product-info">
                               <a href={`/products/${product._id}`}>
                                 <h3>{product.name}</h3>
                                 <img
-                                  className="product-image"
+                                  className="map-product-image"
                                   src={
                                     product.images
                                       ? product.images[0].url
