@@ -12,11 +12,14 @@ const Map = () => {
 
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [radius, setRadius] = useState(50);
 
   // simple get request to get the clients
   const getPosicionesClientes = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/v1");
+      // get the clientes giving a latitud, longitud and radius
+      const res = await axios.get(`http://localhost:5000/v1?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}`);
+      // const res = await axios.get("http://localhost:5000/v1");
       setClientes(res.data);
     } catch (error) {
       console.error("Error fetching client positions:", error);
@@ -50,10 +53,26 @@ const Map = () => {
 
   useEffect(() => {
     getPosicionesClientes();
-  }, []);
+  }, [radius]);
 
   return (
     <div>
+      <div className="radius-selector">
+        <label htmlFor="radius">Radius:</label>
+        <select
+          name="radius"
+          id="radius"
+          onChange={(e) => {
+            setRadius(e.target.value);
+          }
+          }
+        >
+          <option value="1">1km</option>
+          <option value="10">10km</option>
+          <option selected="selected" value="50">50km</option>
+          <option value="100">100km</option>
+        </select>
+      </div>
       {/* Map itself */}
       <MapContainer
         center={defaultPosition}
@@ -68,7 +87,7 @@ const Map = () => {
           // each client has a marker on the map
           <Marker
             key={cliente.id}
-            position={[cliente.lat, cliente.long]}
+            position={[cliente.location.coordinates[1], cliente.location.coordinates[0]]}
             // when the marker is clicked, the products of the client are fetched from the API
             eventHandlers={{
               click: () => {
