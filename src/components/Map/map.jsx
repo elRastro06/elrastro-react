@@ -6,19 +6,46 @@ import Carousel from "react-bootstrap/Carousel";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../assets/styles/map.css";
 
-const Map = () => {
+const Map = ({ productName }) => {
   // TODO (when login implemented) : get the user's location and set it as the default position
   const defaultPosition = [36.602274, -4.531727];
 
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [radius, setRadius] = useState(50);
+  const [product, setProduct] = useState(productName ? productName : "");
 
-  // simple get request to get the clients
+  // simple get request to get the clients and products
   const getPosicionesClientes = async () => {
     try {
+      let res = null;
+      if (product) {
+        res = await axios.get(
+          `http://localhost:5000/v1?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}&product=${product}`
+        );
+      } else {
+        res = await axios.get(
+          `http://localhost:5000/v1?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}`
+        );
+      }
+      if (res.data.length === 0) {
+        alert("No se han encontrado clientes en esa zona");
+      }
+      setClientes(res.data);
+    } catch (error) {
+      console.error("Error fetching client positions:", error);
+    }
+  };
+
+  const searchByProduct = async () => {
+    try {
       // get the clientes giving a latitud, longitud and radius
-      const res = await axios.get(`http://localhost:5000/v1?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}`);
+      const res = await axios.get(
+        `http://localhost:5000/v1?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}&product=${product}`
+      );
+      if (res.data.length === 0) {
+        alert("No se han encontrado productos con ese nombre");
+      }
       // const res = await axios.get("http://localhost:5000/v1");
       setClientes(res.data);
     } catch (error) {
@@ -29,17 +56,19 @@ const Map = () => {
   // get the products of the clicked client and update the state
   const getProducts = async (user) => {
     try {
+      let res = null;
       setLoading(true);
-      const res = await axios.get(
-        `http://localhost:5001/v1?userID=${user._id}`
+      if (product) {
+        res = await axios.get(
+          `http://localhost:5001/v1?userID=${user._id}&name=${product}`
+        );
+      } else {
+        res = await axios.get(`http://localhost:5001/v1?userID=${user._id}`);
+      }
+      const newClientes = clientes.map((prevUser) =>
+        prevUser.id === user.id ? { ...prevUser, products: res.data } : prevUser
       );
-      setClientes((prevClientes) =>
-        prevClientes.map((prevUser) =>
-          prevUser.id === user.id
-            ? { ...prevUser, products: res.data }
-            : prevUser
-        )
-      );
+      setClientes(newClientes);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -64,14 +93,34 @@ const Map = () => {
           id="radius"
           onChange={(e) => {
             setRadius(e.target.value);
-          }
-          }
+          }}
         >
           <option value="1">1km</option>
           <option value="10">10km</option>
-          <option selected="selected" value="50">50km</option>
+          <option selected="selected" value="50">
+            50km
+          </option>
           <option value="100">100km</option>
         </select>
+      </div>
+      <div className="product-selector">
+        <label htmlFor="product">Product Name:</label>
+        <input
+          type="text"
+          name="product"
+          id="product"
+          onChange={(e) => {
+            setProduct(e.target.value);
+          }}
+          value={product}
+        ></input>
+        <button
+          onClick={() => {
+            searchByProduct();
+          }}
+        >
+          Search
+        </button>
       </div>
       {/* Map itself */}
       <MapContainer
@@ -87,7 +136,10 @@ const Map = () => {
           // each client has a marker on the map
           <Marker
             key={cliente.id}
-            position={[cliente.location.coordinates[1], cliente.location.coordinates[0]]}
+            position={[
+              cliente.location.coordinates[1],
+              cliente.location.coordinates[0],
+            ]}
             // when the marker is clicked, the products of the client are fetched from the API
             eventHandlers={{
               click: () => {
@@ -97,10 +149,10 @@ const Map = () => {
           >
             <Popup>
               <div className="popup-container">
-                <div class="container">
-                  <div class="user-profile">
-                    <h1 class="user-name">{cliente.name}</h1>
-                    <p class="user-email">{cliente.email}</p>
+                <div className="container">
+                  <div className="user-profile">
+                    <h1 className="user-name">{cliente.name}</h1>
+                    <p className="user-email">{cliente.email}</p>
                   </div>
                 </div>
                 {/* // if the products are still loading, show a loading message */}
