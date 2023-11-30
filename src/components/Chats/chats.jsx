@@ -46,13 +46,17 @@ export default function Chats() {
             // Obtener la lista de chats
             const chatResponse = await chatService.getAllChatsFromUser(userLogged);
 
-            // Para cada chat, obtener la información del producto
+            // Para cada chat, obtener la información del producto y si es comprador obtener la información del vendedor
             const chatsWithProductAndUserInfo = await Promise.all(chatResponse.map(async (chat) => {
                 const productInfo = await chatService.getProductPicture(chat.productId);
-                const userInfo = await chatService.getOneClient(productInfo.userID);
 
-                console.log(userInfo);
-                // Agregar la información extra al chat
+                var userInfo = { "name": "Interested anonymous user" };
+                if (chat.seller === userLogged) {
+                    chat.messages[0].sender = "Interested anonymous user";
+                    chat.participants = [];
+                } else {
+                    userInfo = await chatService.getOneClient(productInfo.userID);
+                }
 
                 return {
                     ...chat,
@@ -61,23 +65,21 @@ export default function Chats() {
                 };
             }));
 
+            // Ordenar los chats por fecha de último mensaje
             chatsWithProductAndUserInfo.sort((a, b) => {
-                // Convierte las cadenas de fecha a objetos Date
                 const fechaA = new Date(a.messages[0].timestamp);
                 const fechaB = new Date(b.messages[0].timestamp);
 
-                // Compara las fechas y devuelve el resultado de la comparación
                 return fechaB - fechaA;
             });
 
+            // Filtrar los chats según el filtro seleccionado
             var chatsWithProductAndUserInfoFilter;
             if (filter === "buy") {
                 chatsWithProductAndUserInfoFilter = chatsWithProductAndUserInfo.filter((chat) => chat.seller !== userLogged);
             } else if (filter === "sell") {
                 chatsWithProductAndUserInfoFilter = chatsWithProductAndUserInfo.filter((chat) => chat.seller === userLogged);
             }
-
-            console.log(chatsWithProductAndUserInfo);
 
             // Actualizar el estado con la lista de chats que ahora incluye información del producto
             setChats(chatsWithProductAndUserInfoFilter);
@@ -87,6 +89,7 @@ export default function Chats() {
     };
 
     useEffect(() => {
+        setChats([]);
         fetchData();
     }, [filter]);
 
@@ -120,6 +123,7 @@ export default function Chats() {
                 </div>
             </div>
 
+            
             <div id="chats">
 
                 <div className="chats-container" >
@@ -140,9 +144,8 @@ export default function Chats() {
 
                             <div className="chat-details-column" onClick={() => handleChatClick(chat._id)}>
                                 <div className="chat-details">
-                                    <p>Vendedor: {
-                                        chat.userInfo.name
-                                    }</p>
+                                    <p> {(filter === "buy") ? `Seller: ${chat.userInfo.name}` : "Interested anonymous user"}  </p>
+
 
                                     <br />
 

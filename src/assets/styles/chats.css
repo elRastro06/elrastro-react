@@ -130,9 +130,6 @@ h1 {
   }
 
   .chat-table {
-    display: flex;
-    border: 1px solid #ccc;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     overflow: hidden;
     
@@ -141,38 +138,34 @@ h1 {
     margin-top: 30px;
   }
 }
+
 #filterContainer {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100px; /* Ajusta la altura según tus necesidades */
 }
 
 #filterChats {
   display: flex;
+  gap: 20px;
 }
 
 #filterChats label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100px; /* Ajusta el ancho según tus necesidades */
-  height: 30px; /* Ajusta la altura según tus necesidades */
-  margin: 5px;
+  position: relative;
+  padding: 10px;
+  background-color: #e0e0e0;
+  border-radius: 20px;
   cursor: pointer;
-  border: 1px solid #ccc;
-  background-color: #eee;
+  transition: background-color 0.3s ease;
 }
 
-#filterChats input {
-  display: none; /* Oculta el input por defecto */
+#filterChats input[type="radio"] {
+  position: absolute;
+  opacity: 0;
 }
 
-#filterChats input:checked + label {
-  background-color: #3498db; /* Cambia el color de fondo de la opción seleccionada */
-  color: #fff; /* Cambia el color del texto de la opción seleccionada */
-}
-  
 #filterChats label.selected {
-  background-color: #4caf50; /* Cambia el color de fondo de la opción seleccionada a verde */
-  color: #fff; /* Cambia el color del texto de la opción seleccionada a blanco */
+  background-color: #3498db; /* Cambia este color según tus necesidades */
+  color: #fff;
 }

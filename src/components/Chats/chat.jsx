@@ -10,6 +10,7 @@ import "../../assets/styles/chat.css";
 
 export default function Chat() {
 
+
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -33,6 +34,10 @@ export default function Chat() {
 
     const handleProductClick = () => {
         navigate(`/product/${productInfo._id}`);
+    }
+
+    const handleGoDown = () => {
+        scrollToBottom();
     }
 
     const formatearFecha = (timestamp) => {
@@ -62,20 +67,19 @@ export default function Chat() {
 
 
             try {
-                const response = await chatService.sendMessage(chatId, newMessageObj);
+                await chatService.sendMessage(chatId, newMessageObj);
 
                 newMessageObj.sender = 'user';
                 setMessages([...messages, newMessageObj]);
                 setNewMessage('');
 
-
+                scrollToBottom();
             } catch (error) {
                 console.error('Error al obtener la información del chat:', error);
             }
 
         }
 
-        scrollToBottom();
 
     };
 
@@ -89,16 +93,23 @@ export default function Chat() {
             const productInfo = await chatService.getProductPicture(chatResponse.productId);
             setProductInfo(productInfo);
 
-            // Obtener la información del otro usuario
-            const otherUserInfo = await chatService.getOneClient(productInfo.userID);
-            setOtherUserInfo(otherUserInfo);
+            if(userLogged === chatResponse.seller){
+                // Usuario anónimo interesado en el producto
+                setOtherUserInfo({ "name" : "Interested anonymous user" });
+            }else{
+                // Obtener la información del otro usuario
+                const otherUserInfo = await chatService.getOneClient(productInfo.userID);
+                setOtherUserInfo(otherUserInfo);
+            }
 
-            // Para cada mensaje habría que añadir como atributo cual es suyo y cual no
+
+            // Para el estilo, y para conservar anonimato
             for (const message of chatResponse.messages) {
                 if (message.sender === userLogged) {
                     message.sender = 'user';
                 } else {
                     message.sender = 'other';
+
                 }
             }
 
@@ -157,13 +168,19 @@ export default function Chat() {
 
                 <div className="input-container">
                     <textarea className="message-input"
-                        placeholder="Escribe tu mensaje..."
+                        placeholder="Write your message here..."
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                     />
                     <span className="material-icons arrow-back" onClick={handleSendMessage}>
                         send
                     </span>
+
+                    <span className="material-icons south" onClick={handleGoDown}>
+                        south
+                    </span>
+
+                    
                 </div>
 
             </div>

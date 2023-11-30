@@ -27,7 +27,6 @@ const sendMessage = async (chatId, message) => {
 }
 
 const getOneClient = async (clientId) => {
-    console.log(url_clients + '/' + clientId);
     const response = await Axios.get(url_clients + '/' + clientId);
     return response.data;
 }
