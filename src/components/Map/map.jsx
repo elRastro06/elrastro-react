@@ -166,11 +166,11 @@ const Map = ({ productName }) => {
                         {cliente.products.map((product) => (
                           // each product is a slide in the carousel
                           <Carousel.Item key={product._id}>
-                            <div className="product-info">
+                            <div className="map-product-info">
                               <a href={`/products/${product._id}`}>
                                 <h3>{product.name}</h3>
                                 <img
-                                  className="product-image"
+                                  className="map-product-image"
                                   src={
                                     product.images
                                       ? product.images[0].url

@@ -1,0 +1,151 @@
+/* products.css */
+
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.products-title {
+  text-align: center;
+  color: #333;
+}
+
+.products-filter {
+  max-width: 300px;
+  margin: 0 auto;
+  display: flex;
+}
+
+.products-filter-input {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.products-filter span {
+  padding: 10px;
+  margin-left: 5px;
+  background-color: black;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.products {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.product {
+  width: 300px;
+  margin: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out; /* Add transition property */
+}
+
+.product:hover {
+  transform: scale(1.02); /* Increase size on hover */
+}
+
+.product-info {
+  text-align: center;
+}
+
+.product-name {
+  font-size: 1.5em;
+  color: #333;
+}
+
+.product-price {
+  font-size: medium;
+  color: red;
+  text-decoration: line-through;
+}
+
+.product-description {
+  color: #666;
+}
+
+.product-image {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.product-image img {
+  max-width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.product-bids {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.product-bid-highest {
+  font-weight: bold;
+  font-size: larger;
+}
+
+.product-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
+}
+
+.product-button,
+.product-bid-button {
+  background-color: white;
+  color: black;
+  border: 3px solid black;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  font-size: large;
+  transition-duration: 0.4s;
+}
+
+.product-button:hover {
+  background-color: lightgray;
+}
+
+.product-bid-button:hover {
+  background-color: lightskyblue;
+}
+
+.product-user{
+  display: flex;
+  margin-top: 5px;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.product-user img{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+
+/* Responsive Styles */
+
+@media (max-width: 768px) {
+  .product {
+    width: calc(50% - 40px);
+  }
+}
+
+@media (max-width: 480px) {
+  .product {
+    width: 100%;
+  }
+}
