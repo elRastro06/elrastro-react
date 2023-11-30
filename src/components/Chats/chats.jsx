@@ -9,7 +9,12 @@ import "../../assets/styles/chats.css";
 
 export default function Chats() {
 
+    const userLogged = "userID1";
+
     const [chats, setChats] = useState([]);
+
+    const [filter, setFilter] = useState("buy");
+
     const navigate = useNavigate();
 
     const handleChatClick = (chatId) => {
@@ -39,7 +44,7 @@ export default function Chats() {
     const fetchData = async () => {
         try {
             // Obtener la lista de chats
-            const chatResponse = await chatService.getAllChatsFromUser("userID1");
+            const chatResponse = await chatService.getAllChatsFromUser(userLogged);
 
             // Para cada chat, obtener la información del producto
             const chatsWithProductAndUserInfo = await Promise.all(chatResponse.map(async (chat) => {
@@ -60,16 +65,22 @@ export default function Chats() {
                 // Convierte las cadenas de fecha a objetos Date
                 const fechaA = new Date(a.messages[0].timestamp);
                 const fechaB = new Date(b.messages[0].timestamp);
-              
+
                 // Compara las fechas y devuelve el resultado de la comparación
                 return fechaB - fechaA;
-              });
-              
+            });
+
+            var chatsWithProductAndUserInfoFilter;
+            if (filter === "buy") {
+                chatsWithProductAndUserInfoFilter = chatsWithProductAndUserInfo.filter((chat) => chat.seller !== userLogged);
+            } else if (filter === "sell") {
+                chatsWithProductAndUserInfoFilter = chatsWithProductAndUserInfo.filter((chat) => chat.seller === userLogged);
+            }
 
             console.log(chatsWithProductAndUserInfo);
 
             // Actualizar el estado con la lista de chats que ahora incluye información del producto
-            setChats(chatsWithProductAndUserInfo);
+            setChats(chatsWithProductAndUserInfoFilter);
         } catch (error) {
             console.error('Error al obtener la información del chat:', error);
         }
@@ -77,12 +88,38 @@ export default function Chats() {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [filter]);
 
 
     return (
         <>
             <h1>Chats</h1>
+
+
+
+            <div id="filterContainer">
+                <div id="filterChats">
+                    <label className={filter === 'buy' ? 'selected' : ''}>
+                        Interested in
+                        <input
+                            type="radio"
+                            value="buy"
+                            checked={filter === 'buy'}
+                            onChange={() => setFilter('buy')}
+                        />
+                    </label>
+                    <label className={filter === 'sell' ? 'selected' : ''}>
+                        Sold by you
+                        <input
+                            type="radio"
+                            value="sell"
+                            checked={filter === 'sell'}
+                            onChange={() => setFilter('sell')}
+                        />
+                    </label>
+                </div>
+            </div>
+
             <div id="chats">
 
                 <div className="chats-container" >
@@ -92,7 +129,12 @@ export default function Chats() {
                             <div className="product-info-column" onClick={() => handleProductClick(chat.productInfo._id)}>
                                 <div className="product-info">
                                     <p>{chat.productInfo.name}</p>
-                                    <img src={chat.productInfo.images[0].secure_url}></img>
+
+                                    {(chat.productInfo.images) ? (
+                                        <img src={chat.productInfo.images[0].secure_url}></img>
+                                    ) : (
+                                        <img className="product-img" src="https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg" alt="No image available" />
+                                    )}
                                 </div>
                             </div>
 

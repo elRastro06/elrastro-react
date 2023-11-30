@@ -9,6 +9,7 @@ import chatService from "../../services/chatService";
 import "../../assets/styles/chat.css";
 
 export default function Chat() {
+
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -129,7 +130,11 @@ export default function Chat() {
 
                     <div className="product-info" onClick={() => handleProductClick()}>
                         <p className="product-name">{productInfo.name}</p>
-                        <img className="product-img" src={productInfo.images && productInfo.images[0].secure_url}></img>
+                        {(productInfo.images) ? (
+                            <img className="product-img" src={productInfo.images && productInfo.images[0].secure_url}></img>
+                        ) : (
+                            <img className="product-img" src="https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg" alt="No image available" />
+                        )}
                     </div>
 
                 </div>
