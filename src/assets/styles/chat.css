@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    /* Asegura que ocupe al menos el 100% de la altura de la ventana */
     background-color: #fff;
 }
 
@@ -35,10 +34,8 @@
 }
 
 .messages-container {
-    height: 70vh;
-    /* Ajusta la altura deseada */
+    height: 75vh;
     overflow-y: auto;
-    /* Añade un scroll vertical cuando sea necesario */
     padding: 20px;
     padding: 10px;
     background-color: #f4f4f4;
@@ -106,7 +103,6 @@
     align-self: flex-end;
     background-color: #c6ecf8;
     margin-left: auto;
-    /* Ajusta la distancia al margen izquierdo */
     text-align: right;
 }
 
