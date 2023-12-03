@@ -139,12 +139,12 @@ export default function Chat() {
 
                     <span className="chat-name">{otherUserInfo.name}</span>
 
-                    <div className="product-info" onClick={() => handleProductClick()}>
-                        <p className="product-name">{productInfo.name}</p>
+                    <div className="product-info-chat" onClick={() => handleProductClick()}>
+                        <p className="product-name-chat">{productInfo.name}</p>
                         {(productInfo.images) ? (
-                            <img className="product-img" src={productInfo.images && productInfo.images[0].secure_url}></img>
+                            <img className="product-img-chat" src={productInfo.images && productInfo.images[0].secure_url}></img>
                         ) : (
-                            <img className="product-img" src="https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg" alt="No image available" />
+                            <img className="product-img-chat" src="https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg" alt="No image available" />
                         )}
                     </div>
 

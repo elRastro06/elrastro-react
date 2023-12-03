@@ -149,8 +149,8 @@ export default function Chats() {
                     {chats.map((chat) => (
                         <div key={chat._id} className="chat-table" >
 
-                            <div className="product-info-column" onClick={() => handleProductClick(chat.productInfo._id)}>
-                                <div className="product-info">
+                            <div className="product-info-chats-column" onClick={() => handleProductClick(chat.productInfo._id)}>
+                                <div className="product-info-chats">
                                     <p>{chat.productInfo.name}</p>
 
                                     {(chat.productInfo.images) ? (
