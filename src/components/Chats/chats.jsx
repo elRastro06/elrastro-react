@@ -1,16 +1,18 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import axios from "axios";
+import axios, { all } from "axios";
 
 import chatService from "../../services/chatService";
-//TODO : importar el servicio de productos cuando este listo
 import "../../assets/styles/chats.css";
 
 export default function Chats() {
 
     const userLogged = "userID1";
 
+    // Todos los chats para no tener que hacer una petición cada vez que se cambia el filtro
+    const [allChats, setAllChats] = useState([]);
+    // Chats que se muestran en la página
     const [chats, setChats] = useState([]);
 
     const [filter, setFilter] = useState("buy");
@@ -25,7 +27,7 @@ export default function Chats() {
         navigate(`/product/${productId}`);
     }
 
-    const formatearFecha = (timestamp) => {
+    const formatDate = (timestamp) => {
         // Crear un objeto de fecha a partir de la cadena de fecha
         const fechaObjeto = new Date(timestamp);
 
@@ -33,12 +35,27 @@ export default function Chats() {
         if (!isNaN(fechaObjeto.getTime())) {
             // Formatear la fecha con hora y minutos
             const opciones = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-            return fechaObjeto.toLocaleDateString('es-ES', opciones);
+            return fechaObjeto.toLocaleDateString('en-EN', opciones);
         } else {
             console.error('La cadena de fecha no es válida.');
             return ''; // Puedes devolver una cadena vacía o algún valor predeterminado en caso de error
         }
     };
+
+    const filtrarChats = (allChatsFunct) => {
+
+        // Filtrar los chats según el filtro seleccionado
+        var chats;
+        if (filter === "buy") {
+            chats = allChatsFunct.filter((chat) => chat.seller !== userLogged);
+        } else if (filter === "sell") {
+            chats = allChatsFunct.filter((chat) => chat.seller === userLogged);
+        }
+
+        // Actualizar el estado con la lista de chats que ahora incluye información del producto
+        setChats(chats);
+    }
+
 
 
     const fetchData = async () => {
@@ -73,25 +90,27 @@ export default function Chats() {
                 return fechaB - fechaA;
             });
 
-            // Filtrar los chats según el filtro seleccionado
-            var chatsWithProductAndUserInfoFilter;
-            if (filter === "buy") {
-                chatsWithProductAndUserInfoFilter = chatsWithProductAndUserInfo.filter((chat) => chat.seller !== userLogged);
-            } else if (filter === "sell") {
-                chatsWithProductAndUserInfoFilter = chatsWithProductAndUserInfo.filter((chat) => chat.seller === userLogged);
-            }
+            // Guardar todos los chats en el estado
+            setAllChats(chatsWithProductAndUserInfo);
 
-            // Actualizar el estado con la lista de chats que ahora incluye información del producto
-            setChats(chatsWithProductAndUserInfoFilter);
+            // Filtrar los chats por el filtro seleccionado
+            filtrarChats(chatsWithProductAndUserInfo);            
         } catch (error) {
-            console.error('Error al obtener la información del chat:', error);
+            console.error('Error fetching data:', error);
         }
     };
 
+
+    // Primera carga de la página
     useEffect(() => {
-        setChats([]);
         fetchData();
+    }, []);
+
+    // Cada vez que se cambia el filtro
+    useEffect(() => {
+        filtrarChats(allChats);
     }, [filter]);
+
 
 
     return (
@@ -156,7 +175,7 @@ export default function Chats() {
                                                 {chat.messages[0].content}
                                             </p>
                                             <p>
-                                                {formatearFecha(chat.messages[0].timestamp)}
+                                                {formatDate(chat.messages[0].timestamp)}
                                             </p>
 
                                         </>

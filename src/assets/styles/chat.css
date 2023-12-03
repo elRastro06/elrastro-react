@@ -115,7 +115,7 @@
 }
 
 
-textarea {
+.input-container textarea {
     flex: 1;
     padding: 10px;
     border: none;
@@ -123,19 +123,19 @@ textarea {
     resize: none;
 }
 
-button {
+.send {
     margin-left: 10px;
     padding: 10px;
-    background-color: #4CAF50;
-    color: #fff;
+    background-color: #c6ecf8;
+    color: #000000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
 
-button:hover {
-    background-color: #45a049;
+.send:hover {
+    background-color: #91ddf5;
 }
 
 .message-input::placeholder {
@@ -149,7 +149,7 @@ button:hover {
     font-weight: bold;
 }
 
-.arrow-back{
+.arrow-back, .send{
     padding: 20px;
 }
 .arrow-back:hover{

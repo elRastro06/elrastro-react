@@ -172,7 +172,7 @@ export default function Chat() {
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                     />
-                    <span className="material-icons arrow-back" onClick={handleSendMessage}>
+                    <span className="material-icons send" onClick={handleSendMessage}>
                         send
                     </span>
 
