@@ -60,7 +60,7 @@ const Map = (props) => {
                             // Render just the single product without Carousel
                             <div className="map-product-info">
                               <a href={`/product/${cliente.products[0]._id}`}>
-                                <h3>{cliente.products[0].name}</h3>
+                                <h5>{cliente.products[0].name}</h5>
                                 <img
                                   className="map-product-image"
                                   src={
@@ -72,8 +72,8 @@ const Map = (props) => {
                                 />
                               </a>
                               <p>
-                                <strong>Description:</strong>{" "}
-                                {cliente.products[0].description}
+                                <strong>Descr:</strong>{" "}
+                                {cliente.products[0].description.slice(0,20)+"..."}
                                 <br></br>
                                 <strong>Price:</strong>{" "}
                                 {cliente.products[0].price}
@@ -90,9 +90,9 @@ const Map = (props) => {
                             <Carousel>
                               {cliente.products.map((product) => (
                                 <Carousel.Item key={product._id}>
-                                  <div className="map-product-info">
+                                  <div className="map-product-carousel-info">
                                     <a href={`/product/${product._id}`}>
-                                      <h3>{product.name}</h3>
+                                      <h5>{product.name}</h5>
                                       <img
                                         className="map-product-image"
                                         src={
