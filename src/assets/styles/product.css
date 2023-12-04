@@ -16,9 +16,11 @@
 }
 
 .product-page-image {
-    max-width: 100%;
-    height: auto;
+    height: 500px;
+    width: 450px;
+    min-width: 100%;
     border-radius: 5px;
+    object-fit: cover;
 }
 
 .product-image-button {
@@ -79,6 +81,14 @@
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
+}
+
+* > .product-bid {
+    background-color: #c6ecf8;
+}
+
+* > .product-bid ~ .product-bid {
+    background-color: #fff;
 }
 
 .bid-form-btn, .product-owner-options button {

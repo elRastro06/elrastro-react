@@ -12,7 +12,7 @@ export default function Product() {
     const navigate = useNavigate();
 
     const productId = useParams().id;
-    const [product, setProduct] = useState({ images: [{ url: "" }] });
+    const [product, setProduct] = useState({});
     const [bids, setBids] = useState([]);
     const [selectedImage, setSelectedImage] = useState(0);
     const [owner, setOwner] = useState({});
@@ -42,6 +42,10 @@ export default function Product() {
 
             const bidsData = await bidServices.getBids(productId);
             setBids(bidsData);
+            
+            if(bidsData.length > 0) {
+                setNewBid(bidsData[0].amount + 0.1);
+            }
 
             const ownerData = await clientServices.getClient(productData.userID);
             setOwner(ownerData);
@@ -81,11 +85,15 @@ export default function Product() {
         setSelectedImage((selectedImage + 1) % product.images.length);
     }
 
+    const endedBid = () => {
+        return timeLeft.seconds < 0 || timeLeft.minutes < 0 ||
+               timeLeft.hours < 0 || timeLeft.days < 0;
+    }
+
     const addBid = async (event) => {
         event.preventDefault();
 
-        if(timeLeft.seconds < 0 || timeLeft.minutes < 0 || timeLeft.hours < 0
-            || timeLeft.days < 0) {
+        if(endedBid()) {
                 alert("Bid is over. You can not make a new bid");
                 return;
             }
@@ -124,7 +132,7 @@ export default function Product() {
     }
 
     const deleteProduct = async () => {
-        if (bids.length != 0) alert("No se puede eliminar un producto con pujas");
+        if (bids.length != 0) alert("It can not be deleted a product with bids");
         else {
             await productServices.deleteProduct(productId);
             navigate("/");
@@ -132,13 +140,14 @@ export default function Product() {
     }
 
     const modifyProduct = () => {
-
+        if (bids.length != 0) alert("It can not be modified a product with bids");
+        else navigate(`/product/edit/${productId}`);
     }
 
     return (
         <div className="product-container">
             <section className="product-image-container">
-                <img className="product-page-image" src={product.images[selectedImage].url} alt="Product Image"></img>
+                <img className="product-page-image" src={product.images != undefined ? product.images[selectedImage].url : "http://localhost:5173/no_image.png"} alt="Product Image"></img>
                 <button className="product-image-button prev" onClick={() => prevImage()}>&#8249;</button>
                 <button className="product-image-button next" onClick={() => nextImage()}>&#8250;</button>
                 <div className="product-owner-options">
@@ -160,7 +169,7 @@ export default function Product() {
                     <h3>{product.name}</h3>
                     <p>{product.description}</p>
                     <p className="product-price">{product.price}€</p>
-                    <span>{timeLeftStr()}</span>
+                    <span>{endedBid() ? `Bid ended ${Math.abs(timeLeft.days)} days ago` : timeLeftStr()}</span>
                 </section>
                 <div className="product-owner">
                     <Link to={`/profile/${owner._id}`}>{owner.email}</Link>
@@ -174,7 +183,7 @@ export default function Product() {
                     </div>
                 })}
                 <form className="bid-form">
-                    <input type="number" step={0.1} value={newBid} onChange={(event) => setNewBid(event.target.value)}></input>
+                    <input type="number" step={0.1} value={newBid} disabled={endedBid()} onChange={(event) => setNewBid(event.target.value)}></input>
                     <button className="bid-form-btn" onClick={addBid} disabled={loggedUserId == product.userID}>
                         <span className="material-icons">gavel</span>
                     </button>

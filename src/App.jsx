@@ -9,6 +9,7 @@ import AboutUs from "./components/AboutUs/aboutus.jsx";
 
 import Products from "./components/Products/products.jsx";
 import Product from "./components/Products/product.jsx";
+import ProductForm from './components/Products/productForm.jsx';
 
 import Profile from "./components/Profile/profile.jsx";
 import MyProfile from "./components/Profile/myprofile.jsx";
@@ -33,6 +34,14 @@ const router = createBrowserRouter([
         path: "/product/:id",
         element: <Product />,
         // errorElement: <PaginaError />,
+    },
+    {
+        path: "/product/create",
+        element: <ProductForm />
+    },
+    {
+        path: "/product/edit/:id",
+        element: <ProductForm />
     },
 
     /**
