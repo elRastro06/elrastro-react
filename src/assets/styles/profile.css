@@ -1,6 +1,6 @@
 /* profile.css */
 
-.profile-title, .profile-products-title {
+.profile-title, .profile-products-title, .profile-reviews-title {
   text-align: left;
   margin: 20px;
   color: #333;
@@ -79,6 +79,13 @@
 .profile-product-price {
   font-size: 1.2em;
   color: #ff6600;
+}
+
+.profile-review img{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 /* Media queries for responsiveness */

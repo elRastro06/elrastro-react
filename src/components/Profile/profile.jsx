@@ -9,7 +9,10 @@ export default function Profile() {
 
   const [user, setUser] = useState({});
   const [products, setProducts] = useState([]);
+  const [reviews, setReviews] = useState({});
   const [userLocation, setUserLocation] = useState("");
+  const [reviewers, setReviewers] = useState([]);
+  
 
   useEffect(() => {
     // Fetch user data by ID
@@ -22,6 +25,16 @@ export default function Profile() {
         console.log(error);
       });
 
+    // Fetch potential reviewer data
+    axios
+    .get(`http://localhost:5000/v1/`)
+    .then((response) => {
+        setReviewers(response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
     // Fetch products data for the user
     axios
       .get(`http://localhost:5001/v1/?userID=${id}`)
@@ -31,6 +44,17 @@ export default function Profile() {
       .catch((error) => {
         console.log(error);
       });
+
+    //Fetch reviews data for the user
+    axios
+      .get(`http://localhost:5000/v2/${id}/reviews`)
+      .then((response) => {
+        setReviews(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+
   }, [id]);
 
   useEffect(() => {
@@ -46,6 +70,28 @@ export default function Profile() {
         console.log(error);
       });
   }, [user]);
+
+  const getReviewer = (ReviewerId) => {
+    return reviewers.find(
+        (reviewer) =>
+          reviews.find((review) => review.reviewerID === ReviewerId).reviewerID === reviewer._id
+    );
+  };
+
+  const formatDate = (timestamp) => {
+    // Crear un objeto de fecha a partir de la cadena de fecha
+    const fechaObjeto = new Date(timestamp);
+
+    // Verificar si la fecha es válida antes de formatearla
+    if (!isNaN(fechaObjeto.getTime())) {
+        // Formatear la fecha con hora y minutos
+        const opciones = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+        return fechaObjeto.toLocaleDateString('en-EN', opciones);
+    } else {
+        console.error('La cadena de fecha no es válida.');
+        return ''; // Puedes devolver una cadena vacía o algún valor predeterminado en caso de error
+    }
+};
 
   return (
     <div>
@@ -100,6 +146,31 @@ export default function Profile() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      <h2 className="profile-reviews-title"> <span className="material-icons">star</span> Valoraciones</h2>
+      {Array.isArray(reviews) && reviews.length > 0 && (
+        <div className="profile-container">
+          {reviews.map((review, key) => {
+            const reviewer = getReviewer(review.reviewerID);
+            return (
+                <div className="profile-review" key={key}>
+                    <div
+                        className="review-user"
+                        onClick={() => {
+                        navigate("/profile/" + reviewer._id);
+                        }}
+                    >
+                        <img src="http://localhost:5173/user.jpg" />
+                        <p className="reviewer-user-name">{reviewer.name}</p>
+                    </div>
+
+                    <p className="review-rating">{review.rating}/5</p>
+                    <p className="review-date">{formatDate(review.date)}</p>
+                    <p className="review-text">{review.text}</p>
+                </div>
+          )})}
         </div>
       )}
     </div>
