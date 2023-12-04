@@ -35,9 +35,10 @@ export default function Profile() {
 
   useEffect(() => {
     // Fetch user location
+    if (!user.location) return;
     axios
       .get(
-        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${user.lat}&longitude=${user.long}&localityLanguage=es`
+        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${user.location.coordinates[1]}&longitude=${user.location.coordinates[0]}&localityLanguage=es`
       )
       .then((response) => {
         setUserLocation(response.data.city + ", " + response.data.countryName);
