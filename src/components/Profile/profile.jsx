@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import "../../assets/styles/profile.css";
 
 export default function Profile() {
+  const navigate = useNavigate();
   const { id } = useParams();
 
   const [user, setUser] = useState({});
@@ -127,7 +128,12 @@ export default function Profile() {
       {Array.isArray(products) && products.length > 0 && (
         <div className="profile-container">
           {products.map((product, key) => (
-            <div className="profile-product" key={key}>
+            <div 
+                className="profile-product" key={key}
+                onClick={() => {
+                    navigate("/product/" + product._id);
+                }}
+            >
               {product.images ? (
                 <div className="profile-product-image">
                   <img src={product.images[0].url} alt={product.name} />
@@ -150,6 +156,10 @@ export default function Profile() {
       )}
 
       <h2 className="profile-reviews-title"> <span className="material-icons">star</span> Valoraciones</h2>
+
+      
+      <button className="profile-review-button">Valorar</button>
+
       {Array.isArray(reviews) && reviews.length > 0 && (
         <div className="profile-container">
           {reviews.map((review, key) => {

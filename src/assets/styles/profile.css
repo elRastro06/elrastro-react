@@ -48,6 +48,12 @@
   border: 1px solid #ddd;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out; /* Add transition property */
+}
+
+.profile-product:hover {
+  transform: scale(1.02); /* Increase size on hover */
 }
 
 .profile-product-image {
@@ -86,6 +92,10 @@
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.review-user{
+  cursor: pointer;
 }
 
 /* Media queries for responsiveness */
