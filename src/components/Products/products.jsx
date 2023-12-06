@@ -102,8 +102,6 @@ export default function Products() {
   return (
     <>
       <div>
-        <h1 className="products-title">El Rastro</h1>
-
         <div className="products-filter">
           <input
             className="products-filter-input"
