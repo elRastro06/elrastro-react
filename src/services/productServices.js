@@ -20,13 +20,12 @@ const modifyProduct = async (id, body) => {
     return response.data;
 }
 
-const addImage = async (id, imageName, image) => {
+const addImage = async (id, image) => {
     let data = new FormData();
     data.append("image", image);
-    data.append("imageName", imageName);
     data.append("productName", id);
 
-    const response = await axios.post("http://localhost:5004/v1/images", data, {
+    const response = await axios.post("http://localhost:5004/v2/images", data, {
         headers: {
             "Content-Type": "multipart/form-data"
         }

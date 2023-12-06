@@ -82,8 +82,7 @@ export default function ProductForm() {
     }
 
     const handleUploadImage = async (event) => {
-        const imageName = product.name;
-        const image = await productServices.addImage(productId, imageName, event.target.files[0]);
+        const image = await productServices.addImage(productId, event.target.files[0]);
         setNewImages([...newImages, image]);
     }
 
@@ -117,7 +116,9 @@ export default function ProductForm() {
         const response = await productServices.modifyProduct(productId, body);
 
         if (response.error != undefined) {
-            if (confirm(response.error)) navigate(`/product/${productId}`);
+            if (confirm(response.error)) {
+                handleCancel();
+            }
         } else {
             navigate(`/product/${productId}`);
         }
