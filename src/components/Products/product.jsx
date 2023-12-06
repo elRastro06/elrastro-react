@@ -13,7 +13,7 @@ export default function Product() {
 
     const productId = useParams().id;
     const [product, setProduct] = useState({});
-    const [bids, setBids] = useState([]);
+    const [bids, setBids] = useState([{ userID: "" }]); // Para que no de fallo al cargar la pagina
     const [selectedImage, setSelectedImage] = useState(0);
     const [owner, setOwner] = useState({});
     const [newBid, setNewBid] = useState(0.0);
@@ -42,8 +42,8 @@ export default function Product() {
 
             const bidsData = await bidServices.getBids(productId);
             setBids(bidsData);
-            
-            if(bidsData.length > 0) {
+
+            if (bidsData.length > 0) {
                 setNewBid(bidsData[0].amount + 0.1);
             }
 
@@ -60,7 +60,7 @@ export default function Product() {
             const today = new Date().getTime();
 
             let length = product.length;
-            if(length == undefined) length = 7;
+            if (length == undefined) length = 7;
 
             const maxDiff = length * 24 * 60 * 60 * 1000;
 
@@ -83,7 +83,7 @@ export default function Product() {
 
     const prevImage = () => {
         let newSelected = selectedImage - 1;
-        if(newSelected < 0) newSelected += product.images.length;
+        if (newSelected < 0) newSelected += product.images.length;
         setSelectedImage(newSelected % product.images.length);
     }
 
@@ -93,16 +93,16 @@ export default function Product() {
 
     const endedBid = () => {
         return timeLeft.seconds < 0 || timeLeft.minutes < 0 ||
-               timeLeft.hours < 0 || timeLeft.days < 0;
+            timeLeft.hours < 0 || timeLeft.days < 0;
     }
 
     const addBid = async (event) => {
         event.preventDefault();
 
-        if(endedBid()) {
-                alert("Bid is over. You can not make a new bid");
-                return;
-            }
+        if (endedBid()) {
+            alert("Bid is over. You can not make a new bid");
+            return;
+        }
 
         const bid = {
             amount: parseFloat(newBid),
@@ -152,7 +152,7 @@ export default function Product() {
 
     return (
         <div className="product-container">
-            <section className="product-image-container">
+            <div className="product-image-container">
                 <img className="product-page-image" src={product.images != undefined ? product.images[selectedImage].secure_url : "http://localhost:5173/no_image.png"} alt="Product Image"></img>
                 <button className="product-image-button prev" onClick={() => prevImage()}>&#8249;</button>
                 <button className="product-image-button next" onClick={() => nextImage()}>&#8250;</button>
@@ -168,33 +168,67 @@ export default function Product() {
                         </>
                     }
                 </div>
-            </section>
+            </div>
 
-            <section className="product-info-container">
-                <section className="product-details">
-                    <h3>{product.name}</h3>
+            <div className="product-info-container">
+                <div className="product-details">
+                    <h2>{product.name}</h2>
                     <p>{product.description}</p>
                     <p className="product-price">{product.price}€</p>
-                    <span>{endedBid() ? `Bid ended ${Math.abs(timeLeft.days)} days ago` : timeLeftStr()}</span>
-                </section>
-                <div className="product-owner">
-                    <Link to={`/profile/${owner._id}`}>{owner.email}</Link>
-                    <img src={owner.image != undefined ? owner.images : "http://localhost:5173/user.jpg"}></img>
-                </div>
-                <h4>Bids made</h4>
-                {bids.map((bid) => {
-                    return <div className="product-bid" key={bid._id}>
-                        <p>{bid.amount}€</p>
-                        <p>{handleDate(bid.date)}</p>
+
+                    <div className="product-owner">
+                        <img src={owner.image != undefined ? owner.images : "http://localhost:5173/user.jpg"}></img>
+                        <Link to={`/profile/${owner._id}`}>{owner.email}</Link>
+                        <div className="asksomething">
+                            <p> Any question? </p>
+                            <span className="material-icons"> chat </span>
+                        </div>
                     </div>
-                })}
-                <form className="bid-form">
-                    <input type="number" step={0.1} value={newBid} disabled={endedBid()} onChange={(event) => setNewBid(event.target.value)}></input>
-                    <button className="bid-form-btn" onClick={addBid} disabled={loggedUserId == product.userID}>
-                        <span className="material-icons">gavel</span>
-                    </button>
-                </form>
-            </section>
+
+                    <div className={`product-status ${endedBid() ? "off" : "on"}`}>
+                        {
+                            endedBid() ?
+                                <p> <b> Bid auction ended {Math.abs(timeLeft.days)} days ago </b> </p> :
+                                <p> <b> The auction is still ongoing  </b> </p>
+                        }
+                        <p> <b> {endedBid() ? "" : timeLeftStr()} </b> </p>
+                    </div >
+                </div>
+
+
+
+
+                <div className="product-bids-container">
+                    <h3>Bids</h3>
+
+                    <div className={`product-lastbid ${(bids[0].userId == loggedUserId) ? "lastbid-own" : "lastbid-other"}`}>
+                        <p> {"Last bid " + ((bids[0].userId == loggedUserId) ? "was" : "wasn't") + " made by you"}</p>
+                    </div>
+
+
+
+                    <div className="product-bids-list">
+                        {bids.map((bid) => {
+                            return (
+                            <div className={`product-bid ${(bid.userId == loggedUserId) ? "own-bid" : "other-bid"}`} key={bid._id}>
+                                <p>{bid.amount}€</p>
+                                <p>{handleDate(bid.date)}</p>
+                            </div>
+                            )
+                        })}
+                    </div>
+
+
+
+                    <form className="bid-form">
+                        <input type="number" step={0.1} value={newBid} disabled={endedBid()} onChange={(event) => setNewBid(event.target.value)}></input>
+                        <button className="bid-form-btn" onClick={addBid} disabled={loggedUserId == product.userId}>
+                            <span className="material-icons">gavel</span>
+                        </button>
+                    </form>
+
+                </div>
+            </div>
         </div>
     )
 }

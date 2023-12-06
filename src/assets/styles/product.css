@@ -6,14 +6,19 @@
     display: flex;
 }
 
+/*
+================================================================================================
+        IMAGENES DEL PRODUCTO
+================================================================================================
+*/
+
 .product-image-container {
     position: relative;
-    margin-right: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 500px;
-    width: 500px;
+    height: 700px;
+    width: 700px;
     overflow: hidden;
 }
 
@@ -50,8 +55,7 @@
 }
 
 .product-details p {
-    margin-bottom: 10px;
-    color: #555;
+    margin-bottom: 0px;
 }
 
 .product-price {
@@ -59,20 +63,18 @@
     color: #cc0000;
 }
 
-.product-owner {
+/*
+================================================================================================
+        PUJAS DEL PRODUCTO
+================================================================================================
+*/
+
+.product-bids-container {
     display: flex;
-    align-items: center;
-    margin-top: 20px;
-}
+    flex-direction: column;
+    width: 100%;
 
-.product-owner a {
-    margin-right: 10px;
-}
-
-.product-owner img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+    margin-top: 50px;
 }
 
 .product-bid {
@@ -82,6 +84,36 @@
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
+}
+
+.product-bids-list{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    /* Tenga su propio scroll*/
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+/* Los elementos de la lista quiero que tengan menos altura y esten mas juntos*/
+.product-bids-list > * {
+    margin-bottom: 0px;
+}
+
+.product-lastbid {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #cc0000;
+}
+
+.lastbid-own{
+    color: #00cc00;
+}
+
+.lastbid-other{
+    color: #cc0000;
+
 }
 
 * > .product-bid {
@@ -111,10 +143,14 @@ input[type="number"] {
 }
 
 .product-info-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 40%;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+
+    width: 500px;
+
+    margin-left: 100px;
 }
 
 #product-modify {
@@ -127,4 +163,85 @@ input[type="number"] {
     color: black;
     background-color: rgba(255, 0, 0, 0.884);
     margin-left: 10px;
+}
+
+.own-bid{
+    background-color: #c8ffd0;
+}
+
+.other-bid{
+    background-color: #fcc1c1;
+}
+
+.product-status{
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    justify-content: space-between;
+}
+
+.on{
+    background-color: #c8ffd0;
+}
+
+.off{
+    background-color: #fcc1c1;
+}
+
+/**
+================================================================================================
+        PERFIL DEL VENDEDOR
+================================================================================================
+*/
+
+.product-owner {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    margin-top: 30px;    
+
+    border-radius: 5px;
+    
+    /* Centrar los elementos */
+    justify-content: center;
+    align-items: center;
+    text-align: center;    
+}
+
+.product-owner a {
+    margin-left: 5px;
+    margin-right: 20px;
+}
+
+.product-owner span {
+    color: #999999;
+}
+
+
+
+.product-owner img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.asksomething{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #f4f4f4;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.asksomething:hover{
+    background-color: #e3e3e3;
+    cursor: pointer;
+}
+
+.asksomething p{
+    font-size: small;
+    margin-bottom: 0px;
 }
