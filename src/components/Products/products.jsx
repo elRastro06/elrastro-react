@@ -14,6 +14,7 @@ export default function Products() {
   const [clients, setClients] = useState([]);
   const [productName, setProductName] = useState("");
   const [radius, setRadius] = useState(25);
+  const [bidsFilter, setBidsFilter] = useState("active");
   const [updateProduct, setUpdateProduct] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -22,7 +23,19 @@ export default function Products() {
       const productsResponse = await axios.get(
         `http://localhost:5001/v2/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}&name=${productName}`
       );
-      setProducts(productsResponse.data);
+      setProducts(
+        productsResponse.data.filter((product) => {
+          const limitDate = new Date(product.date);
+          limitDate.setDate(limitDate.getDate() + 7);
+          if (bidsFilter === "active") {
+            return limitDate > new Date();
+          } else if (bidsFilter === "finished") {
+            return limitDate < new Date();
+          } else {
+            return true;
+          }
+        })
+      );
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -107,6 +120,19 @@ export default function Products() {
             }}
           />
           <select
+            name="bids-type"
+            id="bids-type"
+            className="products-filter-bids-type"
+            onChange={(e) => {
+              setBidsFilter(e.target.value);
+            }}
+            defaultValue={bidsFilter}
+          >
+            <option value="active">Pujas activas</option>
+            <option value="finished">Pujas finalizadas</option>
+            <option value="all">Todas las pujas</option>
+          </select>
+          <select
             name="radius"
             id="radius"
             className="products-filter-radius"
@@ -147,6 +173,8 @@ export default function Products() {
               {products.map((product) => {
                 const user = getUser(product._id);
                 const bid = getHighestBid(product._id);
+                const limitDate = new Date(product.date);
+                limitDate.setDate(limitDate.getDate() + 7);
 
                 return (
                   <div className="product" key={product._id}>
@@ -179,9 +207,23 @@ export default function Products() {
                         Precio original: {product.price}€
                       </p>
                       <p className="product-bid-highest">
-                        Puja más alta:{" "}
-                        {bid !== 0 ? `${bid}€` : "Sin pujas todavia"}
+                        Puja más alta: {bid !== 0 ? `${bid}€` : "Sin pujas"}
                       </p>
+                    </div>
+                    <div className="product-date">
+                      {limitDate - new Date() > 0 ? (
+                        <p className="product-date-limit">
+                          Tiempo restante para pujar:{" "}
+                          {Math.floor(
+                            (limitDate - new Date()) / (1000 * 60 * 60 * 24)
+                          )}{" "}
+                          días
+                        </p>
+                      ) : (
+                        <p className="product-date-limit">
+                          La puja ha finalizado
+                        </p>
+                      )}
                     </div>
                     <div className="product-buttons">
                       <button
