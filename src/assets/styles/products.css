@@ -19,7 +19,7 @@ body {
 }
 
 .products-filter-input {
-  width: 50%;
+  width: calc(100% - 310px);
   padding: 10px;
   box-sizing: border-box;
   border: 1px solid #ccc;
