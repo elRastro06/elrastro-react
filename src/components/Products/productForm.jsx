@@ -26,24 +26,24 @@ export default function ProductForm() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const bids = await bidServices.getBids(productId);
-            if (bids.length > 0) {
-                navigate(`/product/${productId}`);
-                return;
-            }
+            // const bids = await bidServices.getBids(productId);
+            // if (bids.length > 0) {
+            //     navigate(`/product/${productId}`);
+            //     return;
+            // }
 
             const productData = await productServices.getProduct(productId);
             if (productData.images != undefined) setImages(productData.images);
-            if (productData._id == undefined) {
-                navigate("/");
-                return;
-            } else if (productData.userID != loggedUserId) {
-                navigate(`/product/${productId}`);
-                return;
-            }
-            else {
-                setProduct(productData);
-            }
+            // if (productData._id == undefined) {
+            //     navigate("/");
+            //     return;
+            // } else if (productData.userID != loggedUserId) {
+            //     navigate(`/product/${productId}`);
+            //     return;
+            // }
+            // else {
+            setProduct(productData);
+            // }
         }
 
         fetchData().catch(console.error);
@@ -125,75 +125,86 @@ export default function ProductForm() {
     }
 
     return (
+        <>
 
-        <div className="edit-product-container">
-            <div className="form-container-product-edit">
-                <form>
-                    <label>Name: </label>
-                    <input type="text" value={product.name} onChange={setName}></input>
-                    <br />
-                    <label>Description: </label>
-                    <textarea value={product.description} onChange={setDescription}></textarea>
-                    <br />
-                    <label>Price:</label>
-                    <input type="number" step={0.1} value={product.price} onChange={setPrice}></input>
-                    <br />
-                    <label>Length of the bid:</label>
-                    <select onChange={setLength} value={product.length}>
-                        <option value={1}>1 day</option>
-                        <option value={7}>7 days</option>
-                        <option value={14}>14 days</option>
-                        <option value={30}>30 days</option>
-                    </select>
-                </form>
+            <div className="editproduct-container">
+
+                <div className="product-images-table">
+                    <div className="editproduct-input-file">
+                        <button onClick={() => document.getElementById('input-file').click()}>
+                            <span className="material-icons">add</span>Add new image
+                        </button>
+                        <input type="file" accept=".png,.jpg,.jpeg" id="input-file" onChange={handleUploadImage} hidden />
+                    </div>
+
+                    <table className="editproduct-table">
+                        <thead>
+                            {/* merge the two columns into one */}
+
+                            <tr>
+                                <th colSpan={2}>Images</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                images.map((image) => {
+                                    return (
+                                        <tr key={image.public_id}>
+                                            <td className="action-buttons"><button onClick={() => handleDeleteImage(image)}><i className="material-icons">delete</i></button></td>
+                                            <td className="editproduct-image-container">
+                                                <img className="editproduct-image" src={image.secure_url} alt="Producto"></img>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
+                            }
+                            {
+                                newImages.map((image) => {
+                                    return (
+                                        <tr key={image.public_id}>
+                                            <td className="action-buttons"><button onClick={() => handleDeleteNewImage(image)}><i className="material-icons">delete</i></button></td>
+                                            <td className="editproduct-image-container">
+                                                <img className="editproduct-image" src={image.secure_url} alt="Producto"></img>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="productedit-form-container">
+                    <form>
+                        <label>Name: </label>
+                        <input type="text" value={product.name} onChange={setName}></input>
+                        <br />
+                        <label>Description: </label>
+                        <textarea value={product.description} onChange={setDescription}></textarea>
+                        <br />
+                        <label>Price:</label>
+                        <input type="number" step={0.1} value={product.price} onChange={setPrice}></input>
+                        <br />
+                        <label>Length of the bid:</label>
+                        <select onChange={setLength} value={product.length}>
+                            <option value={1}>1 day</option>
+                            <option value={7}>7 days</option>
+                            <option value={14}>14 days</option>
+                            <option value={30}>30 days</option>
+                        </select>
+                    </form>
+                </div>
+
+
+
+
+
+
             </div>
-
-            <button onClick={() => document.getElementById('input-file').click()}>
-                <span className="material-icons">add</span>Add new photo
-            </button>
-            <input type="file" accept=".png,.jpg,.jpeg" id="input-file" onChange={handleUploadImage} hidden />
-
-
-            <div className="product-images-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Image</th>
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            images.map((image) => {
-                                return (
-                                    <tr key={image.public_id}>
-                                        <td className="editproduct-image-container">
-                                            <img className="editproduct-image" src={image.secure_url} alt="Producto"></img>
-                                        </td>
-                                        <td className="action-buttons"><button onClick={() => handleDeleteImage(image)}><i className="material-icons">delete</i></button></td>
-                                    </tr>
-                                );
-                            })
-                        }
-                        {
-                            newImages.map((image) => {
-                                return (
-                                    <tr key={image.public_id}>
-                                        <td className="editproduct-image-container">
-                                            <img className="editproduct-image" src={image.secure_url} alt="Producto"></img>
-                                        </td>
-                                        <td className="action-buttons"><button onClick={() => handleDeleteNewImage(image)}><i className="material-icons">delete</i></button></td>
-                                    </tr>
-                                );
-                            })
-                        }
-                    </tbody>
-                </table>
+            <div className="editproduct-finalbuttons">
+                <button id="cancel-button" onClick={handleCancel}>Cancel</button>
+                <button id="accept-button" onClick={handleSave}>Save changes</button>
             </div>
-            <div>
-                <button onClick={handleCancel}>Cancel</button>
-                <button onClick={handleSave}>Save changes</button>
-            </div>
-        </div>
+        </>
     );
 }
