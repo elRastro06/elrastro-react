@@ -7,20 +7,21 @@
 }
 
 .product-image-container {
-    width: 50%;
     position: relative;
     margin-right: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 500px;
+    width: 500px;
+    overflow: hidden;
 }
 
 .product-page-image {
-    height: 500px;
-    width: 450px;
-    min-width: 100%;
+    width: 100%;
+    height: 100%;
     border-radius: 5px;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .product-image-button {

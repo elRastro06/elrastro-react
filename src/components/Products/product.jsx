@@ -58,7 +58,11 @@ export default function Product() {
         const calculateTimeLeft = (startDate) => {
             const date = Date.parse(startDate);
             const today = new Date().getTime();
-            const maxDiff = 7 * 24 * 60 * 60 * 1000;
+
+            let length = product.length;
+            if(length == undefined) length = 7;
+
+            const maxDiff = length * 24 * 60 * 60 * 1000;
 
             const diff = date + maxDiff - today;
 
@@ -78,7 +82,9 @@ export default function Product() {
     }, [product]);
 
     const prevImage = () => {
-        setSelectedImage(Math.abs(selectedImage - 1) % product.images.length);
+        let newSelected = selectedImage - 1;
+        if(newSelected < 0) newSelected += product.images.length;
+        setSelectedImage(newSelected % product.images.length);
     }
 
     const nextImage = () => {
@@ -147,7 +153,7 @@ export default function Product() {
     return (
         <div className="product-container">
             <section className="product-image-container">
-                <img className="product-page-image" src={product.images != undefined ? product.images[selectedImage].url : "http://localhost:5173/no_image.png"} alt="Product Image"></img>
+                <img className="product-page-image" src={product.images != undefined ? product.images[selectedImage].secure_url : "http://localhost:5173/no_image.png"} alt="Product Image"></img>
                 <button className="product-image-button prev" onClick={() => prevImage()}>&#8249;</button>
                 <button className="product-image-button next" onClick={() => nextImage()}>&#8250;</button>
                 <div className="product-owner-options">
@@ -173,7 +179,7 @@ export default function Product() {
                 </section>
                 <div className="product-owner">
                     <Link to={`/profile/${owner._id}`}>{owner.email}</Link>
-                    <img src="https://avatars.githubusercontent.com/u/100372552?s=96&v=4"></img>
+                    <img src={owner.image != undefined ? owner.images : "http://localhost:5173/user.jpg"}></img>
                 </div>
                 <h4>Bids made</h4>
                 {bids.map((bid) => {
