@@ -1,0 +1,168 @@
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    /* Asegura que ocupe al menos el 100% de la altura de la ventana */
+    background-color: #fff;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    align-items: center;
+}
+
+
+.product-info:hover {
+    background-color: #f4f4f4;
+    cursor: pointer;
+}
+
+.product-name {
+    text-align: center;
+    font-size: small;
+}
+
+.product-img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+}
+
+.messages-container {
+    height: 70vh;
+    /* Ajusta la altura deseada */
+    overflow-y: auto;
+    /* Añade un scroll vertical cuando sea necesario */
+    padding: 20px;
+    padding: 10px;
+    background-color: #f4f4f4;
+
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+.chat-header {
+    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-left: 15vb;
+    margin-right: 15vb;
+
+}
+
+.input-container {
+    padding: 20px;
+    background-color: #fff;
+    display: flex;
+    
+    margin-left: 15vb;
+    margin-right: 15vb;
+}
+
+.input-container textarea {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+
+    max-width: 60%;
+    padding: 10px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+
+    margin-left: 15vb;
+    margin-right: 15vb;
+}
+
+@media (max-width: 620px) {
+    .message {
+        margin-left: 1vb;
+        margin-right: 1vb;
+    }
+    .chat-header {
+        margin-left: 1vb;
+        margin-right: 1vb;
+    }
+    .input-container {
+        margin-left: 1vb;
+        margin-right: 1vb;
+    }
+}
+
+.user {
+    align-self: flex-end;
+    background-color: #c6ecf8;
+    margin-left: auto;
+    /* Ajusta la distancia al margen izquierdo */
+    text-align: right;
+}
+
+.other {
+    align-self: flex-start;
+    background-color: #e0dfdd;
+}
+
+
+.input-container textarea {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    resize: none;
+}
+
+.send {
+    margin-left: 10px;
+    padding: 10px;
+    background-color: #c6ecf8;
+    color: #000000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+.send:hover {
+    background-color: #91ddf5;
+}
+
+.message-input::placeholder {
+    font-family: Arial, sans-serif;
+
+}
+
+.timestamp-user, .timestamp-other {
+    margin-top: 2px;
+    font-size: smaller;
+    font-weight: bold;
+}
+
+.arrow-back, .send{
+    padding: 20px;
+}
+.arrow-back:hover{
+    background-color: #f4f4f4;
+    cursor: pointer;
+}
+
+.south{
+    margin-left: 10px;
+    padding: 20px;
+}
+
+.south:hover{
+    background-color: #f4f4f4;
+    cursor: pointer;
+}
