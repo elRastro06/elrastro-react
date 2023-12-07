@@ -24,8 +24,7 @@ export default function Product() {
         minutes: 0,
         seconds: 0
     });
-
-    const loggedUserId = "654f4c3cf99b7fddc72edd1b";    //TEMPORAL HASTA IMPLEMENTAR LOGIN
+    const [loggedUserId, setLoggedUserId] = useState("654f4c3cf99b7fddc72edd1b");    //TEMPORAL HASTA IMPLEMENTAR LOGIN
     //654f4c1bf99b7fddc72edd19 consola
     //654f4c2bf99b7fddc72edd1a
     //654f4c3cf99b7fddc72edd1b silla
@@ -103,6 +102,9 @@ export default function Product() {
         if (endedBid()) {
             alert("Bid is over. You can not make a new bid");
             return;
+        } else if(parseFloat(newBid) < product.amount) {
+            alert("The amount must be greater than the initial price");
+            return;
         }
 
         const bid = {
@@ -154,7 +156,7 @@ export default function Product() {
     const handleChat = async () => {
         const chat = await chatService.getChatFromUserAndProduct(loggedUserId, productId);
 
-        if(chat[0] == undefined) {
+        if (chat[0] == undefined) {
             const response = await chatService.createNewChat(productId, product.userID, loggedUserId);
             navigate(`/chats/${response.insertedId}`);
         } else {
@@ -169,7 +171,7 @@ export default function Product() {
                 <button className="product-image-button prev" onClick={() => prevImage()}>&#8249;</button>
                 <button className="product-image-button next" onClick={() => nextImage()}>&#8250;</button>
                 <div className="product-owner-options">
-                    {loggedUserId == product.userID &&
+                    {loggedUserId == product.userID ?
                         <>
                             <button id="product-modify" onClick={() => modifyProduct()}>
                                 <span className="material-icons">edit</span>
@@ -178,10 +180,10 @@ export default function Product() {
                                 <span className="material-icons">delete</span>
                             </button>
                         </>
+                        : null
                     }
                 </div>
             </div>
-
             <div className="product-info-container">
                 <div className="product-details">
                     <h2>{product.name}</h2>
