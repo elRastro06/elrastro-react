@@ -14,6 +14,7 @@ export default function Products() {
   const [clients, setClients] = useState([]);
   const [productName, setProductName] = useState("");
   const [radius, setRadius] = useState(25);
+  const [bidsFilter, setBidsFilter] = useState("active");
   const [updateProduct, setUpdateProduct] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -22,7 +23,19 @@ export default function Products() {
       const productsResponse = await axios.get(
         `http://localhost:5001/v2/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}&name=${productName}`
       );
-      setProducts(productsResponse.data);
+      setProducts(
+        productsResponse.data.filter((product) => {
+          const limitDate = new Date(product.date);
+          limitDate.setDate(limitDate.getDate() + 7);
+          if (bidsFilter === "active") {
+            return limitDate > new Date();
+          } else if (bidsFilter === "finished") {
+            return limitDate < new Date();
+          } else {
+            return true;
+          }
+        })
+      );
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -93,7 +106,7 @@ export default function Products() {
           <input
             className="products-filter-input"
             type="text"
-            placeholder="Buscar producto..."
+            placeholder="Search product ..."
             value={productName}
             onChange={(e) => {
               setProductName(e.target.value);
@@ -104,6 +117,19 @@ export default function Products() {
               }
             }}
           />
+          <select
+            name="bids-type"
+            id="bids-type"
+            className="products-filter-bids-type"
+            onChange={(e) => {
+              setBidsFilter(e.target.value);
+            }}
+            defaultValue={bidsFilter}
+          >
+            <option value="active">Active auctions</option>
+            <option value="finished">Closed auctions</option>
+            <option value="all">All auctions</option>
+          </select>
           <select
             name="radius"
             id="radius"
@@ -145,6 +171,8 @@ export default function Products() {
               {products.map((product) => {
                 const user = getUser(product._id);
                 const bid = getHighestBid(product._id);
+                const limitDate = new Date(product.date);
+                limitDate.setDate(limitDate.getDate() + 7);
 
                 return (
                   <div className="product" key={product._id}>
@@ -174,12 +202,26 @@ export default function Products() {
                     )}
                     <div className="product-bids">
                       <p className="product-price">
-                        Precio original: {product.price}€
+                        Initial price: {product.price}€
                       </p>
                       <p className="product-bid-highest">
-                        Puja más alta:{" "}
-                        {bid !== 0 ? `${bid}€` : "Sin pujas todavia"}
+                        Highest bid: {bid !== 0 ? `${bid}€` : "No bids"}
                       </p>
+                    </div>
+                    <div className="product-date">
+                      {limitDate - new Date() > 0 ? (
+                        <p className="product-date-limit">
+                          Remaining auction time:{" "}
+                          {Math.floor(
+                            (limitDate - new Date()) / (1000 * 60 * 60 * 24)
+                          )}{" "}
+                          days
+                        </p>
+                      ) : (
+                        <p className="product-date-limit">
+                          The auction is over
+                        </p>
+                      )}
                     </div>
                     <div className="product-buttons">
                       <button
@@ -188,9 +230,9 @@ export default function Products() {
                           navigate("/product/" + product._id);
                         }}
                       >
-                        Ver producto
+                        Product details
                       </button>
-                      <button className="product-bid-button">Pujar</button>
+                      <button className="product-bid-button">Place a bid</button>
                     </div>
                   </div>
                 );
