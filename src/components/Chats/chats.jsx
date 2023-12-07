@@ -8,7 +8,7 @@ import "../../assets/styles/chats.css";
 
 export default function Chats() {
 
-    const userLogged = "userID1";
+    const userLogged = "654f4c3cf99b7fddc72edd1b";
 
     // Todos los chats para no tener que hacer una petición cada vez que se cambia el filtro
     const [allChats, setAllChats] = useState([]);

@@ -4,6 +4,7 @@ import Login from "./components/Login/login.jsx";
 import AboutUs from "./components/AboutUs/aboutus.jsx";
 import Products from "./components/Products/products.jsx";
 import Product from "./components/Products/product.jsx";
+import ProductForm from './components/Products/productForm.jsx';
 import Profile from "./components/Profile/profile.jsx";
 import MyProfile from "./components/Profile/myprofile.jsx";
 import Map from "./components/Map/map.jsx";
@@ -20,6 +21,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Products />} />
         <Route path="/product/:id" element={<Product />} />
+        <Route path="/product/edit/:id" element={<ProductForm />} />
+        <Route path="/product/new" element={<ProductForm />} />
         <Route path="/chats" element={<Chats />} />
         <Route path="/chats/:id" element={<Chat />} />
         <Route path="/login" element={<Login />} />
