@@ -21,7 +21,7 @@ export default function Products() {
   const getProductsFromAPI = async () => {
     try {
       const productsResponse = await axios.get(
-        `http://localhost:5001/v2/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}&name=${productName}`
+        `http://localhost:5001/v2/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}&name=${productName}&description=${productName}`
       );
       setProducts(
         productsResponse.data.filter((product) => {
@@ -232,7 +232,9 @@ export default function Products() {
                       >
                         Product details
                       </button>
-                      <button className="product-bid-button">Place a bid</button>
+                      <button className="product-bid-button">
+                        Place a bid
+                      </button>
                     </div>
                   </div>
                 );
