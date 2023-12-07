@@ -106,7 +106,7 @@ export default function Products() {
           <input
             className="products-filter-input"
             type="text"
-            placeholder="Buscar producto..."
+            placeholder="Search product ..."
             value={productName}
             onChange={(e) => {
               setProductName(e.target.value);
@@ -126,9 +126,9 @@ export default function Products() {
             }}
             defaultValue={bidsFilter}
           >
-            <option value="active">Pujas activas</option>
-            <option value="finished">Pujas finalizadas</option>
-            <option value="all">Todas las pujas</option>
+            <option value="active">Active auctions</option>
+            <option value="finished">Closed auctions</option>
+            <option value="all">All auctions</option>
           </select>
           <select
             name="radius"
@@ -202,24 +202,24 @@ export default function Products() {
                     )}
                     <div className="product-bids">
                       <p className="product-price">
-                        Precio original: {product.price}€
+                        Initial price: {product.price}€
                       </p>
                       <p className="product-bid-highest">
-                        Puja más alta: {bid !== 0 ? `${bid}€` : "Sin pujas"}
+                        Highest bid: {bid !== 0 ? `${bid}€` : "No bids"}
                       </p>
                     </div>
                     <div className="product-date">
                       {limitDate - new Date() > 0 ? (
                         <p className="product-date-limit">
-                          Tiempo restante para pujar:{" "}
+                          Remaining auction time:{" "}
                           {Math.floor(
                             (limitDate - new Date()) / (1000 * 60 * 60 * 24)
                           )}{" "}
-                          días
+                          days
                         </p>
                       ) : (
                         <p className="product-date-limit">
-                          La puja ha finalizado
+                          The auction is over
                         </p>
                       )}
                     </div>
@@ -230,9 +230,9 @@ export default function Products() {
                           navigate("/product/" + product._id);
                         }}
                       >
-                        Ver producto
+                        Product details
                       </button>
-                      <button className="product-bid-button">Pujar</button>
+                      <button className="product-bid-button">Place a bid</button>
                     </div>
                   </div>
                 );
