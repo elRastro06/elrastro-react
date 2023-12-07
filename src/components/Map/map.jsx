@@ -167,14 +167,14 @@ const Map = ({ productName }) => {
                           // each product is a slide in the carousel
                           <Carousel.Item key={product._id}>
                             <div className="map-product-info">
-                              <a href={`/products/${product._id}`}>
+                              <a href={`/product/${product._id}`}>
                                 <h3>{product.name}</h3>
                                 <img
                                   className="map-product-image"
                                   src={
                                     product.images
                                       ? product.images[0].url
-                                      : "https://via.placeholder.com/150"
+                                      : "no_image.png"
                                   }
                                   alt="Product Image"
                                 />
