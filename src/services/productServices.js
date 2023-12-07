@@ -14,7 +14,7 @@ const deleteProduct = async (id) => {
 const modifyProduct = async (id, body) => {
     const bids = await bidServices.getBids(id);
 
-    if(bids.length != 0) return { error: "The product has already bids" };
+    //if(bids.length != 0) return { error: "The product has already bids" };
 
     const response = await axios.put(`http://localhost:5001/v1/${id}`, body);
     return response.data;

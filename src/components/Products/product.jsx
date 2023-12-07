@@ -6,6 +6,7 @@ import "../../assets/styles/product.css";
 import productServices from "../../services/productServices";
 import bidServices from "../../services/bidServices";
 import clientServices from "../../services/clientServices";
+import chatService from "../../services/chatService";
 
 export default function Product() {
 
@@ -150,6 +151,17 @@ export default function Product() {
         else navigate(`/product/edit/${productId}`);
     }
 
+    const handleChat = async () => {
+        const chat = await chatService.getChatFromUserAndProduct(loggedUserId, productId);
+
+        if(chat[0] == undefined) {
+            const response = await chatService.createNewChat(productId, product.userID, loggedUserId);
+            navigate(`/chats/${response.insertedId}`);
+        } else {
+            navigate(`/chats/${chat[0]._id}`);
+        }
+    }
+
     return (
         <div className="product-container">
             <div className="product-image-container">
@@ -179,10 +191,14 @@ export default function Product() {
                     <div className="product-owner">
                         <img src={owner.image != undefined ? owner.images : "http://localhost:5173/user.jpg"}></img>
                         <Link to={`/profile/${owner._id}`}>{owner.email}</Link>
-                        <div className="asksomething">
-                            <p> Any question? </p>
-                            <span className="material-icons"> chat </span>
-                        </div>
+                        {
+                            loggedUserId != product.userID ?
+                                <div className="asksomething">
+                                    <p> Any question? </p>
+                                    <span className="material-icons" onClick={() => handleChat()}> chat </span>
+                                </div>
+                                : null
+                        }
                     </div>
 
                     <div className={`product-status ${endedBid() ? "off" : "on"}`}>
@@ -201,19 +217,23 @@ export default function Product() {
                 <div className="product-bids-container">
                     <h3>Bids</h3>
 
-                    <div className={`product-lastbid ${(bids[0].userId == loggedUserId) ? "lastbid-own" : "lastbid-other"}`}>
-                        <p> {"Last bid " + ((bids[0].userId == loggedUserId) ? "was" : "wasn't") + " made by you"}</p>
-                    </div>
+                    {
+                        bids.length > 0 ?
+                            <div className={`product-lastbid ${(bids[0].userId == loggedUserId) ? "lastbid-own" : "lastbid-other"}`}>
+                                <p> {"Last bid " + ((bids[0].userId == loggedUserId) ? "was" : "wasn't") + " made by you"}</p>
+                            </div>
+                            : null
+                    }
 
 
 
                     <div className="product-bids-list">
                         {bids.map((bid) => {
                             return (
-                            <div className={`product-bid ${(bid.userId == loggedUserId) ? "own-bid" : "other-bid"}`} key={bid._id}>
-                                <p>{bid.amount}€</p>
-                                <p>{handleDate(bid.date)}</p>
-                            </div>
+                                <div className={`product-bid ${(bid.userId == loggedUserId) ? "own-bid" : "other-bid"}`} key={bid._id}>
+                                    <p>{bid.amount}€</p>
+                                    <p>{handleDate(bid.date)}</p>
+                                </div>
                             )
                         })}
                     </div>
@@ -221,8 +241,8 @@ export default function Product() {
 
 
                     <form className="bid-form">
-                        <input type="number" step={0.1} value={newBid} disabled={endedBid()} onChange={(event) => setNewBid(event.target.value)}></input>
-                        <button className="bid-form-btn" onClick={addBid} disabled={loggedUserId == product.userId}>
+                        <input type="number" step={0.1} value={newBid} disabled={endedBid() || loggedUserId == product.userID} onChange={(event) => setNewBid(event.target.value)}></input>
+                        <button className="bid-form-btn" onClick={addBid} disabled={loggedUserId == product.userID}>
                             <span className="material-icons">gavel</span>
                         </button>
                     </form>

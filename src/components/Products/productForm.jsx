@@ -83,6 +83,7 @@ export default function ProductForm() {
 
     const handleUploadImage = async (event) => {
         const image = await productServices.addImage(productId, event.target.files[0]);
+        console.log(image);
         setNewImages([...newImages, image]);
     }
 

@@ -20,7 +20,7 @@ export default function Chat() {
     }
 
     const chatId = useParams().id;
-    const userLogged = "userID1";
+    const userLogged = "654f4c3cf99b7fddc72edd1b";
 
     const navigate = useNavigate();
     const [newMessage, setNewMessage] = useState('');
