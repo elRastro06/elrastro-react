@@ -16,13 +16,17 @@ body {
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
-}
+  }
 
 .products-filter-input {
   width: calc(100% - 310px);
   padding: 10px;
   box-sizing: border-box;
   border: 1px solid black;
+
+  /*border radius on the left part*/
+  border-top-left-radius: 100px;
+  border-bottom-left-radius: 100px;
 }
 
 .products-filter-bids-type {
@@ -41,6 +45,11 @@ body {
   background-color: #c6ecf8;
   border: 1px solid black;
   border-left: 0px solid black;
+
+  /*border radius on the right part*/
+  border-top-right-radius: 100px;
+  border-bottom-right-radius: 100px;
+
 }
 
 .products-filter span {
@@ -48,7 +57,7 @@ body {
   margin-left: 5px;
   background-color: #3498db;
   color: #fff;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
 }
 

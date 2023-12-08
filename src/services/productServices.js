@@ -51,6 +51,20 @@ const deleteImage = async (imageId) => {
     return response.data;
 }
 
-const productServices = { getProduct, createProduct, deleteProduct, modifyProduct, addImage, deleteImage };
+const createEmptyProduct = async (loggedUserId) => {
+    const body = {
+        name: "",
+        description: "",
+        price: "",
+        length: "",
+        userID: loggedUserId,
+    };
+
+    const response = await axios.post(`http://localhost:5001/v1/`, body);
+    return response.data;
+}
+
+
+const productServices = { getProduct, createProduct, deleteProduct, modifyProduct, addImage, deleteImage, createEmptyProduct };
 
 export default productServices;

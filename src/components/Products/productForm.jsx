@@ -5,10 +5,10 @@ import "../../assets/styles/productForm.css";
 import productServices from "../../services/productServices";
 import bidServices from "../../services/bidServices";
 
-export default function ProductForm() {
+export default function NewProductForm() {
+
     const navigate = useNavigate();
 
-    let productId = useParams().id;
     const loggedUserId = "654f4c3cf99b7fddc72edd1b";    //TEMPORAL HASTA IMPLEMENTAR LOGIN
     //654f4c1bf99b7fddc72edd19 consola
     //654f4c2bf99b7fddc72edd1a
@@ -17,6 +17,9 @@ export default function ProductForm() {
     const [images, setImages] = useState([]);
     const [newImages, setNewImages] = useState([]);
 
+    const [loading, setLoading] = useState(false);
+
+
     const [product, setProduct] = useState({
         name: "",
         description: "",
@@ -24,28 +27,34 @@ export default function ProductForm() {
         length: 7
     });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (productId != undefined) {
-                const bids = await bidServices.getBids(productId);
-                if (bids.length > 0) {
-                    navigate(`/product/${productId}`);
-                    return;
-                }
+    let productId = useParams().id;
 
-                const productData = await productServices.getProduct(productId);
-                if (productData.images != undefined) setImages(productData.images);
-                if (productData._id == undefined) {
-                    navigate("/");
-                    return;
-                } else if (productData.userID != loggedUserId) {
-                    navigate(`/product/${productId}`);
-                    return;
-                }
-                else {
-                    setProduct(productData);
-                }
+
+    useEffect(() => {
+
+        const fetchData = async () => {
+            setLoading(true);
+
+            const bids = await bidServices.getBids(productId);
+            if (bids.length > 0) {
+                navigate(`/product/${productId}`);
+                return;
             }
+
+            const productData = await productServices.getProduct(productId);
+            if (productData.images != undefined) setImages(productData.images);
+            if (productData._id == undefined) {
+                navigate("/");
+                return;
+            } else if (productData.userID != loggedUserId) {
+                navigate(`/product/${productId}`);
+                return;
+            }
+            else {
+                setProduct(productData);
+            }
+
+            setLoading(false);
         }
 
         fetchData().catch(console.error);
@@ -84,20 +93,29 @@ export default function ProductForm() {
     }
 
     const handleUploadImage = async (event) => {
-        let name = productId != undefined ? productId : "new";
-        const image = await productServices.addImage(name, event.target.files[0]);
+        console.log("hola");
+        setLoading(true);
+        console.log(event.target.files[0]);
+        const image = await productServices.addImage(productId, event.target.files[0]);
         console.log(image);
+        setLoading(false);
+
         setNewImages([...newImages, image]);
     }
 
     const handleDeleteImage = async (image) => {
+        setLoading(true);
         await productServices.deleteImage(image.public_id);
         setImages(images.filter((img) => image.public_id != img.public_id));
+        setLoading(false);
     }
 
     const handleDeleteNewImage = async (image) => {
+        setLoading(true);
         await productServices.deleteImage(image.public_id);
         setNewImages(newImages.filter((img) => image.public_id != img.public_id));
+        setLoading(false);
+
     }
 
     const handleCancel = () => {
@@ -159,28 +177,36 @@ export default function ProductForm() {
                         </thead>
                         <tbody>
                             {
-                                images.map((image) => {
-                                    return (
-                                        <tr key={image.public_id}>
-                                            <td className="action-buttons"><button onClick={() => handleDeleteImage(image)}><i className="material-icons">delete</i></button></td>
-                                            <td className="editproduct-image-container">
-                                                <img className="editproduct-image" src={image.secure_url} alt="Producto"></img>
-                                            </td>
-                                        </tr>
-                                    );
-                                })
+                                (loading) ? (
+                                    <tr>
+                                        <td colSpan={2} className="loading-spinner-editproduct"></td>
+                                    </tr>
+                                ) : (
+                                    images.map((image) => {
+                                        return (
+                                            <tr key={image.public_id}>
+                                                <td className="action-buttons"><button onClick={() => handleDeleteImage(image)}><i className="material-icons">delete</i></button></td>
+                                                <td className="editproduct-image-container">
+                                                    <img className="editproduct-image" src={image.secure_url} alt="Producto"></img>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                )
                             }
                             {
-                                newImages.map((image) => {
-                                    return (
-                                        <tr key={image.public_id}>
-                                            <td className="action-buttons"><button onClick={() => handleDeleteNewImage(image)}><i className="material-icons">delete</i></button></td>
-                                            <td className="editproduct-image-container">
-                                                <img className="editproduct-image" src={image.secure_url} alt="Producto"></img>
-                                            </td>
-                                        </tr>
-                                    );
-                                })
+                                (loading) ? ("") : (
+                                    newImages.map((image) => {
+                                        return (
+                                            <tr key={image.public_id}>
+                                                <td className="action-buttons"><button onClick={() => handleDeleteNewImage(image)}><i className="material-icons">delete</i></button></td>
+                                                <td className="editproduct-image-container">
+                                                    <img className="editproduct-image" src={image.secure_url} alt="Producto"></img>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                )
                             }
                         </tbody>
                     </table>

@@ -53,7 +53,7 @@ export const NavBtn = styled.nav`
 `;
  
 export const NavBtnLink = styled(Link)`
-    border-radius: 4px;
+    border-radius: 10px;
     background: #3498db;
     padding: 10px 22px;
     color: #ffffff;
@@ -64,6 +64,7 @@ export const NavBtnLink = styled(Link)`
     text-decoration: none;
     /* Second Nav */
     margin-left: 24px;
+    font-size: 1.3rem;
     &:hover {
         transition: all 0.2s ease-in-out;
         background: #fff;

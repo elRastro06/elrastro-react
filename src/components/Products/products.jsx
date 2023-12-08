@@ -172,7 +172,7 @@ export default function Products() {
                 const user = getUser(product._id);
                 const bid = getHighestBid(product._id);
                 const limitDate = new Date(product.date);
-                limitDate.setDate(limitDate.getDate() + 7);
+                limitDate.setDate(limitDate.getDate() + product.length);
 
                 return (
                   <div className="product" key={product._id}>
@@ -209,11 +209,11 @@ export default function Products() {
                       </p>
                     </div>
                     <div className="product-date">
-                      {limitDate - new Date() > 0 ? (
+                      {limitDate - new Date() >= 0 ? (
                         <p className="product-date-limit">
                           Remaining auction time:{" "}
                           {Math.floor(
-                            (limitDate - new Date()) / (1000 * 60 * 60 * 24)
+                            (limitDate - new Date()) / (1000 * 60 * 60 * 24) 
                           )}{" "}
                           days
                         </p>
