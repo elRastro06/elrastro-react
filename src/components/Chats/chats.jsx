@@ -120,9 +120,6 @@ export default function Chats() {
 
     return (
         <>
-            <h1>Chats</h1>
-
-
 
             <div id="filterContainer">
                 <div id="filterChats">

@@ -195,9 +195,9 @@ export default function Product() {
                         <Link to={`/profile/${owner._id}`}>{owner.email}</Link>
                         {
                             loggedUserId != product.userID ?
-                                <div className="asksomething">
+                                <div className="asksomething" onClick={handleChat} >
                                     <p> Any question? </p>
-                                    <span className="material-icons" onClick={handleChat}> chat </span>
+                                    <span className="material-icons" > chat </span>
                                 </div>
                                 : null
                         }
