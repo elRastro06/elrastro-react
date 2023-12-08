@@ -69,8 +69,10 @@ export default function Chats() {
 
                 var userInfo = { "name": "Interested anonymous user" };
                 if (chat.seller === userLogged) {
-                    chat.messages[0].sender = "Interested anonymous user";
                     chat.participants = [];
+                    if(chat.messages.length > 0){
+                        chat.messages[0].sender = "Interested anonymous user";
+                    }
                 } else {
                     userInfo = await chatService.getOneClient(productInfo.userID);
                 }
@@ -84,6 +86,9 @@ export default function Chats() {
 
             // Ordenar los chats por fecha de último mensaje
             chatsWithProductAndUserInfo.sort((a, b) => {
+                if(a.messages.length === 0) return 1;
+                if(b.messages.length === 0) return -1;
+                
                 const fechaA = new Date(a.messages[0].timestamp);
                 const fechaB = new Date(b.messages[0].timestamp);
 

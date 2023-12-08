@@ -15,9 +15,9 @@ const Navbar = () => {
       <Nav>
         <NavLink to="/">
           <img
-            src="./elrastro-logo.png"
-            alt="elrastro"
-            width="200"
+            src="./elrastro.png"
+            alt="elRastro"
+            width="90"
           />
         </NavLink>
         {/* <Bars /> */}
