@@ -5,10 +5,10 @@ import "../../assets/styles/productForm.css";
 import productServices from "../../services/productServices";
 import bidServices from "../../services/bidServices";
 
-export default function ProductForm() {
+export default function NewProductForm() {
+
     const navigate = useNavigate();
 
-    let productId = useParams().id;
     const loggedUserId = "654f4c3cf99b7fddc72edd1b";    //TEMPORAL HASTA IMPLEMENTAR LOGIN
     //654f4c1bf99b7fddc72edd19 consola
     //654f4c2bf99b7fddc72edd1a
@@ -24,27 +24,30 @@ export default function ProductForm() {
         length: 7
     });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (productId != undefined) {
-                const bids = await bidServices.getBids(productId);
-                if (bids.length > 0) {
-                    navigate(`/product/${productId}`);
-                    return;
-                }
+    let productId = useParams().id;
 
-                const productData = await productServices.getProduct(productId);
-                if (productData.images != undefined) setImages(productData.images);
-                if (productData._id == undefined) {
-                    navigate("/");
-                    return;
-                } else if (productData.userID != loggedUserId) {
-                    navigate(`/product/${productId}`);
-                    return;
-                }
-                else {
-                    setProduct(productData);
-                }
+
+    useEffect(() => { 
+        
+        const fetchData = async () => {
+
+            const bids = await bidServices.getBids(productId);
+            if (bids.length > 0) {
+                navigate(`/product/${productId}`);
+                return;
+            }
+
+            const productData = await productServices.getProduct(productId);
+            if (productData.images != undefined) setImages(productData.images);
+            if (productData._id == undefined) {
+                navigate("/");
+                return;
+            } else if (productData.userID != loggedUserId) {
+                navigate(`/product/${productId}`);
+                return;
+            }
+            else {
+                setProduct(productData);
             }
         }
 
@@ -84,8 +87,7 @@ export default function ProductForm() {
     }
 
     const handleUploadImage = async (event) => {
-        let name = productId != undefined ? productId : "new";
-        const image = await productServices.addImage(name, event.target.files[0]);
+        const image = await productServices.addImage(productId, event.target.files[0]);
         console.log(image);
         setNewImages([...newImages, image]);
     }
