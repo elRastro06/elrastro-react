@@ -27,7 +27,7 @@ function App() {
         <Route path="/chats" element={<Chats />} />
         <Route path="/chats/:id" element={<Chat />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/about-us" element={<AboutUs />} />
         <Route path="/my-profile" element={<MyProfile />} />
         <Route path="/profile/:id" element={<Profile />} />
       </Routes>
