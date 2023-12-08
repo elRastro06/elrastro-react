@@ -1,0 +1,39 @@
+.about-us {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+
+    /* margins on the sides of the page */
+    margin-left: 400px;
+    margin-right: 400px;
+
+}
+
+.about-us h1 {
+    font-size: 50px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.about-us p {
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.about-us h3 {
+    margin-top: 50px;
+    margin-bottom: 10px;
+}
+
+.about-us ul {
+    list-style: none;
+    padding: 0;
+}
+
+.about-us li {
+    margin-bottom: 5px;
+}
+
+.about-us li a {
+    color: #007bff;
+}
