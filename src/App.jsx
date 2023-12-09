@@ -85,6 +85,14 @@ const router = createBrowserRouter([
         element: <Profile />,
         // errorElement: <PaginaError />,
     },
+    {
+        path: "/review/new/:id",
+        element: <newReview/>,
+    },
+    {
+        path: "/review/edit/:id",
+        element: <reviewForm/>,
+    },
     /**
      * ====================
      *         Map

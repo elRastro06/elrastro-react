@@ -13,7 +13,7 @@ export default function Profile() {
   const [reviews, setReviews] = useState({});
   const [userLocation, setUserLocation] = useState("");
   const [reviewers, setReviewers] = useState([]);
-  
+  const [avg, setAvg] = useState([]);
 
   useEffect(() => {
     // Fetch user data by ID
@@ -51,6 +51,16 @@ export default function Profile() {
       .get(`http://localhost:5000/v2/${id}/reviews`)
       .then((response) => {
         setReviews(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+
+      //Fetch average review value
+      axios
+      .get(`http://localhost:5000/v2/${id}/reviewsavg`)
+      .then((response) => {
+        setAvg(response.data.reviewAvg);
       })
       .catch((error) => {
         console.log(error);
@@ -119,7 +129,7 @@ export default function Profile() {
           <div className="profile-valoraciones">
             <span className="material-icons">star</span>
             <p>
-              <strong>Valoraciones: </strong> {user.valoraciones}
+              <strong>Media de Valoraciones: </strong> {avg}/5
             </p>
           </div>
         </div>
@@ -156,14 +166,25 @@ export default function Profile() {
       )}
 
       <h2 className="profile-reviews-title"> <span className="material-icons">star</span> Valoraciones</h2>
-
-      
       <button className="profile-review-button">Valorar</button>
+      
+      
 
       {Array.isArray(reviews) && reviews.length > 0 && (
         <div className="profile-container">
           {reviews.map((review, key) => {
             const reviewer = getReviewer(review.reviewerID);
+
+            var stars = [];
+            for (var i=1; i<=5; i++) {
+              if(i<=review.rating) {
+                stars.push(<span className="material-icons">star</span>)
+              } else {
+                stars.push(<span className="material-icons">star_border</span>)
+              }
+            }
+
+
             return (
                 <div className="profile-review" key={key}>
                     <div
@@ -175,12 +196,13 @@ export default function Profile() {
                         <img src="http://localhost:5173/user.jpg" />
                         <p className="reviewer-user-name">{reviewer.name}</p>
                     </div>
-
-                    <p className="review-rating">{review.rating}/5</p>
-                    <p className="review-date">{formatDate(review.date)}</p>
+                    <p className="review-rating">{stars}</p>
                     <p className="review-text">{review.text}</p>
+                    <p className="review-date">{formatDate(review.date)}</p>
                 </div>
           )})}
+
+          
         </div>
       )}
     </div>
