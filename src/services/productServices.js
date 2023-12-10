@@ -31,7 +31,7 @@ const modifyProduct = async (id, body) => {
 const addImage = async (id, image) => {
   let data = new FormData();
   data.append("image", image);
-  data.append("productName", id);
+  data.append("productId", id);
 
   const response = await axios.post("http://localhost:5004/v2/images", data, {
     headers: {
@@ -45,11 +45,11 @@ const addImage = async (id, image) => {
 const deleteImage = async (imageId) => {
   const imgFields = imageId.split("/");
   const body = {
-    productName: imgFields[0],
+    productId: imgFields[0],
     imageName: imgFields[1],
   };
 
-  const response = await axios.delete("http://localhost:5004/v1/images", {
+  const response = await axios.delete("http://localhost:5004/v2/images", {
     data: body,
   });
 
