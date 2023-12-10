@@ -28,11 +28,13 @@ const Navbar = () => {
           <NavLink to="/chats">Chats</NavLink>
           <NavLink to="/my-profile">Profile</NavLink>
           <NavLink to="/about-us">About Us</NavLink>
-          <NavLink to="/product/new" id="create">Sell something</NavLink>
+          <NavLink to="/product/new" id="create">
+            Sell something
+          </NavLink>
         </NavMenu>
 
         <NavBtn>
-          <NavBtnLink to="/login">Login</NavBtnLink>
+          <NavBtnLink to="/login">Logged in Roberto</NavBtnLink>
         </NavBtn>
       </Nav>
     </>
