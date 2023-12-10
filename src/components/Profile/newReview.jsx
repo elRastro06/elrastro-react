@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
+
 import "../../assets/styles/reviewForm.css";
+import axios from "axios";
 
 export default function NewReview() {
 
@@ -13,13 +15,13 @@ export default function NewReview() {
     //654f4c2bf99b7fddc72edd1a
     //654f4c3cf99b7fddc72edd1b silla
 
-    let productId;
+    let reviewId;
 
     const createEmptyReview = async (loggedUserId) => {
         const body = {
             reviewerID: loggedUserId,
             reviewedID: id,
-            rating: 0,
+            rating: 1,
             text: "",
         };
     

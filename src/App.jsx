@@ -12,6 +12,8 @@ import Product from "./components/Products/product.jsx";
 
 import Profile from "./components/Profile/profile.jsx";
 import MyProfile from "./components/Profile/myprofile.jsx";
+import NewReview from "./components/Profile/newReview.jsx";
+import ReviewForm from "./components/Profile/reviewForm.jsx";
 
 import Map from "./components/Map/map.jsx"
 
@@ -87,11 +89,11 @@ const router = createBrowserRouter([
     },
     {
         path: "/review/new/:id",
-        element: <newReview/>,
+        element: <NewReview />,
     },
     {
         path: "/review/edit/:id",
-        element: <reviewForm/>,
+        element: <ReviewForm />,
     },
     /**
      * ====================

@@ -87,7 +87,11 @@
   color: #ff6600;
 }
 
-.profile-review-button {
+.profile-review-interaction {
+  margin: 20px;
+}
+
+.profile-review-valuebutton {
   margin: 20px;
   background-color: white;
   color: black;
@@ -99,8 +103,24 @@
   transition-duration: 0.4s;
 }
 
-.profile-review-button:hover {
+.profile-review-valuebutton:hover {
   background-color: lightskyblue;
+}
+
+.profile-review-deletebutton {
+  margin: 20px;
+  background-color: white;
+  color: black;
+  border: 3px solid black;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  font-size: large;
+  transition-duration: 0.4s;
+}
+
+.profile-review-deletebutton:hover {
+  background-color: #fcc1c1;
 }
 
 .profile-review {

@@ -10,10 +10,17 @@ export default function Profile() {
 
   const [user, setUser] = useState({});
   const [products, setProducts] = useState([]);
-  const [reviews, setReviews] = useState({});
+  const [reviews, setReviews] = useState([]);
   const [userLocation, setUserLocation] = useState("");
   const [reviewers, setReviewers] = useState([]);
   const [avg, setAvg] = useState([]);
+
+  const loggedUserId = "654f4c3cf99b7fddc72edd1b";    //TEMPORAL HASTA IMPLEMENTAR LOGIN
+  //654f4c1bf99b7fddc72edd19 consola
+  //654f4c2bf99b7fddc72edd1a
+  //654f4c3cf99b7fddc72edd1b silla
+  const [commonSale, setCommonSale] = useState({});
+  const [commonReview, setCommonReview] = useState({});
 
   useEffect(() => {
     // Fetch user data by ID
@@ -54,7 +61,7 @@ export default function Profile() {
       })
       .catch((error) => {
         console.log(error);
-      })
+      });
 
       //Fetch average review value
       axios
@@ -64,8 +71,25 @@ export default function Profile() {
       })
       .catch((error) => {
         console.log(error);
-      })
+      });
 
+      //Fetch data for conditions on review interaction
+      axios
+      .get(`http://localhost:5001/v2/${loggedUserId}/${id}`)
+      .then((response) => {
+        setCommonSale(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      axios
+      .get(`http://localhost:5008/v2/${loggedUserId}/${id}`)
+      .then((response) => {
+        setCommonReview(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, [id]);
 
   useEffect(() => {
@@ -105,6 +129,74 @@ export default function Profile() {
     }
 };
 
+const deleteReview = async () => {
+      const response = await axios.delete(`http://localhost:5008/v2/${commonReview._id}`);
+      //navigate("/profile/" + id);
+      window.location.reload(false);
+}
+
+
+/*
+- ejecutamos la llamada de ver que compras hay en común
+- si undefined, 
+- - entonces sale el mensajito de que todavía no hay compras en común
+- si no, entonces
+- - si el usuario loggeado ha posteado una review (aka, si _id=undefined pa cojer reviews en comun)
+- - - entonces aparecen los botones de editar y borrar review
+- - si no
+- - - aparece el botón de valorar
+*/
+const reviewInteraction = () => {
+  var elems = [];
+
+  if(commonSale._id == undefined) {
+    elems.push(<div className="profile-review-interaction">You have not yet sold to or bought an item from this user. Do so in order to rate him.</div>);
+  } else {
+    if(commonReview._id == undefined) {
+      elems.push(
+        <button
+           className="profile-review-valuebutton"
+           onClick={() => {
+            navigate("/review/new/" + user._id);
+           }}
+          >Valorar</button>
+      )
+    } else {
+      elems.push(
+        <button
+           className="profile-review-valuebutton"
+           onClick={() => {
+            navigate("/review/edit/" + commonReview._id);
+           }}
+          >Edit Review</button>
+      )
+      elems.push(
+        <button
+           className="profile-review-deletebutton"
+           onClick={() => {
+            deleteReview();
+           }}
+          >Delete Review</button>
+      )
+    }
+  }
+
+  return elems;
+}
+
+const starRating = (numStars) => {
+  var stars = [];
+  for (var i=1; i<=5; i++) {
+    if(i<=numStars) {
+      stars.push(<span className="material-icons">star</span>);
+  } else {
+      stars.push(<span className="material-icons">star_border</span>);
+    }
+  }
+
+  return stars;
+}
+
   return (
     <div>
       <h1 className="profile-title">{user.name}</h1>
@@ -130,7 +222,7 @@ export default function Profile() {
           <div className="profile-valoraciones">
             <span className="material-icons">star</span>
             <p>
-              <strong>Media de Valoraciones: </strong> {avg}/5
+              <strong>Review Average: </strong> {avg}/5
             </p>
           </div>
         </div>
@@ -166,25 +258,14 @@ export default function Profile() {
         </div>
       )}
 
-      <h2 className="profile-reviews-title"> <span className="material-icons">star</span> Valoraciones</h2>
-      <button className="profile-review-button">Valorar</button>
+      <h2 className="profile-reviews-title"> <span className="material-icons">star</span> Reviews</h2>
       
-      
+      {reviewInteraction()}
 
       {Array.isArray(reviews) && reviews.length > 0 && (
         <div className="profile-container">
           {reviews.map((review, key) => {
             const reviewer = getReviewer(review.reviewerID);
-
-            var stars = [];
-            for (var i=1; i<=5; i++) {
-              if(i<=review.rating) {
-                stars.push(<span className="material-icons">star</span>)
-              } else {
-                stars.push(<span className="material-icons">star_border</span>)
-              }
-            }
-
 
             return (
                 <div className="profile-review" key={key}>
@@ -197,7 +278,7 @@ export default function Profile() {
                         <img src="http://localhost:5173/user.jpg" />
                         <p className="reviewer-user-name">{reviewer.name}</p>
                     </div>
-                    <p className="review-rating">{stars}</p>
+                    <p className="review-rating">{starRating(review.rating)}</p>
                     <p className="review-text">{review.text}</p>
                     <p className="review-date">{formatDate(review.date)}</p>
                 </div>
