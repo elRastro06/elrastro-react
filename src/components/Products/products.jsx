@@ -28,7 +28,7 @@ export default function Products() {
         productsResponse.data.filter((product) => {
           const limitDate = new Date(product.date);
           limitDate.setDate(limitDate.getDate() + product.length);
-          if(product.name === "") {
+          if(product.name === "" || product.length === undefined) {
             return false;
           } else if (bidsFilter === "active") {
             return limitDate > new Date();
