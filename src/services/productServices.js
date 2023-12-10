@@ -12,7 +12,7 @@ const createProduct = async (body) => {
 }
 
 const deleteProduct = async (id) => {
-    const response = await axios.delete(`http://localhost:5001/v1/${id}`);
+    const response = await axios.delete(`http://localhost:5001/v2/${id}`);
     return response.data;
 }
 
