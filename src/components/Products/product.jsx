@@ -97,12 +97,10 @@ export default function Product() {
     }
 
     const addBid = async (event) => {
-        event.preventDefault();
-
         if (endedBid()) {
             alert("Bid is over. You can not make a new bid");
             return;
-        } else if(parseFloat(newBid) < product.amount) {
+        } else if(parseFloat(newBid) < product.price) {
             alert("The amount must be greater than the initial price");
             return;
         }
@@ -188,7 +186,7 @@ export default function Product() {
                 <div className="product-details">
                     <h2>{product.name}</h2>
                     <p>{product.description}</p>
-                    <p className="product-price">{product.price}€</p>
+                    <p className={"product-price " + (bids.length > 0 ? "with-bid" : "")}>{product.price}€</p>
 
                     <div className="product-owner">
                         <img src={owner.image != undefined ? owner.images : "http://localhost:5173/user.jpg"}></img>

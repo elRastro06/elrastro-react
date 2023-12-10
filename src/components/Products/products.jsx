@@ -201,7 +201,7 @@ export default function Products() {
                       </div>
                     )}
                     <div className="product-bids">
-                      <p className="product-price">
+                      <p className={"product-price " + (bid !== 0 ? "with-bid" : "")} >
                         Initial price: {product.price}€
                       </p>
                       <p className="product-bid-highest">
@@ -231,9 +231,6 @@ export default function Products() {
                         }}
                       >
                         Product details
-                      </button>
-                      <button className="product-bid-button">
-                        Place a bid
                       </button>
                     </div>
                   </div>

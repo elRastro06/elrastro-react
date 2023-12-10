@@ -62,6 +62,11 @@
     color: #cc0000;
 }
 
+.with-bid{
+    text-decoration: line-through;
+ }
+  
+
 /*
 ================================================================================================
         PUJAS DEL PRODUCTO
@@ -130,6 +135,8 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+
+    margin-top: 40px;
 }
 
 input[type="number"] {
@@ -153,13 +160,13 @@ input[type="number"] {
 }
 
 #product-modify {
-    color: black;
-    background-color: rgba(8, 93, 252, 0.747);
+    color: rgb(255, 255, 255);
+    background-color: #3498db;
     margin-right: 10px;
 }
 
 #product-delete {
-    color: black;
+    color: rgb(255, 255, 255);
     background-color: rgba(255, 0, 0, 0.884);
     margin-left: 10px;
 }
