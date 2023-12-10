@@ -220,11 +220,15 @@ export default function Product() {
                     <h3>Bids</h3>
 
                     {
-                        bids.length > 0 ?
+                        loggedUserId != product.userID ? 
+                        (bids.length > 0 ?
                             <div className={`product-lastbid ${(bids[0].userId == loggedUserId) ? "lastbid-own" : "lastbid-other"}`}>
                                 <p> {"Last bid " + ((bids[0].userId == loggedUserId) ? "was" : "wasn't") + " made by you"}</p>
                             </div>
-                            : null
+                            : null)
+                            :
+                            <>
+                            </>
                     }
 
 
