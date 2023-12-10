@@ -45,7 +45,7 @@ export default function Product() {
             setBids(bidsData);
 
             if (bidsData.length > 0) {
-                setNewBid(bidsData[0].amount + 0.1);
+                setNewBid((bidsData[0].amount + 0.1).toFixed(2));
             }
 
             const ownerData = await clientServices.getClient(productData.userID);
