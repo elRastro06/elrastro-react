@@ -23,14 +23,17 @@ export default function Products() {
       const productsResponse = await axios.get(
         `http://localhost:5001/v2/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}&name=${productName}&description=${productName}`
       );
+
       setProducts(
         productsResponse.data.filter((product) => {
           const limitDate = new Date(product.date);
-          limitDate.setDate(limitDate.getDate() + 7);
-          if (bidsFilter === "active") {
+          limitDate.setDate(limitDate.getDate() + product.length);
+          if(product.name === "") {
+            return false;
+          } else if (bidsFilter === "active") {
             return limitDate > new Date();
           } else if (bidsFilter === "finished") {
-            return limitDate < new Date();
+            return limitDate <= new Date();
           } else {
             return true;
           }
