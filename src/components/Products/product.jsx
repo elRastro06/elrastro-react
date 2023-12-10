@@ -98,6 +98,8 @@ export default function Product() {
     }
 
     const addBid = async (event) => {
+        event.preventDefault();
+        
         if (endedBid()) {
             alert("Bid is over. You can not make a new bid");
             return;
