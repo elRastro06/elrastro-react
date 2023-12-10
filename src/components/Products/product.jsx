@@ -25,9 +25,10 @@ export default function Product() {
         seconds: 0
     });
     const [loggedUserId, setLoggedUserId] = useState("654f4c3cf99b7fddc72edd1b");    //TEMPORAL HASTA IMPLEMENTAR LOGIN
-    //654f4c1bf99b7fddc72edd19 consola
-    //654f4c2bf99b7fddc72edd1a
-    //654f4c3cf99b7fddc72edd1b silla
+    //654f4c1bf99b7fddc72edd19 MARCOS
+    //654f4c2bf99b7fddc72edd1a JUAN
+    //654f4c3cf99b7fddc72edd1b ROBERTO 
+
 
     useEffect(() => {
         const fetchData = async () => {

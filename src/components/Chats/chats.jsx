@@ -9,6 +9,9 @@ import "../../assets/styles/chats.css";
 export default function Chats() {
 
     const userLogged = "654f4c3cf99b7fddc72edd1b";
+    //654f4c1bf99b7fddc72edd19 MARCOS
+    //654f4c2bf99b7fddc72edd1a JUAN
+    //654f4c3cf99b7fddc72edd1b ROBERTO 
 
     // Todos los chats para no tener que hacer una petición cada vez que se cambia el filtro
     const [allChats, setAllChats] = useState([]);
@@ -173,7 +176,7 @@ export default function Chats() {
                                     {chat.messages.length > 0 && (
                                         <>
                                             <p>
-                                                <strong> {chat.messages[0].sender}: </strong>
+                                                <strong> {chat.messages[0].sender === userLogged ? ("You") : ("Seller")}: </strong>
                                                 {chat.messages[0].content}
                                             </p>
                                             <p>
