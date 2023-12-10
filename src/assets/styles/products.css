@@ -129,7 +129,7 @@
 
 .product-button,
 .product-bid-button {
-  background-color: #c6ecf8;
+  background-color: #ffffff;
   color: black;
   border: 1px solid black;
   border-radius: 5px;
@@ -151,7 +151,7 @@
 }
 
 .product-button:hover {
-  background-color: #ffffff;
+  background-color: #c6ecf8;
 }
 
 
