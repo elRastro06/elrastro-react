@@ -1,168 +1,157 @@
 .editproduct-container {
-    padding: 20px;
+  padding: 20px;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    width: 100%;
+  width: 100%;
 }
 
 /** when screen is small **/
 @media (max-width: 768px) {
-    .editproduct-container {
-        flex-direction: column;
-    }
+  .editproduct-container {
+    flex-direction: column;
+  }
 }
 
 .product-images-table {
-    overflow: hidden;
+  overflow: hidden;
 
-    align-items: center;
-    display: flex;
-    flex-direction: column;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
 }
 
-
-
 .editproduct-image-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
 }
 
 .editproduct-image {
-    max-width: 150px;
-    max-height: 150px;
-    display: block;
-    /* Centra horizontalmente la imagen */
+  max-width: 150px;
+  max-height: 150px;
+  display: block;
+  /* Centra horizontalmente la imagen */
 }
 
 .editproduct-input-file {
-    align-self: center;
+  align-self: center;
 }
 
 .editproduct-table {
-    border-collapse: collapse;
-    width: 100%;
+  border-collapse: collapse;
+  width: 100%;
 
-    margin-top: 20px;
-    margin-left: 20px;
-    /* Márgenes a la izquierda de la tabla */
-    margin-right: 20px;
-    /* Márgenes a la derecha de la tabla */
-
+  margin-top: 20px;
+  margin-left: 20px;
+  /* Márgenes a la izquierda de la tabla */
+  margin-right: 20px;
+  /* Márgenes a la derecha de la tabla */
 }
 
 .editproduct-table th,
 .editproduct-table thead,
 .editproduct-table td {
-    text-align: center;
-    vertical-align: middle;
-    padding: 8px;
-    align-items: center;
-
+  text-align: center;
+  vertical-align: middle;
+  padding: 8px;
+  align-items: center;
 }
-
-
-
 
 .editproduct-table th {
-    padding: 15px;
-    background-color: #c6ecf8;
+  padding: 15px;
+  background-color: #c6ecf8;
 }
 
-
 .action-buttons {
-    justify-content: center;
-    align-items: center;
+  justify-content: center;
+  align-items: center;
 }
 
 .action-buttons button {
-    background-color: #fab8b8;
-    /* Color celeste para los botones */
-
+  background-color: #fab8b8;
+  /* Color celeste para los botones */
 }
 
 .action-buttons button:hover {
-    background-color: #fc8585;
-    /* Cambia el color al hacer hover */
+  background-color: #fc8585;
+  /* Cambia el color al hacer hover */
 }
 
-
 .editproduct-finalbuttons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    padding: 20px;
-    gap: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  padding: 20px;
+  gap: 20px;
 }
 
 .editproduct-finalbuttons #accept-button {
-    background-color: #c8ffd0;
-    /* Color celeste para los botones */
+  background-color: #c8ffd0;
+  /* Color celeste para los botones */
 }
 
 .editproduct-finalbuttons #accept-button:hover {
-    background-color: #7af895;
-    /* Cambia el color al hacer hover */
+  background-color: #7af895;
+  /* Cambia el color al hacer hover */
 }
 
 .editproduct-finalbuttons #cancel-button {
-    background-color: #fab8b8;
-    /* Color celeste para los botones */
+  background-color: #fab8b8;
+  /* Color celeste para los botones */
 }
 
 .editproduct-finalbuttons #cancel-button:hover {
-    background-color: #fc8585;
-    /* Cambia el color al hacer hover */
+  background-color: #fc8585;
+  /* Cambia el color al hacer hover */
 }
 
 /* ======================================================== */
 .productedit-form-container {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
 
-    width: 500px;
+  width: 500px;
 
-    margin-left: 100px;
+  margin-left: 100px;
 }
 
 .productedit-form-container form {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .productedit-form-container label {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .productedit-form-container input,
 .productedit-form-container textarea,
 .productedit-form-container select {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 
 .loading-spinner-editproduct {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-radius: 50%;
-    border-top: 4px solid #3498db;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
 
-    margin: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    margin-top: 20px;
-
+  margin-top: 20px;
 }

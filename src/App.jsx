@@ -4,12 +4,9 @@ import Login from "./components/Login/login.jsx";
 import AboutUs from "./components/AboutUs/aboutus.jsx";
 import Products from "./components/Products/products.jsx";
 import Product from "./components/Products/product.jsx";
-import ProductForm from './components/Products/productForm.jsx';
+import ProductForm from "./components/Products/productForm.jsx";
 import Profile from "./components/Profile/profile.jsx";
 import MyProfile from "./components/Profile/myprofile.jsx";
-import NewReview from "./components/Profile/newReview.jsx";
-import ReviewForm from "./components/Profile/reviewForm.jsx";
-import Map from "./components/Map/map.jsx";
 import NewProduct from "./components/Products/newProduct.jsx";
 
 import Navbar from "./NavBar.jsx";
@@ -30,7 +27,7 @@ function App() {
         <Route path="/chats/:id" element={<Chat />} />
         <Route path="/login" element={<Login />} />
         <Route path="/about-us" element={<AboutUs />} />
-        <Route path="/my-profile" element={<MyProfile />} />
+        <Route path="/my-profile" element={<Profile />} />
         <Route path="/profile/:id" element={<Profile />} />
       </Routes>
     </BrowserRouter>

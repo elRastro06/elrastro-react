@@ -1,45 +1,61 @@
 /* profile.css */
 
-.profile-title, .profile-products-title, .profile-reviews-title {
-  text-align: left;
-  margin: 20px;
+.profile-title,
+.profile-products-title,
+.profile-reviews-title {
+  text-align: center;
   color: #333;
 }
 
-.profile-info{
-    display: flex;
-    margin: 20px;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
+.profile-info {
+  display: flex;
+  align-items: center;
 }
 
-.profile-email{
-    display: flex;
+.profile-email {
+  display: flex;
 }
 
-.profile-location{
-    display: flex;
+.profile-location {
+  display: flex;
 }
 
-.profile-valoraciones{
-    display: flex;
+.profile-valoraciones {
+  display: flex;
 }
 
-.profile-{
-    display: flex;
+.profile- {
+  display: flex;
 }
 
-.profile-image img{
-    width: 200px;
-    height: 200px;
-    margin-right: 20px;
+.profile-image img {
+  width: 200px;
+  height: 200px;
+  margin-right: 20px;
 }
 
 .profile-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+}
+
+.profile-container-reviews {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+}
+
+.profile-first-container {
+  display: flex;
+  margin-right: 200px;
+  margin-left: 200px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 200px;
 }
 
 .profile-product {
@@ -89,6 +105,8 @@
 
 .profile-review-interaction {
   margin: 20px;
+  text-align: center;
+  font-size: 1.4em;
 }
 
 .profile-review-valuebutton {
@@ -97,8 +115,6 @@
   color: black;
   border: 3px solid black;
   border-radius: 5px;
-  padding: 10px;
-  cursor: pointer;
   font-size: large;
   transition-duration: 0.4s;
 }
@@ -107,24 +123,14 @@
   background-color: lightskyblue;
 }
 
-.profile-review-deletebutton {
-  margin: 20px;
-  background-color: white;
-  color: black;
-  border: 3px solid black;
-  border-radius: 5px;
-  padding: 10px;
-  cursor: pointer;
-  font-size: large;
-  transition-duration: 0.4s;
-}
-
-.profile-review-deletebutton:hover {
-  background-color: #fcc1c1;
+.review-add-title {
+  text-align: center;
 }
 
 .profile-review {
-  width: 65vw;
+  display: flex;
+  justify-content: center;
+  width: 70%;
   margin: 20px;
   padding: 15px;
   border: 1px solid #c6ecf8;
@@ -133,55 +139,58 @@
   transition: transform 0.2s ease-in-out; /* Add transition property */
 }
 
-
-.profile-review img{
+.profile-review img {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
 }
 
-.review-user{
+.review-user {
   display: flex;
-  margin-top: 5px;
   cursor: pointer;
-  width: fit-content;
-  justify-content: center;
+  justify-content: left;
+  margin-right: 40px;
   align-items: center;
 }
 
-.review-date{
+.review-date {
   font-style: italic;
   color: #888;
 }
 
+.review-user-buttons {
+  border-right: 1px solid #888;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-right: 20px;
+  width: 200px;
+}
 /* Media queries for responsiveness */
 
 @media screen and (max-width: 768px) {
-    .profile-info {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  
-    .profile-email,
-    .profile-location,
-    .profile-valoraciones,
-    .profile-someclass {
-      margin-right: 0;
-      margin-bottom: 10px;
-    }
-  
-    .profile-image img {
-      margin-right: 0;
-      margin-bottom: 10px;
-    }
-  
-    .profile-container {
-      justify-content: center;
-    }
-  
-    .profile-product {
-      width: 100%;
-      margin: 10px 0;
-    }
+  .profile-info {
+    flex-direction: column;
+    align-items: flex-start;
   }
+
+  .profile-email,
+  .profile-location,
+  .profile-valoraciones,
+  .profile-someclass {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .profile-image img {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .profile-product {
+    width: 100%;
+    margin: 10px 0;
+  }
+}
