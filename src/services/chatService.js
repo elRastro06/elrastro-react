@@ -1,11 +1,15 @@
 import Axios from "axios";
 
-const url_chats = 'http://localhost:5007/v1/chats';
-const url_chatsV2 = 'http://localhost:5007/v2/chats';
-const url_chat = 'http://localhost:5007/v1/chat';
-const url_chatV2 = 'http://localhost:5007/v2/chat';
-const url_product = 'http://localhost:5001/v1';
-const url_clients = 'http://localhost:5000/v1';
+const chatsConn = import.meta.env.CHATS != undefined ? import.meta.env.CHATS : "localhost";
+const productsConn = import.meta.env.PRODUCTS != undefined ? import.meta.env.PRODUCTS : "localhost";
+const clientsConn = import.meta.env.CLIENTS != undefined ? import.meta.env.CLIENTS : "localhost";
+
+const url_chats = `http://${chatsConn}:5007/v1/chats`;
+const url_chatsV2 = `http://${chatsConn}:5007/v2/chats`;
+const url_chat = `http://${chatsConn}:5007/v1/chat`;
+const url_chatV2 = `http://${chatsConn}:5007/v2/chat`;
+const url_product = `http://${productsConn}:5001/v1`;
+const url_clients = `http://${clientsConn}:5000/v1`;
 
 
 const getAllChatsFromUser = async (userId) => {

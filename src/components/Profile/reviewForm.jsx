@@ -14,6 +14,8 @@ export default function ReviewForm({ passedReview, reviewedID, reviewer }) {
   });
   const [reviewerUser, setReviewerUser] = useState({});
 
+  const reviewsConn = import.meta.env.REVIEWS != undefined ? import.meta.env.REVIEWS : "localhost";
+
   useEffect(() => {
     if (passedReview) setReview(passedReview);
     if (reviewer) setReviewerUser(reviewer);
@@ -34,7 +36,7 @@ export default function ReviewForm({ passedReview, reviewedID, reviewer }) {
 
   const handleDelete = async () => {
     const response = await axios.delete(
-      `http://localhost:5008/v2/${review._id}`
+      `http://${reviewsConn}:5008/v2/${review._id}`
     );
     window.location.reload();
   };
@@ -64,13 +66,13 @@ export default function ReviewForm({ passedReview, reviewedID, reviewer }) {
     };
     if (passedReview) {
       const response = await axios.put(
-        `http://localhost:5008/v2/${review._id}`,
+        `http://${reviewsConn}:5008/v2/${review._id}`,
         body
       );
       window.location.reload();
     } else {
       try {
-        const response = await axios.post(`http://localhost:5008/v2/`, body);
+        const response = await axios.post(`http://${reviewsConn}:5008/v2/`, body);
         window.location.reload();
       } catch (error) {
         console.log(error);

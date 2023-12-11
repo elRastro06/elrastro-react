@@ -20,13 +20,17 @@ export default function Profile() {
   const [commonSale, setCommonSale] = useState({});
   const [commonReview, setCommonReview] = useState({});
 
+  const clientsConn = import.meta.env.CLIENTS != undefined ? import.meta.env.CLIENTS : "localhost";
+  const productsConn = import.meta.env.PRODUCTS != undefined ? import.meta.env.PRODUCTS : "localhost";
+  const reviewsConn = import.meta.env.REVIEWS != undefined ? import.meta.env.REVIEWS : "localhost";
+
   useEffect(() => {
     if (!id) {
       id = loggedUserId;
     }
     // Fetch user data by ID
     axios
-      .get(`http://localhost:5000/v1/${id}`)
+      .get(`http://${clientsConn}:5000/v1/${id}`)
       .then((response) => {
         setUser(response.data);
       })
@@ -36,7 +40,7 @@ export default function Profile() {
 
     // Fetch potential reviewer data
     axios
-      .get(`http://localhost:5000/v1/`)
+      .get(`http://${clientsConn}:5000/v1/`)
       .then((response) => {
         setReviewers(response.data);
       })
@@ -46,7 +50,7 @@ export default function Profile() {
 
     // Fetch products data for the user
     axios
-      .get(`http://localhost:5001/v2/?userID=${id}`)
+      .get(`http://${productsConn}:5001/v2/?userID=${id}`)
       .then((response) => {
         setProducts(response.data);
       })
@@ -56,7 +60,7 @@ export default function Profile() {
 
     //Fetch reviews data for the user
     axios
-      .get(`http://localhost:5000/v2/${id}/reviews`)
+      .get(`http://${clientsConn}:5000/v2/${id}/reviews`)
       .then((response) => {
         setReviews(response.data);
         setEditModes(response.data.map((review) => false));
@@ -67,9 +71,9 @@ export default function Profile() {
 
     //Fetch average review value
     axios
-      .get(`http://localhost:5000/v2/${id}/reviewsavg`)
+      .get(`http://${clientsConn}:5000/v2/${id}/reviewsavg`)
       .then((response) => {
-        setAvg((response.data.reviewAvg).toFixed(1));
+        setAvg(response.data.reviewAvg);
       })
       .catch((error) => {
         console.log(error);
@@ -77,7 +81,7 @@ export default function Profile() {
 
     //Fetch data for conditions on review interaction
     axios
-      .get(`http://localhost:5001/v2/${loggedUserId}/${id}`)
+      .get(`http://${productsConn}:5001/v2/${loggedUserId}/${id}`)
       .then((response) => {
         setCommonSale(response.data);
       })
@@ -85,7 +89,7 @@ export default function Profile() {
         console.log(error);
       });
     axios
-      .get(`http://localhost:5008/v2/${loggedUserId}/${id}`)
+      .get(`http://${reviewsConn}:5008/v2/${loggedUserId}/${id}`)
       .then((response) => {
         setCommonReview(response.data);
       })
