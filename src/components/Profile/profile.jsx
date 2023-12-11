@@ -69,7 +69,7 @@ export default function Profile() {
     axios
       .get(`http://localhost:5000/v2/${id}/reviewsavg`)
       .then((response) => {
-        setAvg(response.data.reviewAvg);
+        setAvg((response.data.reviewAvg).toFixed(1));
       })
       .catch((error) => {
         console.log(error);
