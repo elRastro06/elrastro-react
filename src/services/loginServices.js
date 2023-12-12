@@ -1,12 +1,5 @@
 import { useNavigate } from "react-router-dom";
 
-let navigate;
-
-const initLoginService = () => {
-    navigate = useNavigate();
-}
-initLoginService();
-
 const getUserLogged = () => {
     let user = localStorage.getItem("user");
     if (user) user = JSON.parse(user);
@@ -14,13 +7,16 @@ const getUserLogged = () => {
     return user;
 }
 
-const checkResponse = (res) => {
+const checkResponse = (res, navigate) => {
     if (res.error == "Expired token" || res.error == "No token specified") {
+        alert("Token expired. Please login again");
         localStorage.removeItem("user");
+
+        const navigate = useNavigate();
         navigate("/login");
     }
 }
 
-const loginServices = { getUserLogged };
+const loginServices = { getUserLogged, checkResponse };
 
 export default loginServices;

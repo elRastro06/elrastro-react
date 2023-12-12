@@ -12,25 +12,32 @@ import NewProduct from "./components/Products/newProduct.jsx";
 import Navbar from "./NavBar.jsx";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ErrorBoundary } from "react-error-boundary";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Navbar />
+  const errorHandler = (error, componentStack) => {
 
-      <Routes>
-        <Route path="/" element={<Products />} />
-        <Route path="/product/:id" element={<Product />} />
-        <Route path="/product/edit/:id" element={<ProductForm />} />
-        <Route path="/product/new" element={<NewProduct />} />
-        <Route path="/chats" element={<Chats />} />
-        <Route path="/chats/:id" element={<Chat />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/about-us" element={<AboutUs />} />
-        <Route path="/my-profile" element={<Profile />} />
-        <Route path="/profile/:id" element={<Profile />} />
-      </Routes>
-    </BrowserRouter>
+  }
+
+  return (
+    <ErrorBoundary onError={errorHandler}>
+      <BrowserRouter>
+        <Navbar />
+
+        <Routes>
+          <Route path="/" element={<Products />} />
+          <Route path="/product/:id" element={<Product />} />
+          <Route path="/product/edit/:id" element={<ProductForm />} />
+          <Route path="/product/new" element={<NewProduct />} />
+          <Route path="/chats" element={<Chats />} />
+          <Route path="/chats/:id" element={<Chat />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/my-profile" element={<Profile />} />
+          <Route path="/profile/:id" element={<Profile />} />
+        </Routes>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 
