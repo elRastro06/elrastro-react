@@ -6,7 +6,7 @@ import Map from "../Map/map";
 import "../../assets/styles/products.css";
 import loginServices from "../../services/loginServices.js";
 
-export default function Products() {
+export default function Products({ userLogged }) {
     const navigate = useNavigate();
     const defaultPosition = [36.602274, -4.531727];
 
@@ -18,22 +18,17 @@ export default function Products() {
     const [bidsFilter, setBidsFilter] = useState("active");
     const [updateProduct, setUpdateProduct] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [userLogged, setUserLogged] = useState({});
 
     useEffect(() => {
-        setUserLogged(loginServices.getUserLogged());
+        if (userLogged == undefined) {
+            alert("Login needed. Please login and try again");
+            navigate("/login");
+        }
     }, []);
 
     const productsConn = import.meta.env.PRODUCTS != undefined ? import.meta.env.PRODUCTS : "localhost";
     const clientsConn = import.meta.env.CLIENTS != undefined ? import.meta.env.CLIENTS : "localhost";
     const pujasConn = import.meta.env.PUJAS != undefined ? import.meta.env.PUJAS : "localhost";
-
-    const checkResponse = (res) => {
-        if (res.error == "Expired token" || res.error == "No token specified") {
-            localStorage.removeItem("user");
-            navigate("/login");
-        }
-    }
 
     const getProductsFromAPI = async () => {
         try {
@@ -46,7 +41,7 @@ export default function Products() {
                 }
             );
 
-            checkResponse(productsResponse.data);
+            loginServices.checkResponse(productsResponse.data);
 
             setProducts(
                 productsResponse.data.filter((product) => {
@@ -78,7 +73,7 @@ export default function Products() {
                     }
                 }
             );
-            checkResponse(clientsResponse.data);
+            loginServices.checkResponse(clientsResponse.data);
             setClients(clientsResponse.data);
         } catch (error) {
             console.error("Error fetching clients:", error);
@@ -92,7 +87,7 @@ export default function Products() {
                     "Authorization": userLogged.oauthToken
                 }
             });
-            checkResponse(bidsResponse.data);
+            loginServices.checkResponse(bidsResponse.data);
             setBids(bidsResponse.data);
         } catch (error) {
             console.error("Error fetching bids:", error);

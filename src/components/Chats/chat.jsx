@@ -9,7 +9,7 @@ import loginServices from "../../services/loginServices";
 
 import "../../assets/styles/chat.css";
 
-export default function Chat() {
+export default function Chat({ userLogged }) {
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -26,7 +26,13 @@ export default function Chat() {
     const [productInfo, setProductInfo] = useState({});
     const [otherUserInfo, setOtherUserInfo] = useState({});
     const [messages, setMessages] = useState([]);
-    const [userLogged, setUserLogged] = useState({});
+
+    useEffect(() => {
+        if (userLogged == undefined) {
+            alert("Login needed. Please login and try again");
+            navigate("/login");
+        }
+    }, []);
 
     const handleChatsClick = () => {
         navigate(`/chats`);
@@ -85,9 +91,6 @@ export default function Chat() {
 
     const fetchData = async () => {
         try {
-            const user = loginServices.getUserLogged();
-            setUserLogged(user);
-
             // Obtener la lista de mensajes
             const chatResponse = await chatService.getOneChat(chatId, userLogged.oauthToken);
             const messages = chatResponse.messages;
@@ -96,7 +99,7 @@ export default function Chat() {
             const productInfo = await chatService.getProductPicture(chatResponse.productId, userLogged.oauthToken);
             setProductInfo(productInfo);
 
-            if (user._id === chatResponse.seller) {
+            if (userLogged._id === chatResponse.seller) {
                 // Usuario anónimo interesado en el producto
                 setOtherUserInfo({ "name": "Interested anonymous user" });
             } else {
@@ -108,7 +111,7 @@ export default function Chat() {
 
             // Para el estilo, y para conservar anonimato
             for (const message of chatResponse.messages) {
-                if (message.sender === user._id) {
+                if (message.sender === userLogged._id) {
                     message.sender = 'user';
                 } else {
                     message.sender = 'other';

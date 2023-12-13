@@ -5,7 +5,7 @@ import axios from "axios";
 import "../../assets/styles/reviewForm.css";
 import loginServices from "../../services/loginServices";
 
-export default function ReviewForm({ passedReview, reviewedID, reviewer }) {
+export default function ReviewForm({ passedReview, reviewedID, reviewer, userLogged }) {
     const navigate = useNavigate();
     const [editMode, setEditMode] = useState(false);
     const [review, setReview] = useState({
@@ -13,11 +13,6 @@ export default function ReviewForm({ passedReview, reviewedID, reviewer }) {
         text: "",
     });
     const [reviewerUser, setReviewerUser] = useState({});
-    const [userLogged, setUserLogged] = useState({});
-
-    useEffect(() => {
-        setUserLogged(loginServices.getUserLogged());
-    }, []);
 
     const reviewsConn = import.meta.env.REVIEWS != undefined ? import.meta.env.REVIEWS : "localhost";
 

@@ -6,18 +6,12 @@ import "../../assets/styles/reviewForm.css";
 import loginServices from "../../services/loginServices";
 import axios from "axios";
 
-export default function NewReview() {
+export default function NewReview({ userLogged }) {
 
     const navigate = useNavigate();
     const { id } = useParams();
 
     const reviewsConn = import.meta.env.REVIEWS != undefined ? import.meta.env.REVIEWS : "localhost";
-
-    const [userLogged, setUserLogged] = useState({});
-
-    useEffect(() => {
-        setUserLogged(loginServices.getUserLogged());
-    }, []);
 
     let reviewId;
 

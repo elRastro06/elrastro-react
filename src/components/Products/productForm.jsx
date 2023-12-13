@@ -6,10 +6,8 @@ import productServices from "../../services/productServices";
 import bidServices from "../../services/bidServices";
 import loginServices from "../../services/loginServices";
 
-export default function NewProductForm() {
+export default function NewProductForm({ userLogged }) {
     const navigate = useNavigate();
-
-    const [userLogged, setUserLogged] = useState({});
 
     const [images, setImages] = useState([]);
     const [newImages, setNewImages] = useState([]);
@@ -26,11 +24,15 @@ export default function NewProductForm() {
     let productId = useParams().id;
 
     useEffect(() => {
+        if (userLogged == undefined) {
+            alert("Login needed. Please login and try again");
+            navigate("/login");
+        }
+    }, []);
+
+    useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-
-            const user = loginServices.getUserLogged();
-            setUserLogged(user);
 
             const bids = await bidServices.getBids(productId, userLogged.oauthToken);
             if (bids.length > 0) {
@@ -43,7 +45,7 @@ export default function NewProductForm() {
             if (productData._id == undefined) {
                 navigate("/");
                 return;
-            } else if (productData.userID != user._id) {
+            } else if (productData.userID != userLogged._id) {
                 navigate(`/product/${productId}`);
                 return;
             } else {

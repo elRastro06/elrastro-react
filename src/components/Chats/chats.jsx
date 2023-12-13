@@ -7,9 +7,7 @@ import chatService from "../../services/chatService";
 import loginServices from "../../services/loginServices";
 import "../../assets/styles/chats.css";
 
-export default function Chats() {
-
-    const [userLogged, setUserLogged] = useState({});
+export default function Chats({ userLogged }) {
 
     // Todos los chats para no tener que hacer una petición cada vez que se cambia el filtro
     const [allChats, setAllChats] = useState([]);
@@ -19,6 +17,13 @@ export default function Chats() {
     const [filter, setFilter] = useState("buy");
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (userLogged == undefined) {
+            alert("Login needed. Please login and try again");
+            navigate("/login");
+        }
+    }, []);
 
     const handleChatClick = (chatId) => {
         navigate(`/chats/${chatId}`);
@@ -61,18 +66,15 @@ export default function Chats() {
 
     const fetchData = async () => {
         try {
-            const user = loginServices.getUserLogged();
-            setUserLogged(user);
-
             // Obtener la lista de chats
-            const chatResponse = await chatService.getAllChatsFromUser(user._id, userLogged.oauthToken);
+            const chatResponse = await chatService.getAllChatsFromUser(userLogged._id, userLogged.oauthToken);
 
             // Para cada chat, obtener la información del producto y si es comprador obtener la información del vendedor
             const chatsWithProductAndUserInfo = await Promise.all(chatResponse.map(async (chat) => {
                 const productInfo = await chatService.getProductPicture(chat.productId, userLogged.oauthToken);
 
                 var userInfo = { "name": "Interested anonymous user" };
-                if (chat.seller === user._id) {
+                if (chat.seller === userLogged._id) {
                     chat.participants = [];
                     if(chat.messages.length > 0){
                         chat.messages[0].sender = "Interested anonymous user";

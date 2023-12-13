@@ -6,20 +6,22 @@ import productServices from "../../services/productServices";
 import bidServices from "../../services/bidServices";
 import loginServices from "../../services/loginServices";
 
-export default function NewProduct() {
+export default function NewProduct({ userLogged }) {
 
     const navigate = useNavigate();
 
     let productId;
-    const [userLogged, setUserLogged] = useState({});
 
     useEffect(() => {
+        if (userLogged == undefined) {
+            alert("Login needed. Please login and try again");
+            navigate("/login");
+        }
+    }, []);
 
-        const user = loginServices.getUserLogged();
-        setUserLogged(user);
-
+    useEffect(() => {
         const redirect = async () => {
-            const newProduct = await productServices.createEmptyProduct(user._id, userLogged.oauthToken);
+            const newProduct = await productServices.createEmptyProduct(userLogged._id, userLogged.oauthToken);
             productId = newProduct.insertedId;
             console.log(newProduct);
 

@@ -9,7 +9,7 @@ import clientServices from "../../services/clientServices";
 import chatService from "../../services/chatService";
 import loginServices from "../../services/loginServices";
 
-export default function Product() {
+export default function Product({ userLogged }) {
 
     const navigate = useNavigate();
 
@@ -26,10 +26,11 @@ export default function Product() {
         seconds: 0
     });
 
-    const [userLogged, setUserLogged] = useState({});
-
     useEffect(() => {
-        setUserLogged(loginServices.getUserLogged());
+        if (userLogged == undefined) {
+            alert("Login needed. Please login and try again");
+            navigate("/login");
+        }
     }, []);
 
     useEffect(() => {

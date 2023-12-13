@@ -1,20 +1,15 @@
 import React from "react";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import * as jwt_decode from "jwt-decode";
 
 // import "../../assets/css/Login.css";
-import loginServices from "../../services/loginServices";
 import clientServices from "../../services/clientServices";
 import geoapiServices from "../../services/geoapiServices";
 
-export default function Login() {
-    const navigate = useNavigate();
-
-    const [loggedUser, setLoggedUser] = useState(undefined);
-
-    const handleCallbackResponse = async (response) => {
+export default function Login({ userLogged, setUserLogged }) {const handleCallbackResponse = async (response) => {
         const user = jwt_decode.jwtDecode(response.credential);
+
+        //https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${user.jti}
 
         let bdUser = await clientServices.getClientByGoogleId(user.sub);
 
@@ -25,7 +20,7 @@ export default function Login() {
                 googleID: user.sub,
                 oauthToken: user.jti,
                 exp: user.exp,
-                lat: 36.7201600,
+                lat: 36.7201600,    //Default coordinates in case user does not introduce postal code
                 long: -4.4203400
             };
 
@@ -39,7 +34,7 @@ export default function Login() {
             const result = await clientServices.addClient(bdUser);
             bdUser._id = result.insertedId;
         } else {
-            await clientServices.modifyClient(bdUser._id, {
+            const response = await clientServices.modifyClient(bdUser._id, {
                 oauthToken: user.jti,
                 exp: user.exp
             });
@@ -47,13 +42,12 @@ export default function Login() {
             bdUser.exp = user.exp;
         }
         localStorage.setItem("user", JSON.stringify(bdUser));
-
-        navigate(0);
+        setUserLogged(bdUser);
     }
 
     const handleLogout = () => {
         localStorage.removeItem("user");
-        navigate(0);
+        setUserLogged(undefined);
     }
 
     useEffect(() => {
@@ -69,13 +63,9 @@ export default function Login() {
         );
     }, []);
 
-    useEffect(() => {
-        setLoggedUser(loginServices.getUserLogged());
-    }, []);
-
     return (
         <div>
-            {loggedUser != undefined ?
+            {userLogged != undefined ?
                 <div id="signOutDiv">
                     <button onClick={() => handleLogout()}>Logout</button>
                 </div>

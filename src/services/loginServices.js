@@ -7,7 +7,7 @@ const getUserLogged = () => {
     return user;
 }
 
-const checkResponse = (res, navigate) => {
+const checkResponse = (res) => {
     if (res.error == "Expired token" || res.error == "No token specified") {
         alert("Token expired. Please login again");
         localStorage.removeItem("user");

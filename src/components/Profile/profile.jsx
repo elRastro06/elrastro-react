@@ -6,7 +6,7 @@ import "../../assets/styles/profile.css";
 import ReviewForm from "./reviewForm";
 import loginServices from "../../services/loginServices";
 
-export default function Profile() {
+export default function Profile({ userLogged }) {
     const navigate = useNavigate();
     let { id } = useParams();
 
@@ -19,18 +19,20 @@ export default function Profile() {
 
     const [commonSale, setCommonSale] = useState({});
     const [commonReview, setCommonReview] = useState({});
-    const [userLogged, setUserLogged] = useState({});
 
     const clientsConn = import.meta.env.CLIENTS != undefined ? import.meta.env.CLIENTS : "localhost";
     const productsConn = import.meta.env.PRODUCTS != undefined ? import.meta.env.PRODUCTS : "localhost";
     const reviewsConn = import.meta.env.REVIEWS != undefined ? import.meta.env.REVIEWS : "localhost";
 
     useEffect(() => {
-        const userInfo = loginServices.getUserLogged();
-        setUserLogged(userInfo);
+        if (userLogged == undefined) {
+            alert("Login needed. Please login and try again");
+            navigate("/login");
+            return;
+        }
 
         if (!id) {
-            id = userInfo._id;
+            id = userLogged._id;
         }
         // Fetch user data by ID
         axios
@@ -85,7 +87,7 @@ export default function Profile() {
 
         //Fetch data for conditions on review interaction
         axios
-            .get(`http://${productsConn}:5001/v2/${userInfo._id}/${id}`)
+            .get(`http://${productsConn}:5001/v2/${userLogged._id}/${id}`)
             .then((response) => {
                 setCommonSale(response.data);
             })
@@ -93,7 +95,7 @@ export default function Profile() {
                 console.log(error);
             });
         axios
-            .get(`http://${reviewsConn}:5008/v2/${userInfo._id}/${id}`)
+            .get(`http://${reviewsConn}:5008/v2/${userLogged._id}/${id}`)
             .then((response) => {
                 setCommonReview(response.data);
             })
@@ -218,6 +220,7 @@ export default function Profile() {
                                     passedReview={review}
                                     reviewedID={id}
                                     reviewer={reviewer}
+                                    userLogged={userLogged}
                                 />
                             </div>
                         );
