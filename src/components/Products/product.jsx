@@ -51,7 +51,7 @@ export default function Product({ userLogged }) {
                 setNewBid(bidsData[0].amount + 0.1);
             }
 
-            const ownerData = await clientServices.getClient(productData.userID);
+            const ownerData = await clientServices.getClient(productData.userID, userLogged.oauthToken);
             setOwner(ownerData);
         }
 

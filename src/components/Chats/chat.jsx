@@ -73,7 +73,8 @@ export default function Chat({ userLogged }) {
 
 
             try {
-                await chatService.sendMessage(chatId, newMessageObj, userLogged.oauthToken);
+                const response = await chatService.sendMessage(chatId, newMessageObj, userLogged.oauthToken);
+                console.log(response);
 
                 newMessageObj.sender = 'user';
                 setMessages([...messages, newMessageObj]);

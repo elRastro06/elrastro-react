@@ -6,12 +6,13 @@ import * as jwt_decode from "jwt-decode";
 import clientServices from "../../services/clientServices";
 import geoapiServices from "../../services/geoapiServices";
 
-export default function Login({ userLogged, setUserLogged }) {const handleCallbackResponse = async (response) => {
+export default function Login({ userLogged, setUserLogged }) {
+    const handleCallbackResponse = async (response) => {
         const user = jwt_decode.jwtDecode(response.credential);
 
         //https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${user.jti}
 
-        let bdUser = await clientServices.getClientByGoogleId(user.sub);
+        let bdUser = await clientServices.getClientByGoogleId(user.sub, import.meta.env.VITE_GOOGLE_CLIENT_ID);
 
         if (bdUser == undefined) {
             bdUser = {
@@ -31,13 +32,13 @@ export default function Login({ userLogged, setUserLogged }) {const handleCallba
                 bdUser.long = response.lon;
             }
 
-            const result = await clientServices.addClient(bdUser);
+            const result = await clientServices.addClient(bdUser, import.meta.env.VITE_GOOGLE_CLIENT_ID);
             bdUser._id = result.insertedId;
         } else {
             const response = await clientServices.modifyClient(bdUser._id, {
                 oauthToken: user.jti,
                 exp: user.exp
-            });
+            }, import.meta.env.VITE_GOOGLE_CLIENT_ID);
             bdUser.oauthToken = user.jti;
             bdUser.exp = user.exp;
         }
