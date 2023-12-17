@@ -12,26 +12,43 @@ import NewProduct from "./components/Products/newProduct.jsx";
 import Navbar from "./NavBar.jsx";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ErrorBoundary } from "react-error-boundary";
+import { useState, useEffect } from "react";
+
+import loginServices from "./services/loginServices.js";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Navbar />
+    const errorHandler = (error, componentStack) => {
+        console.log(error);
+    }
 
-      <Routes>
-        <Route path="/" element={<Products />} />
-        <Route path="/product/:id" element={<Product />} />
-        <Route path="/product/edit/:id" element={<ProductForm />} />
-        <Route path="/product/new" element={<NewProduct />} />
-        <Route path="/chats" element={<Chats />} />
-        <Route path="/chats/:id" element={<Chat />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/about-us" element={<AboutUs />} />
-        <Route path="/my-profile" element={<Profile />} />
-        <Route path="/profile/:id" element={<Profile />} />
-      </Routes>
-    </BrowserRouter>
-  );
+    const [userLogged, setUserLogged] = useState(undefined);
+
+    useEffect(() => {
+        const user = loginServices.getUserLogged();
+        setUserLogged(user);
+    }, []);
+
+    return (
+        <ErrorBoundary onError={errorHandler}>
+            <BrowserRouter>
+                <Navbar />
+
+                <Routes>
+                    <Route path="/" element={<Products userLogged={userLogged} />} />
+                    <Route path="/product/:id" element={<Product userLogged={userLogged} />} />
+                    <Route path="/product/edit/:id" element={<ProductForm userLogged={userLogged} />} />
+                    <Route path="/product/new" element={<NewProduct userLogged={userLogged} />} />
+                    <Route path="/chats" element={<Chats userLogged={userLogged} />} />
+                    <Route path="/chats/:id" element={<Chat userLogged={userLogged} />} />
+                    <Route path="/login" element={<Login userLogged={userLogged} setUserLogged={setUserLogged} />} />
+                    <Route path="/about-us" element={<AboutUs userLogged={userLogged} />} />
+                    <Route path="/my-profile" element={<Profile userLogged={userLogged} />} />
+                    <Route path="/profile/:id" element={<Profile userLogged={userLogged} />} />
+                </Routes>
+            </BrowserRouter>
+        </ErrorBoundary>
+    );
 }
 
 export default App;

@@ -4,14 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import axios, { all } from "axios";
 
 import chatService from "../../services/chatService";
+import loginServices from "../../services/loginServices";
 import "../../assets/styles/chats.css";
 
-export default function Chats() {
-
-    const userLogged = "654f4c3cf99b7fddc72edd1b";
-    //654f4c1bf99b7fddc72edd19 MARCOS
-    //654f4c2bf99b7fddc72edd1a JUAN
-    //654f4c3cf99b7fddc72edd1b ROBERTO 
+export default function Chats({ userLogged }) {
 
     // Todos los chats para no tener que hacer una petición cada vez que se cambia el filtro
     const [allChats, setAllChats] = useState([]);
@@ -21,6 +17,13 @@ export default function Chats() {
     const [filter, setFilter] = useState("buy");
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (userLogged == undefined) {
+            alert("Login needed. Please login and try again");
+            navigate("/login");
+        }
+    }, []);
 
     const handleChatClick = (chatId) => {
         navigate(`/chats/${chatId}`);
@@ -50,9 +53,9 @@ export default function Chats() {
         // Filtrar los chats según el filtro seleccionado
         var chats;
         if (filter === "buy") {
-            chats = allChatsFunct.filter((chat) => chat.seller !== userLogged);
+            chats = allChatsFunct.filter((chat) => chat.seller !== userLogged._id);
         } else if (filter === "sell") {
-            chats = allChatsFunct.filter((chat) => chat.seller === userLogged);
+            chats = allChatsFunct.filter((chat) => chat.seller === userLogged._id);
         }
 
         // Actualizar el estado con la lista de chats que ahora incluye información del producto
@@ -64,20 +67,20 @@ export default function Chats() {
     const fetchData = async () => {
         try {
             // Obtener la lista de chats
-            const chatResponse = await chatService.getAllChatsFromUser(userLogged);
+            const chatResponse = await chatService.getAllChatsFromUser(userLogged._id, userLogged.oauthToken);
 
             // Para cada chat, obtener la información del producto y si es comprador obtener la información del vendedor
             const chatsWithProductAndUserInfo = await Promise.all(chatResponse.map(async (chat) => {
-                const productInfo = await chatService.getProductPicture(chat.productId);
+                const productInfo = await chatService.getProductPicture(chat.productId, userLogged.oauthToken);
 
                 var userInfo = { "name": "Interested anonymous user" };
-                if (chat.seller === userLogged) {
+                if (chat.seller === userLogged._id) {
                     chat.participants = [];
                     if(chat.messages.length > 0){
                         chat.messages[0].sender = "Interested anonymous user";
                     }
                 } else {
-                    userInfo = await chatService.getOneClient(productInfo.userID);
+                    userInfo = await chatService.getOneClient(productInfo.userID, userLogged.oauthToken);
                 }
 
                 return {
@@ -176,7 +179,7 @@ export default function Chats() {
                                     {chat.messages.length > 0 && (
                                         <>
                                             <p>
-                                                <strong> {chat.messages[0].sender === userLogged ? ("You") : ("Seller")}: </strong>
+                                                <strong> {chat.messages[0].sender === userLogged._id ? ("You") : ("Seller")}: </strong>
                                                 {chat.messages[0].content}
                                             </p>
                                             <p>

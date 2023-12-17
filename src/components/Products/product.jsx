@@ -7,8 +7,9 @@ import productServices from "../../services/productServices";
 import bidServices from "../../services/bidServices";
 import clientServices from "../../services/clientServices";
 import chatService from "../../services/chatService";
+import loginServices from "../../services/loginServices";
 
-export default function Product() {
+export default function Product({ userLogged }) {
 
     const navigate = useNavigate();
 
@@ -24,15 +25,17 @@ export default function Product() {
         minutes: 0,
         seconds: 0
     });
-    const [loggedUserId, setLoggedUserId] = useState("654f4c3cf99b7fddc72edd1b");    //TEMPORAL HASTA IMPLEMENTAR LOGIN
-    //654f4c1bf99b7fddc72edd19 MARCOS
-    //654f4c2bf99b7fddc72edd1a JUAN
-    //654f4c3cf99b7fddc72edd1b ROBERTO 
 
+    useEffect(() => {
+        if (userLogged == undefined) {
+            alert("Login needed. Please login and try again");
+            navigate("/login");
+        }
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
-            const productData = await productServices.getProduct(productId);
+            const productData = await productServices.getProduct(productId, userLogged.oauthToken);
 
             if (productData._id) {
                 setProduct(productData);
@@ -41,14 +44,14 @@ export default function Product() {
                 return;
             }
 
-            const bidsData = await bidServices.getBids(productId);
+            const bidsData = await bidServices.getBids(productId, userLogged.oauthToken);
             setBids(bidsData);
 
             if (bidsData.length > 0) {
                 setNewBid(bidsData[0].amount + 0.1);
             }
 
-            const ownerData = await clientServices.getClient(productData.userID);
+            const ownerData = await clientServices.getClient(productData.userID, userLogged.oauthToken);
             setOwner(ownerData);
         }
 
@@ -99,27 +102,28 @@ export default function Product() {
 
     const addBid = async (event) => {
         event.preventDefault();
-        
+
         if (endedBid()) {
             alert("Bid is over. You can not make a new bid");
             return;
-        } else if(parseFloat(newBid) < product.price) {
+        } else if (parseFloat(newBid) < product.price) {
             alert("The amount must be greater than the initial price");
             return;
         }
 
         const bid = {
             amount: parseFloat(newBid),
-            userId: loggedUserId,
+            userId: userLogged._id,
             productId: product._id
         };
 
-        const res = await bidServices.addBid(bid);
+        const res = await bidServices.addBid(bid, userLogged.oauthToken);
 
         if (res.error != undefined || res.information != undefined) {
             alert("Bid not inserted. Price must be higher than current highest bid");
         } else {
-            navigate(0);    //refresh
+            //navigate(0);    //refresh
+            console.log(res);
         }
     }
 
@@ -144,7 +148,7 @@ export default function Product() {
     const deleteProduct = async () => {
         if (bids.length != 0) alert("It can not be deleted a product with bids");
         else {
-            await productServices.deleteProduct(productId);
+            await productServices.deleteProduct(productId, userLogged.oauthToken);
             navigate("/");
         }
     }
@@ -155,10 +159,10 @@ export default function Product() {
     }
 
     const handleChat = async () => {
-        const chat = await chatService.getChatFromUserAndProduct(loggedUserId, productId);
+        const chat = await chatService.getChatFromUserAndProduct(userLogged._id, productId, userLogged.oauthToken);
 
         if (chat[0] == undefined) {
-            const response = await chatService.createNewChat(productId, product.userID, loggedUserId);
+            const response = await chatService.createNewChat(productId, product.userID, userLogged._id, userLogged.oauthToken);
             navigate(`/chats/${response.insertedId}`);
         } else {
             navigate(`/chats/${chat[0]._id}`);
@@ -172,7 +176,7 @@ export default function Product() {
                 <button className="product-image-button prev" onClick={() => prevImage()}>&#8249;</button>
                 <button className="product-image-button next" onClick={() => nextImage()}>&#8250;</button>
                 <div className="product-owner-options">
-                    {loggedUserId == product.userID ?
+                    {userLogged._id == product.userID ?
                         <>
                             <button id="product-modify" onClick={() => modifyProduct()}>
                                 <span className="material-icons">edit</span>
@@ -195,7 +199,7 @@ export default function Product() {
                         <img src={owner.image != undefined ? owner.images : "http://localhost:5173/user.jpg"}></img>
                         <Link to={`/profile/${owner._id}`}>{owner.email}</Link>
                         {
-                            loggedUserId != product.userID ?
+                            userLogged._id != product.userID ?
                                 <div className="asksomething" onClick={handleChat} >
                                     <p> Any question? </p>
                                     <span className="material-icons" > chat </span>
@@ -221,12 +225,12 @@ export default function Product() {
                     <h3>Bids</h3>
 
                     {
-                        loggedUserId != product.userID ? 
-                        (bids.length > 0 ?
-                            <div className={`product-lastbid ${(bids[0].userId == loggedUserId) ? "lastbid-own" : "lastbid-other"}`}>
-                                <p> {"Last bid " + ((bids[0].userId == loggedUserId) ? "was" : "wasn't") + " made by you"}</p>
-                            </div>
-                            : null)
+                        userLogged._id != product.userID ?
+                            (bids.length > 0 ?
+                                <div className={`product-lastbid ${(bids[0].userId == userLogged._id) ? "lastbid-own" : "lastbid-other"}`}>
+                                    <p> {"Last bid " + ((bids[0].userId == userLogged._id) ? "was" : "wasn't") + " made by you"}</p>
+                                </div>
+                                : null)
                             :
                             <>
                             </>
@@ -237,7 +241,7 @@ export default function Product() {
                     <div className="product-bids-list">
                         {bids.map((bid) => {
                             return (
-                                <div className={`product-bid ${(bid.userId == loggedUserId) ? "own-bid" : "other-bid"}`} key={bid._id}>
+                                <div className={`product-bid ${(bid.userId == userLogged._id) ? "own-bid" : "other-bid"}`} key={bid._id}>
                                     <p>{bid.amount}€</p>
                                     <p>{handleDate(bid.date)}</p>
                                 </div>
@@ -248,8 +252,8 @@ export default function Product() {
 
 
                     <form className="bid-form">
-                        <input type="number" step={0.1} value={newBid} disabled={endedBid() || loggedUserId == product.userID} onChange={(event) => setNewBid(event.target.value)}></input>
-                        <button className="bid-form-btn" onClick={addBid} disabled={loggedUserId == product.userID}>
+                        <input type="number" step={0.1} value={newBid} disabled={endedBid() || userLogged._id == product.userID} onChange={(event) => setNewBid(event.target.value)}></input>
+                        <button className="bid-form-btn" onClick={addBid} disabled={userLogged._id == product.userID}>
                             <span className="material-icons">gavel</span>
                         </button>
                     </form>

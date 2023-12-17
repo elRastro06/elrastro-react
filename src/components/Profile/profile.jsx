@@ -4,8 +4,9 @@ import axios from "axios";
 
 import "../../assets/styles/profile.css";
 import ReviewForm from "./reviewForm";
+import loginServices from "../../services/loginServices";
 
-export default function Profile() {
+export default function Profile({ userLogged }) {
   const navigate = useNavigate();
   let { id } = useParams();
 
@@ -16,21 +17,39 @@ export default function Profile() {
   const [reviewers, setReviewers] = useState([]);
   const [avg, setAvg] = useState([]);
 
-  const loggedUserId = "654f4c3cf99b7fddc72edd1b";
   const [commonSale, setCommonSale] = useState({});
   const [commonReview, setCommonReview] = useState({});
 
-  const clientsConn = import.meta.env.CLIENTS != undefined ? import.meta.env.CLIENTS : "localhost";
-  const productsConn = import.meta.env.PRODUCTS != undefined ? import.meta.env.PRODUCTS : "localhost";
-  const reviewsConn = import.meta.env.REVIEWS != undefined ? import.meta.env.REVIEWS : "localhost";
+  const clientsConn =
+    import.meta.env.CLIENTS != undefined
+      ? import.meta.env.CLIENTS
+      : "localhost";
+  const productsConn =
+    import.meta.env.PRODUCTS != undefined
+      ? import.meta.env.PRODUCTS
+      : "localhost";
+  const reviewsConn =
+    import.meta.env.REVIEWS != undefined
+      ? import.meta.env.REVIEWS
+      : "localhost";
 
   useEffect(() => {
+    if (userLogged == undefined) {
+      alert("Login needed. Please login and try again");
+      navigate("/login");
+      return;
+    }
+
     if (!id) {
-      id = loggedUserId;
+      id = userLogged._id;
     }
     // Fetch user data by ID
     axios
-      .get(`http://${clientsConn}:5000/v1/${id}`)
+      .get(`http://${clientsConn}:5000/v1/${id}`, {
+        headers: {
+          Authorization: userLogged.oauthToken,
+        },
+      })
       .then((response) => {
         setUser(response.data);
       })
@@ -40,7 +59,11 @@ export default function Profile() {
 
     // Fetch potential reviewer data
     axios
-      .get(`http://${clientsConn}:5000/v1/`)
+      .get(`http://${clientsConn}:5000/v1/`, {
+        headers: {
+          Authorization: userLogged.oauthToken,
+        },
+      })
       .then((response) => {
         setReviewers(response.data);
       })
@@ -50,7 +73,11 @@ export default function Profile() {
 
     // Fetch products data for the user
     axios
-      .get(`http://${productsConn}:5001/v2/?userID=${id}`)
+      .get(`http://${productsConn}:5001/v2/?userID=${id}`, {
+        headers: {
+          Authorization: userLogged.oauthToken,
+        },
+      })
       .then((response) => {
         setProducts(response.data);
       })
@@ -60,7 +87,11 @@ export default function Profile() {
 
     //Fetch reviews data for the user
     axios
-      .get(`http://${clientsConn}:5000/v2/${id}/reviews`)
+      .get(`http://${clientsConn}:5000/v2/${id}/reviews`, {
+        headers: {
+          Authorization: userLogged.oauthToken,
+        },
+      })
       .then((response) => {
         setReviews(response.data);
         setEditModes(response.data.map((review) => false));
@@ -71,7 +102,11 @@ export default function Profile() {
 
     //Fetch average review value
     axios
-      .get(`http://${clientsConn}:5000/v2/${id}/reviewsavg`)
+      .get(`http://${clientsConn}:5000/v2/${id}/reviewsavg`, {
+        headers: {
+          Authorization: userLogged.oauthToken,
+        },
+      })
       .then((response) => {
         setAvg(response.data.reviewAvg);
       })
@@ -81,7 +116,11 @@ export default function Profile() {
 
     //Fetch data for conditions on review interaction
     axios
-      .get(`http://${productsConn}:5001/v2/${loggedUserId}/${id}`)
+      .get(`http://${productsConn}:5001/v2/${userLogged._id}/${id}`, {
+        headers: {
+          Authorization: userLogged.oauthToken,
+        },
+      })
       .then((response) => {
         setCommonSale(response.data);
       })
@@ -89,7 +128,11 @@ export default function Profile() {
         console.log(error);
       });
     axios
-      .get(`http://${reviewsConn}:5008/v2/${loggedUserId}/${id}`)
+      .get(`http://${reviewsConn}:5008/v2/${userLogged._id}/${id}`, {
+        headers: {
+          Authorization: userLogged.oauthToken,
+        },
+      })
       .then((response) => {
         setCommonReview(response.data);
       })
@@ -214,6 +257,7 @@ export default function Profile() {
                   passedReview={review}
                   reviewedID={id}
                   reviewer={reviewer}
+                  userLogged={userLogged}
                 />
               </div>
             );

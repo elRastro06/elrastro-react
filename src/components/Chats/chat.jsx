@@ -5,12 +5,11 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 import chatService from "../../services/chatService";
+import loginServices from "../../services/loginServices";
 
 import "../../assets/styles/chat.css";
 
-export default function Chat() {
-
-
+export default function Chat({ userLogged }) {
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -20,10 +19,6 @@ export default function Chat() {
     }
 
     const chatId = useParams().id;
-    const userLogged = "654f4c3cf99b7fddc72edd1b";
-    //654f4c1bf99b7fddc72edd19 MARCOS
-    //654f4c2bf99b7fddc72edd1a JUAN
-    //654f4c3cf99b7fddc72edd1b ROBERTO 
 
 
     const navigate = useNavigate();
@@ -31,6 +26,13 @@ export default function Chat() {
     const [productInfo, setProductInfo] = useState({});
     const [otherUserInfo, setOtherUserInfo] = useState({});
     const [messages, setMessages] = useState([]);
+
+    useEffect(() => {
+        if (userLogged == undefined) {
+            alert("Login needed. Please login and try again");
+            navigate("/login");
+        }
+    }, []);
 
     const handleChatsClick = () => {
         navigate(`/chats`);
@@ -65,13 +67,14 @@ export default function Chat() {
             const newMessageObj = {
                 _id: messages.length + 1,
                 content: newMessage,
-                sender: userLogged,
+                sender: userLogged._id,
                 timestamp: new Date(),
             };
 
 
             try {
-                await chatService.sendMessage(chatId, newMessageObj);
+                const response = await chatService.sendMessage(chatId, newMessageObj, userLogged.oauthToken);
+                console.log(response);
 
                 newMessageObj.sender = 'user';
                 setMessages([...messages, newMessageObj]);
@@ -90,26 +93,26 @@ export default function Chat() {
     const fetchData = async () => {
         try {
             // Obtener la lista de mensajes
-            const chatResponse = await chatService.getOneChat(chatId);
+            const chatResponse = await chatService.getOneChat(chatId, userLogged.oauthToken);
             const messages = chatResponse.messages;
 
             // Obtener la información del producto
-            const productInfo = await chatService.getProductPicture(chatResponse.productId);
+            const productInfo = await chatService.getProductPicture(chatResponse.productId, userLogged.oauthToken);
             setProductInfo(productInfo);
 
-            if(userLogged === chatResponse.seller){
+            if (userLogged._id === chatResponse.seller) {
                 // Usuario anónimo interesado en el producto
-                setOtherUserInfo({ "name" : "Interested anonymous user" });
-            }else{
+                setOtherUserInfo({ "name": "Interested anonymous user" });
+            } else {
                 // Obtener la información del otro usuario
-                const otherUserInfo = await chatService.getOneClient(productInfo.userID);
+                const otherUserInfo = await chatService.getOneClient(productInfo.userID, userLogged.oauthToken);
                 setOtherUserInfo(otherUserInfo);
             }
 
 
             // Para el estilo, y para conservar anonimato
             for (const message of chatResponse.messages) {
-                if (message.sender === userLogged) {
+                if (message.sender === userLogged._id) {
                     message.sender = 'user';
                 } else {
                     message.sender = 'other';
@@ -158,14 +161,14 @@ export default function Chat() {
                 <div className="messages-container">
                     {messages.map((message, i) => (
 
-                        
+
                         <div key={i} className={`message ${message.sender}`}>
                             {message.content}
-                            <div className={`timestamp-${message.sender}`}> 
+                            <div className={`timestamp-${message.sender}`}>
                                 {formatearFecha(message.timestamp)}
                             </div>
                             {i === messages.length - 1 ? <div ref={messagesEndRef} /> : null}
-                            
+
                         </div>
                     ))}
                 </div>
@@ -184,7 +187,7 @@ export default function Chat() {
                         south
                     </span>
 
-                    
+
                 </div>
 
             </div>

@@ -2,16 +2,42 @@ import axios from "axios";
 
 const clientsConn = import.meta.env.CLIENTS != undefined ? import.meta.env.CLIENTS : "localhost";
 
-const getClient = async (id) => {
-    const response = await axios.get(`http://${clientsConn}:5000/v1/${id}`);
+const getClient = async (id, token) => {
+    const response = await axios.get(`http://${clientsConn}:5000/v1/${id}`, {
+        headers: {
+            "Authorization": token
+        }
+    });
     return response.data;
 }
 
-const addClient = async (client) => {
-    const response = await axios.post(`http://${clientsConn}:5000/v1/`, client);
+const getClientByGoogleId = async (id, token) => {
+    const response = await axios.get(`http://${clientsConn}:5000/v1/?googleID=${id}`, {
+        headers: {
+            "Authorization": token
+        }
+    });
+    return response.data[0];
+}
+
+const addClient = async (client, token) => {
+    const response = await axios.post(`http://${clientsConn}:5000/v1/`, client, {
+        headers: {
+            "Authorization": token
+        }
+    });
     return response.data;
 }
 
-const clientServices = { getClient, addClient };
+const modifyClient = async (id, set, token) => {
+    const response = await axios.put(`http://${clientsConn}:5000/v1/${id}`, set, {
+        headers: {
+            "Authorization": token
+        }
+    });
+    return response.data;
+}
+
+const clientServices = { getClient, getClientByGoogleId, addClient, modifyClient };
 
 export default clientServices;
