@@ -21,13 +21,26 @@ function App() {
     const errorHandler = (error, componentStack) => {
         console.log(error);
     }
-
+    
     const [userLogged, setUserLogged] = useState(undefined);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setLoading(true);
         const user = loginServices.getUserLogged();
         setUserLogged(user);
+        setLoading(false);
     }, []);
+
+    if (loading) {
+        return (
+            <div className="d-flex justify-content-center align-items-center vh-100">
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <ErrorBoundary onError={errorHandler}>
