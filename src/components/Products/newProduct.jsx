@@ -7,33 +7,30 @@ import bidServices from "../../services/bidServices";
 import loginServices from "../../services/loginServices";
 
 export default function NewProduct({ userLogged }) {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  let productId;
 
-    let productId;
+  useEffect(() => {
+    if (userLogged == undefined) {
+      alert("Login needed. Please login and try again");
+      navigate("/login");
+    }
+  }, []);
 
-    useEffect(() => {
-        if (userLogged == undefined) {
-            alert("Login needed. Please login and try again");
-            navigate("/login");
-        }
-    }, []);
+  useEffect(() => {
+    const redirect = async () => {
+      const newProduct = await productServices.createEmptyProduct(
+        userLogged._id,
+        userLogged.oauthToken
+      );
+      productId = newProduct.insertedId;
 
-    useEffect(() => {
-        const redirect = async () => {
-            const newProduct = await productServices.createEmptyProduct(userLogged._id, userLogged.oauthToken);
-            productId = newProduct.insertedId;
-            console.log(newProduct);
+      navigate(`/product/edit/${productId}`);
+    };
 
-            navigate(`/product/edit/${productId}`);
-        }
+    redirect().catch(console.error);
+  }, []);
 
-        redirect().catch(console.error);
-    }, []);
-
-
-    return (
-        <>
-        </>
-    );
+  return <></>;
 }

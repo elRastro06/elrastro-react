@@ -5,6 +5,7 @@ import axios from "axios";
 import "../../assets/styles/profile.css";
 import ReviewForm from "./reviewForm";
 import loginServices from "../../services/loginServices";
+import productServices from "../../services/productServices";
 
 export default function Profile({ userLogged }) {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ export default function Profile({ userLogged }) {
 
   const [user, setUser] = useState({});
   const [products, setProducts] = useState([]);
+  const [bidedProducts, setBidedProducts] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [userLocation, setUserLocation] = useState("");
   const [reviewers, setReviewers] = useState([]);
@@ -94,7 +96,6 @@ export default function Profile({ userLogged }) {
       })
       .then((response) => {
         setReviews(response.data);
-        setEditModes(response.data.map((review) => false));
       })
       .catch((error) => {
         console.log(error);
@@ -139,6 +140,15 @@ export default function Profile({ userLogged }) {
       .catch((error) => {
         console.log(error);
       });
+
+    const response = productServices.getBidProductsByUser(
+      userLogged._id,
+      userLogged.oauthToken
+    );
+
+    response.then((data) => {
+      setBidedProducts(data);
+    });
   }, [id]);
 
   useEffect(() => {
@@ -224,6 +234,53 @@ export default function Profile({ userLogged }) {
         </div>
       )}
 
+      {Array.isArray(products) && products.length == 0 && (
+        <div className="profile-review-interaction">
+          This user has not published any products yet
+        </div>
+      )}
+      {userLogged?._id === id ||
+        (!id && (
+          <>
+            <h2 className="profile-products-title">Products you have bid</h2>
+            {Array.isArray(bidedProducts) && bidedProducts.length > 0 && (
+              <div className="profile-container">
+                {bidedProducts.map((product) => (
+                  <div
+                    className="profile-product"
+                    key={product._id}
+                    onClick={() => {
+                      navigate("/product/" + product._id);
+                    }}
+                  >
+                    {product.images ? (
+                      <div className="profile-product-image">
+                        <img src={product.images[0].url} alt={product.name} />
+                      </div>
+                    ) : (
+                      <div className="profile-product-image">
+                        <img src="/no_image.png" alt="No image available" />
+                      </div>
+                    )}
+                    <div className="profile-product-info">
+                      <h3 className="profile-product-name">{product.name}</h3>
+                      <p className="profile-product-description">
+                        {product.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {Array.isArray(bidedProducts) && bidedProducts.length == 0 && (
+              <div className="profile-review-interaction">
+                You have not bidded any products yet
+              </div>
+            )}
+          </>
+        ))}
+
       <h2 className="profile-reviews-title">
         {" "}
         <span className="material-icons">star</span> Reviews
@@ -264,7 +321,7 @@ export default function Profile({ userLogged }) {
           })}
         </div>
       )}
-      {Array.isArray(reviews) && reviews.length == 0 && (
+      {Array.isArray(reviews) && reviews.length === 0 && (
         <div className="profile-review-interaction">
           There are not reviews for this user yet
         </div>
