@@ -35,7 +35,7 @@ export default function Login({ userLogged, setUserLogged }) {
             const result = await clientServices.addClient(bdUser, import.meta.env.VITE_GOOGLE_CLIENT_ID);
             bdUser._id = result.insertedId;
         } else {
-            const response = await clientServices.modifyClient(bdUser._id, {
+            await clientServices.modifyClient(bdUser._id, {
                 oauthToken: user.jti,
                 exp: user.exp
             }, import.meta.env.VITE_GOOGLE_CLIENT_ID);
