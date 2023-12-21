@@ -11,12 +11,8 @@ const cloudinaryConn =
     ? import.meta.env.CLOUDINARY
     : "localhost";
 
-const getProduct = async (id, token) => {
-  const response = await axios.get(`http://${productsConn}:5001/v1/${id}`, {
-    headers: {
-      Authorization: token,
-    },
-  });
+const getProduct = async (id) => {
+  const response = await axios.get(`http://${productsConn}:5001/v1/${id}`);
   loginServices.checkResponse(response.data);
   return response.data;
 };
@@ -126,13 +122,13 @@ const createEmptyProduct = async (loggedUserId, token) => {
   return response.data;
 };
 
-const getBidProductsByUser = async (id, token) => {
-  const getBids = await bidServices.getBidsByUser(id, token);
+const getBidProductsByUser = async (id) => {
+  const getBids = await bidServices.getBidsByUser(id);
   const productIdsArray = getBids.map((bid) => bid.productId);
 
   const products = await Promise.all(
     productIdsArray.map(async (id) => {
-      const product = await getProduct(id, token);
+      const product = await getProduct(id);
       return product;
     })
   );

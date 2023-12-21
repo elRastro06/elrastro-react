@@ -11,13 +11,15 @@ import NewProduct from "./components/Products/newProduct.jsx";
 
 import Navbar from "./NavBar.jsx";
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
 import { useState, useEffect } from "react";
 
 import loginServices from "./services/loginServices.js";
 
 function App() {
+    const navigate = useNavigate();
+
     const errorHandler = (error, componentStack) => {
         console.log(error);
     }
@@ -28,7 +30,14 @@ function App() {
     useEffect(() => {
         setLoading(true);
         const user = loginServices.getUserLogged();
-        setUserLogged(user);
+        if (user != undefined) {
+          if (Math.floor(new Date().getTime() / 1000.0) < user.exp) setUserLogged(user);
+          else {
+            alert("Session expired. Please login again");
+            localStorage.removeItem("user");
+            navigate("/login");
+          }
+        }
         setLoading(false);
     }, []);
 
@@ -44,7 +53,6 @@ function App() {
 
     return (
         <ErrorBoundary onError={errorHandler}>
-            <BrowserRouter>
                 <Navbar />
 
                 <Routes>
@@ -59,7 +67,6 @@ function App() {
                     <Route path="/my-profile" element={<Profile userLogged={userLogged} />} />
                     <Route path="/profile/:id" element={<Profile userLogged={userLogged} />} />
                 </Routes>
-            </BrowserRouter>
         </ErrorBoundary>
     );
 }

@@ -2,21 +2,13 @@ import axios from "axios";
 
 const clientsConn = import.meta.env.CLIENTS != undefined ? import.meta.env.CLIENTS : "localhost";
 
-const getClient = async (id, token) => {
-    const response = await axios.get(`http://${clientsConn}:5000/v1/${id}`, {
-        headers: {
-            "Authorization": token
-        }
-    });
+const getClient = async (id) => {
+    const response = await axios.get(`http://${clientsConn}:5000/v1/${id}`);
     return response.data;
 }
 
-const getClientByGoogleId = async (id, token) => {
-    const response = await axios.get(`http://${clientsConn}:5000/v1/?googleID=${id}`, {
-        headers: {
-            "Authorization": token
-        }
-    });
+const getClientByGoogleId = async (id) => {
+    const response = await axios.get(`http://${clientsConn}:5000/v1/?googleID=${id}`);
     return response.data[0];
 }
 

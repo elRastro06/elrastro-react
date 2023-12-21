@@ -4,16 +4,9 @@ import loginServices from "./loginServices";
 const bidsConn =
   import.meta.env.PUJAS != undefined ? import.meta.env.PUJAS : "localhost";
 
-const getBids = async (id, token) => {
+const getBids = async (id) => {
   const response = await axios.get(
-    `http://${bidsConn}:5002/v1/?productId=${id}&orderBy=date&order=desc`,
-    {
-      headers: {
-        Authorization: token,
-      },
-    }
-  );
-  loginServices.checkResponse(response.data);
+    `http://${bidsConn}:5002/v1/?productId=${id}&orderBy=date&order=desc`);
   return response.data;
 };
 
@@ -39,13 +32,8 @@ const addBid = async (bid, token) => {
   return response.data;
 };
 
-const getBidsByUser = async (id, token) => {
-  const response = await axios.get(`http://${bidsConn}:5002/v1/?userId=${id}`, {
-    headers: {
-      Authorization: token,
-    },
-  });
-  loginServices.checkResponse(response.data);
+const getBidsByUser = async (id) => {
+  const response = await axios.get(`http://${bidsConn}:5002/v1/?userId=${id}`);
   return response.data;
 };
 

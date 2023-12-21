@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import Map from "../Map/map";
 
 import "../../assets/styles/products.css";
-import loginServices from "../../services/loginServices.js";
 
 export default function Products({ userLogged }) {
     const navigate = useNavigate();
@@ -19,13 +18,6 @@ export default function Products({ userLogged }) {
     const [updateProduct, setUpdateProduct] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if (userLogged == undefined) {
-            alert("Login needed. Please login and try again");
-            navigate("/login");
-        }
-    }, []);
-
     const productsConn = import.meta.env.PRODUCTS != undefined ? import.meta.env.PRODUCTS : "localhost";
     const clientsConn = import.meta.env.CLIENTS != undefined ? import.meta.env.CLIENTS : "localhost";
     const pujasConn = import.meta.env.PUJAS != undefined ? import.meta.env.PUJAS : "localhost";
@@ -33,15 +25,8 @@ export default function Products({ userLogged }) {
     const getProductsFromAPI = async () => {
         try {
             const productsResponse = await axios.get(
-                `http://${productsConn}:5001/v2/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}&name=${productName}&description=${productName}`,
-                {
-                    headers: {
-                        "Authorization": userLogged.oauthToken
-                    }
-                }
+                `http://${productsConn}:5001/v2/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}&name=${productName}&description=${productName}`
             );
-
-            loginServices.checkResponse(productsResponse.data);
 
             setProducts(
                 productsResponse.data.filter((product) => {
@@ -66,14 +51,8 @@ export default function Products({ userLogged }) {
     const getClientsFromAPI = async () => {
         try {
             const clientsResponse = await axios.get(
-                `http://${clientsConn}:5000/v1/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}`,
-                {
-                    headers: {
-                        "Authorization": userLogged.oauthToken
-                    }
-                }
+                `http://${clientsConn}:5000/v1/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}`
             );
-            loginServices.checkResponse(clientsResponse.data);
             setClients(clientsResponse.data);
         } catch (error) {
             console.error("Error fetching clients:", error);
@@ -82,12 +61,7 @@ export default function Products({ userLogged }) {
 
     const getBidsFromAPI = async () => {
         try {
-            const bidsResponse = await axios.get(`http://${pujasConn}:5002/v1/`, {
-                headers: {
-                    "Authorization": userLogged.oauthToken
-                }
-            });
-            loginServices.checkResponse(bidsResponse.data);
+            const bidsResponse = await axios.get(`http://${pujasConn}:5002/v1/`);
             setBids(bidsResponse.data);
         } catch (error) {
             console.error("Error fetching bids:", error);

@@ -12,7 +12,7 @@ export default function Login({ userLogged, setUserLogged }) {
 
         //https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${user.jti}
 
-        let bdUser = await clientServices.getClientByGoogleId(user.sub, import.meta.env.VITE_GOOGLE_CLIENT_ID);
+        let bdUser = await clientServices.getClientByGoogleId(user.sub);
 
         if (bdUser == undefined) {
             bdUser = {
