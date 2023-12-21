@@ -10,6 +10,8 @@ const cloudinaryConn =
   import.meta.env.CLOUDINARY != undefined
     ? import.meta.env.CLOUDINARY
     : "localhost";
+const bidsConn =
+  import.meta.env.BIDS != undefined ? import.meta.env.BIDS : "localhost";
 
 const getProduct = async (id, token) => {
   const response = await axios.get(`http://${productsConn}:5001/v1/${id}`, {
@@ -53,6 +55,20 @@ const modifyProduct = async (id, body, token) => {
 
   if (bids.length != 0) return { error: "The product has already bids" };
 
+  const response = await axios.put(
+    `http://${productsConn}:5001/v1/${id}`,
+    body,
+    {
+      headers: {
+        Authorization: token,
+      },
+    }
+  );
+  loginServices.checkResponse(response.data);
+  return response.data;
+};
+
+const uncontrolledModifyProduct = async (id, body, token) => {
   const response = await axios.put(
     `http://${productsConn}:5001/v1/${id}`,
     body,
@@ -140,15 +156,68 @@ const getBidProductsByUser = async (id, token) => {
   return products;
 };
 
+const getActiveBidProductsByUser = async (id, token) => {
+  const products = await getBidProductsByUser(id, token);
+
+  return products.filter((product) => {
+    const productDate = new Date(product.date);
+    const limitDate = new Date(productDate);
+    limitDate.setDate(productDate.getDate() + 14);
+    const today = new Date();
+
+    return !product.payed && today < limitDate;
+  });
+};
+
+const getWonProductsByUser = async (id, token) => {
+  try {
+    const products = await getBidProductsByUser(id, token);
+    const wonProducts = [];
+
+    for (const product of products) {
+      const productDate = new Date(product.date);
+      const limitDate = new Date(productDate);
+      limitDate.setDate(productDate.getDate() + 14);
+      const today = new Date();
+
+      const response = await axios.get(`http://${bidsConn}:5002/v1/highest`, {
+        headers: {
+          Authorization: token,
+        },
+        params: {
+          productId: product._id,
+        },
+      });
+
+      const highestBid = response.data.maxAmount;
+
+      const userHighestBidResponse =
+        await bidServices.getHighestBidByUserAndProduct(id, product._id, token);
+      const userHighestBid = userHighestBidResponse.amount;
+
+      if (highestBid === userHighestBid && today > limitDate && !product.payed) {
+        wonProducts.push({ ...product, highestBid });
+      }
+    }
+    return wonProducts;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
 const productServices = {
   getProduct,
   createProduct,
   deleteProduct,
   modifyProduct,
+  uncontrolledModifyProduct,
   addImage,
   deleteImage,
   createEmptyProduct,
   getBidProductsByUser,
+  getWonProductsByUser,
+  getActiveBidProductsByUser,
 };
 
 export default productServices;

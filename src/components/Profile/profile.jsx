@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -8,12 +9,14 @@ import loginServices from "../../services/loginServices";
 import productServices from "../../services/productServices";
 
 export default function Profile({ userLogged }) {
+  const PayPalButton = paypal.Buttons.driver("react", { React, ReactDOM });
   const navigate = useNavigate();
   let { id } = useParams();
 
   const [user, setUser] = useState({});
   const [products, setProducts] = useState([]);
   const [bidedProducts, setBidedProducts] = useState([]);
+  const [wonProducts, setWonProducts] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [userLocation, setUserLocation] = useState("");
   const [reviewers, setReviewers] = useState([]);
@@ -141,14 +144,17 @@ export default function Profile({ userLogged }) {
         console.log(error);
       });
 
-    const response = productServices.getBidProductsByUser(
-      userLogged._id,
-      userLogged.oauthToken
-    );
+    productServices
+      .getActiveBidProductsByUser(userLogged._id, userLogged.oauthToken)
+      .then((data) => {
+        setBidedProducts(data);
+      });
 
-    response.then((data) => {
-      setBidedProducts(data);
-    });
+    productServices
+      .getWonProductsByUser(userLogged._id, userLogged.oauthToken)
+      .then((response) => {
+        setWonProducts(response);
+      });
   }, [id]);
 
   useEffect(() => {
@@ -172,6 +178,37 @@ export default function Profile({ userLogged }) {
         reviews.find((review) => review.reviewerID === ReviewerId)
           .reviewerID === reviewer._id
     );
+  };
+
+  const createOrder = (data, actions, price) => {
+    return actions.order.create({
+      purchase_units: [
+        {
+          amount: {
+            value: price.toString(),
+          },
+        },
+      ],
+    });
+  };
+
+  const onApprove = (data, actions, product) => {
+    return actions.order.capture().then(function (details) {
+      productServices
+        .uncontrolledModifyProduct(
+          product._id,
+          { ...product, payed: true },
+          userLogged.oauthToken
+        )
+        .then((response) => {
+          alert("Transaction completed by " + details.payer.name.given_name);
+          productServices
+            .getWonProductsByUser(userLogged._id, userLogged.oauthToken)
+            .then((response) => {
+              setWonProducts(response);
+            });
+        });
+    });
   };
 
   return (
@@ -242,34 +279,86 @@ export default function Profile({ userLogged }) {
       {userLogged?._id === id ||
         (!id && (
           <>
-            <h2 className="profile-products-title">Products you have bid</h2>
+            <h2 className="profile-products-title">
+              Products you have to pay for
+            </h2>
+            {Array.isArray(wonProducts) && wonProducts.length > 0 && (
+              <div className="profile-container">
+                {wonProducts.map((product) => {
+                  return (
+                    <div
+                      className="profile-product"
+                      key={product._id}
+                      onClick={() => {
+                        navigate("/product/" + product._id);
+                      }}
+                    >
+                      {product.images ? (
+                        <div className="profile-product-image">
+                          <img src={product.images[0].url} alt={product.name} />
+                        </div>
+                      ) : (
+                        <div className="profile-product-image">
+                          <img src="/no_image.png" alt="No image available" />
+                        </div>
+                      )}
+                      <div className="profile-product-info">
+                        <h3 className="profile-product-name">{product.name}</h3>
+                        <p className="profile-product-description">
+                          {product.description}
+                        </p>
+                      </div>
+                      <PayPalButton
+                        createOrder={(data, actions) =>
+                          createOrder(data, actions, product.highestBid)
+                        }
+                        onApprove={(data, actions) =>
+                          onApprove(data, actions, product)
+                        }
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            {Array.isArray(wonProducts) && wonProducts.length == 0 && (
+              <div className="profile-review-interaction">
+                You have not won any products yet
+              </div>
+            )}
+
+            <h2 className="profile-products-title">
+              Active products you have bid
+            </h2>
             {Array.isArray(bidedProducts) && bidedProducts.length > 0 && (
               <div className="profile-container">
-                {bidedProducts.map((product) => (
-                  <div
-                    className="profile-product"
-                    key={product._id}
-                    onClick={() => {
-                      navigate("/product/" + product._id);
-                    }}
-                  >
-                    {product.images ? (
-                      <div className="profile-product-image">
-                        <img src={product.images[0].url} alt={product.name} />
+                {bidedProducts.map((product) => {
+                  return (
+                    <div
+                      className="profile-product"
+                      key={product._id}
+                      onClick={() => {
+                        navigate("/product/" + product._id);
+                      }}
+                    >
+                      {product.images ? (
+                        <div className="profile-product-image">
+                          <img src={product.images[0].url} alt={product.name} />
+                        </div>
+                      ) : (
+                        <div className="profile-product-image">
+                          <img src="/no_image.png" alt="No image available" />
+                        </div>
+                      )}
+                      <div className="profile-product-info">
+                        <h3 className="profile-product-name">{product.name}</h3>
+                        <p className="profile-product-description">
+                          {product.description}
+                        </p>
                       </div>
-                    ) : (
-                      <div className="profile-product-image">
-                        <img src="/no_image.png" alt="No image available" />
-                      </div>
-                    )}
-                    <div className="profile-product-info">
-                      <h3 className="profile-product-name">{product.name}</h3>
-                      <p className="profile-product-description">
-                        {product.description}
-                      </p>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
 
