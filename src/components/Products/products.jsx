@@ -18,14 +18,14 @@ export default function Products({ userLogged }) {
     const [updateProduct, setUpdateProduct] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const productsConn = import.meta.env.PRODUCTS != undefined ? import.meta.env.PRODUCTS : "localhost";
-    const clientsConn = import.meta.env.CLIENTS != undefined ? import.meta.env.CLIENTS : "localhost";
-    const pujasConn = import.meta.env.PUJAS != undefined ? import.meta.env.PUJAS : "localhost";
+    const productsConn = import.meta.env.VITE_PRODUCTS_URL;
+    const clientsConn = import.meta.env.VITE_CLIENTS_URL;
+    const pujasConn = import.meta.env.VITE_BIDS_URL;
 
     const getProductsFromAPI = async () => {
         try {
             const productsResponse = await axios.get(
-                `http://${productsConn}:5001/v2/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}&name=${productName}&description=${productName}`
+                `${productsConn}/v2/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}&name=${productName}&description=${productName}`
             );
 
             setProducts(
@@ -51,7 +51,7 @@ export default function Products({ userLogged }) {
     const getClientsFromAPI = async () => {
         try {
             const clientsResponse = await axios.get(
-                `http://${clientsConn}:5000/v1/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}`
+                `${clientsConn}/v1/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}`
             );
             setClients(clientsResponse.data);
         } catch (error) {
@@ -61,7 +61,7 @@ export default function Products({ userLogged }) {
 
     const getBidsFromAPI = async () => {
         try {
-            const bidsResponse = await axios.get(`http://${pujasConn}:5002/v1/`);
+            const bidsResponse = await axios.get(`${pujasConn}/v1/`);
             setBids(bidsResponse.data);
         } catch (error) {
             console.error("Error fetching bids:", error);

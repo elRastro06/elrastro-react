@@ -1,11 +1,9 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import chatService from "../../services/chatService";
-import loginServices from "../../services/loginServices";
 
 import "../../assets/styles/chat.css";
 

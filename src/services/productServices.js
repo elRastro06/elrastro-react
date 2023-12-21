@@ -2,24 +2,18 @@ import axios from "axios";
 import bidServices from "./bidServices";
 import loginServices from "./loginServices";
 
-const productsConn =
-  import.meta.env.PRODUCTS != undefined
-    ? import.meta.env.PRODUCTS
-    : "localhost";
-const cloudinaryConn =
-  import.meta.env.CLOUDINARY != undefined
-    ? import.meta.env.CLOUDINARY
-    : "localhost";
+const productsConn = import.meta.env.VITE_PRODUCTS_URL;
+const cloudinaryConn = import.meta.env.VITE_CLOUDINARY_URL;
 
 const getProduct = async (id) => {
-  const response = await axios.get(`http://${productsConn}:5001/v1/${id}`);
+  const response = await axios.get(`${productsConn}/v1/${id}`);
   loginServices.checkResponse(response.data);
   return response.data;
 };
 
 const createProduct = async (body, token) => {
   const response = await axios.post(
-    `http://${productsConn}:5001/v1/`,
+    `${productsConn}/v1/`,
     {
       ...body,
       soldID: "",
@@ -35,7 +29,7 @@ const createProduct = async (body, token) => {
 };
 
 const deleteProduct = async (id, token) => {
-  const response = await axios.delete(`http://${productsConn}:5001/v2/${id}`, {
+  const response = await axios.delete(`${productsConn}/v2/${id}`, {
     headers: {
       Authorization: token,
     },
@@ -50,7 +44,7 @@ const modifyProduct = async (id, body, token) => {
   if (bids.length != 0) return { error: "The product has already bids" };
 
   const response = await axios.put(
-    `http://${productsConn}:5001/v1/${id}`,
+    `${productsConn}/v1/${id}`,
     body,
     {
       headers: {
@@ -68,7 +62,7 @@ const addImage = async (id, image, token) => {
   data.append("productId", id);
 
   const response = await axios.post(
-    `http://${cloudinaryConn}:5004/v2/images`,
+    `${cloudinaryConn}/v2/images`,
     data,
     {
       headers: {
@@ -89,7 +83,7 @@ const deleteImage = async (imageId, token) => {
   };
 
   const response = await axios.delete(
-    `http://${cloudinaryConn}:5004/v2/images`,
+    `${cloudinaryConn}/v2/images`,
     {
       data: body,
     },
@@ -113,7 +107,7 @@ const createEmptyProduct = async (loggedUserId, token) => {
     userID: loggedUserId,
   };
 
-  const response = await axios.post(`http://${productsConn}:5001/v1/`, body, {
+  const response = await axios.post(`${productsConn}/v1/`, body, {
     headers: {
       Authorization: token,
     },

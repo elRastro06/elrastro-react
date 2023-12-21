@@ -3,8 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import "../../assets/styles/productForm.css";
 import productServices from "../../services/productServices";
-import bidServices from "../../services/bidServices";
-import loginServices from "../../services/loginServices";
 
 export default function NewProduct({ userLogged }) {
   const navigate = useNavigate();
