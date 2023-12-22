@@ -6,10 +6,20 @@ import Map from "../Map/map";
 import "../../assets/styles/products.css";
 import loginServices from "../../services/loginServices.js";
 
+
+import Slider from '@mui/material/Slider';
+import Box from '@mui/material/Box';
+
+
+
 export default function Products({ userLogged }) {
     const navigate = useNavigate();
     const defaultPosition = [36.602274, -4.531727];
 
+    const [price, setPrice] = useState([0, 0]);
+
+
+    const [minmaxPrice, setMinMaxPrice] = useState([0, 0]);
     const [products, setProducts] = useState([]);
     const [bids, setBids] = useState([]);
     const [clients, setClients] = useState([]);
@@ -40,24 +50,65 @@ export default function Products({ userLogged }) {
                     }
                 }
             );
-
             loginServices.checkResponse(productsResponse.data);
 
-            setProducts(
-                productsResponse.data.filter((product) => {
-                    const limitDate = new Date(product.date);
-                    limitDate.setDate(limitDate.getDate() + product.length);
-                    if (product.name === "" || product.length === undefined) {
-                        return false;
-                    } else if (bidsFilter === "active") {
-                        return limitDate > new Date();
-                    } else if (bidsFilter === "finished") {
-                        return limitDate <= new Date();
-                    } else {
-                        return true;
+            // get the highest bid/initial price for each product
+            if(price[0] === 0 && price[1] === 0){
+                productsResponse.data.forEach((product) => {
+                    let highestProdPrice = product.price;
+                    
+                    if (minmaxPrice[1] < highestProdPrice) {
+                        console.log("minmaxPrice[1]: " + minmaxPrice[1] + " <  highestProdPrice: " + highestProdPrice);
+
+                        setMinMaxPrice([0, highestProdPrice]);
+                        console.log(setMinMaxPrice([0, highestProdPrice]));
+                        console.log(minmaxPrice);
                     }
-                })
-            );
+    
+                });
+                console.log("minmaxPrice: " + minmaxPrice);
+                setPrice(minmaxPrice);
+                console.log("price: " + price)
+            }
+
+
+            console.log(price);
+
+
+            // Filtrar por pujas activas o finalizadas
+            var filteredProducts = productsResponse.data.filter((product) => {
+                const limitDate = new Date(product.date);
+                limitDate.setDate(limitDate.getDate() + product.length);
+                if (product.name === "" || product.length === undefined) {
+                    return false;
+                } else if (bidsFilter === "active") {
+                    return limitDate > new Date();
+                } else if (bidsFilter === "finished") {
+                    return limitDate <= new Date();
+                }
+
+                else {
+                    return true;
+                }
+            })
+
+            // Filtrar por precio
+            filteredProducts = filteredProducts.filter((product) => {
+                if (price[0] === price[1] || price[1] === 0) {
+                    return true;
+                } else if (product.price >= price[0] && product.price <= price[1]) {
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+
+            )
+
+
+
+            setProducts(filteredProducts);
+
         } catch (error) {
             console.error("Error fetching products:", error);
         }
@@ -132,6 +183,11 @@ export default function Products({ userLogged }) {
         );
     };
 
+    const handleChange = (event, newValue) => {
+        console.log("minmax: " + minmaxPrice + " price: " + price + " newValue: " + newValue);
+        setPrice(newValue);
+    };
+
     return (
         <>
             <div>
@@ -177,14 +233,40 @@ export default function Products({ userLogged }) {
                         <option value="50">50km</option>
                     </select>
                     <span
-                        className="material-icons"
+                        className="material-icons span-search"
+                        id="search-icon"
                         onClick={() => {
                             setUpdateProduct(!updateProduct);
                         }}
                     >
                         search
                     </span>
+
+                    <div className="price-filter">
+                        <p>Price range</p>
+                        <p>{price[0]}€ - {price[1]}€</p>
+                    </div>
+
+
+                    <div className="slider-container">
+                        <Box sx={{ width: 300 }}>
+                            <Slider
+                                value={price}
+                                onChange={handleChange}
+                                valueLabelDisplay="auto"
+                                min={minmaxPrice[0]}
+                                max={minmaxPrice[1]}
+                            />
+                        </Box>
+                    </div>
+
                 </div>
+
+
+                {/* Filtro para el precio con un slider donde se pueda elegir el precio máximo y mínimo de los productos que se quieren ver. */}
+
+
+
 
                 {loading ? (
                     <div className="loading-spinner"></div>
