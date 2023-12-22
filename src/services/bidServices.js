@@ -1,25 +1,17 @@
 import axios from "axios";
 import loginServices from "./loginServices";
 
-const bidsConn =
-  import.meta.env.PUJAS != undefined ? import.meta.env.PUJAS : "localhost";
+const bidsConn = import.meta.env.VITE_BIDS_URL;
 
-const getBids = async (id, token) => {
+const getBids = async (id) => {
   const response = await axios.get(
-    `http://${bidsConn}:5002/v1/?productId=${id}&orderBy=date&order=desc`,
-    {
-      headers: {
-        Authorization: token,
-      },
-    }
-  );
-  loginServices.checkResponse(response.data);
+    `${bidsConn}/v1/?productId=${id}&orderBy=date&order=desc`);
   return response.data;
 };
 
 const addBid = async (bid, token) => {
   let highestBid = await axios.get(
-    `http://${bidsConn}:5002/v1/highest/?productId=${bid.productId}`,
+    `${bidsConn}/v1/highest/?productId=${bid.productId}`,
     {
       headers: {
         Authorization: token,
@@ -30,7 +22,7 @@ const addBid = async (bid, token) => {
   highestBid = highestBid.data.maxAmount;
 
   if (bid.amount <= highestBid) return { error: "" };
-  const response = await axios.post(`http://${bidsConn}:5002/v1/`, bid, {
+  const response = await axios.post(`${bidsConn}/v1/`, bid, {
     headers: {
       Authorization: token,
     },
@@ -39,13 +31,8 @@ const addBid = async (bid, token) => {
   return response.data;
 };
 
-const getBidsByUser = async (id, token) => {
-  const response = await axios.get(`http://${bidsConn}:5002/v1/?userId=${id}`, {
-    headers: {
-      Authorization: token,
-    },
-  });
-  loginServices.checkResponse(response.data);
+const getBidsByUser = async (id) => {
+  const response = await axios.get(`${bidsConn}/v1/?userId=${id}`);
   return response.data;
 };
 

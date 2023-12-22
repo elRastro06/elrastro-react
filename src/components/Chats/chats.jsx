@@ -1,10 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import axios, { all } from "axios";
 
 import chatService from "../../services/chatService";
-import loginServices from "../../services/loginServices";
 import "../../assets/styles/chats.css";
 
 export default function Chats({ userLogged }) {

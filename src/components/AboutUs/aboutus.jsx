@@ -1,20 +1,8 @@
 import React from "react";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 import "../../assets/styles/aboutus.css";
 
 export default function AboutUs({ userLogged }) {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (userLogged == undefined) {
-      alert("Login needed. Please login and try again");
-      navigate("/login");
-    }
-  }, []);
-
   return (
     <div className="about-us">
       <h1>About Us</h1>

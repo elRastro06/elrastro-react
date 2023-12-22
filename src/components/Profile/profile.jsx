@@ -4,7 +4,6 @@ import axios from "axios";
 
 import "../../assets/styles/profile.css";
 import ReviewForm from "./reviewForm";
-import loginServices from "../../services/loginServices";
 import productServices from "../../services/productServices";
 
 export default function Profile({ userLogged }) {
@@ -22,21 +21,12 @@ export default function Profile({ userLogged }) {
   const [commonSale, setCommonSale] = useState({});
   const [commonReview, setCommonReview] = useState({});
 
-  const clientsConn =
-    import.meta.env.CLIENTS != undefined
-      ? import.meta.env.CLIENTS
-      : "localhost";
-  const productsConn =
-    import.meta.env.PRODUCTS != undefined
-      ? import.meta.env.PRODUCTS
-      : "localhost";
-  const reviewsConn =
-    import.meta.env.REVIEWS != undefined
-      ? import.meta.env.REVIEWS
-      : "localhost";
+  const clientsConn = import.meta.env.VITE_CLIENTS_URL;
+  const productsConn = import.meta.env.VITE_PRODUCTS_URL;
+  const reviewsConn = import.meta.env.VITE_REVIEWS_URL;
 
   useEffect(() => {
-    if (userLogged == undefined) {
+    if (userLogged == undefined && !id) {
       alert("Login needed. Please login and try again");
       navigate("/login");
       return;
@@ -47,11 +37,7 @@ export default function Profile({ userLogged }) {
     }
     // Fetch user data by ID
     axios
-      .get(`http://${clientsConn}:5000/v1/${id}`, {
-        headers: {
-          Authorization: userLogged.oauthToken,
-        },
-      })
+      .get(`${clientsConn}/v1/${id}`)
       .then((response) => {
         setUser(response.data);
       })
@@ -61,11 +47,7 @@ export default function Profile({ userLogged }) {
 
     // Fetch potential reviewer data
     axios
-      .get(`http://${clientsConn}:5000/v1/`, {
-        headers: {
-          Authorization: userLogged.oauthToken,
-        },
-      })
+      .get(`${clientsConn}/v1/`)
       .then((response) => {
         setReviewers(response.data);
       })
@@ -75,11 +57,7 @@ export default function Profile({ userLogged }) {
 
     // Fetch products data for the user
     axios
-      .get(`http://${productsConn}:5001/v2/?userID=${id}`, {
-        headers: {
-          Authorization: userLogged.oauthToken,
-        },
-      })
+      .get(`${productsConn}/v2/?userID=${id}`)
       .then((response) => {
         setProducts(response.data);
       })
@@ -89,11 +67,7 @@ export default function Profile({ userLogged }) {
 
     //Fetch reviews data for the user
     axios
-      .get(`http://${clientsConn}:5000/v2/${id}/reviews`, {
-        headers: {
-          Authorization: userLogged.oauthToken,
-        },
-      })
+      .get(`${clientsConn}/v2/${id}/reviews`)
       .then((response) => {
         setReviews(response.data);
       })
@@ -103,11 +77,7 @@ export default function Profile({ userLogged }) {
 
     //Fetch average review value
     axios
-      .get(`http://${clientsConn}:5000/v2/${id}/reviewsavg`, {
-        headers: {
-          Authorization: userLogged.oauthToken,
-        },
-      })
+      .get(`${clientsConn}/v2/${id}/reviewsavg`)
       .then((response) => {
         setAvg(response.data.reviewAvg);
       })
@@ -115,40 +85,30 @@ export default function Profile({ userLogged }) {
         console.log(error);
       });
 
-    //Fetch data for conditions on review interaction
-    axios
-      .get(`http://${productsConn}:5001/v2/${userLogged._id}/${id}`, {
-        headers: {
-          Authorization: userLogged.oauthToken,
-        },
-      })
-      .then((response) => {
-        setCommonSale(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    axios
-      .get(`http://${reviewsConn}:5008/v2/${userLogged._id}/${id}`, {
-        headers: {
-          Authorization: userLogged.oauthToken,
-        },
-      })
-      .then((response) => {
-        setCommonReview(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (userLogged != undefined) {
+      //Fetch data for conditions on review interaction
+      axios
+        .get(`${productsConn}/v2/${userLogged._id}/${id}`)
+        .then((response) => {
+          setCommonSale(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      axios
+        .get(`${reviewsConn}/v2/${userLogged._id}/${id}`)
+        .then((response) => {
+          setCommonReview(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
 
-    const response = productServices.getBidProductsByUser(
-      userLogged._id,
-      userLogged.oauthToken
-    );
-
-    response.then((data) => {
-      setBidedProducts(data);
-    });
+      const response = productServices.getBidProductsByUser(userLogged._id);
+      response.then((data) => {
+        setBidedProducts(data);
+      });
+    }
   }, [id]);
 
   useEffect(() => {

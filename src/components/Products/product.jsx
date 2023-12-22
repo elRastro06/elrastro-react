@@ -7,7 +7,6 @@ import productServices from "../../services/productServices";
 import bidServices from "../../services/bidServices";
 import clientServices from "../../services/clientServices";
 import chatService from "../../services/chatService";
-import loginServices from "../../services/loginServices";
 
 export default function Product({ userLogged }) {
   const navigate = useNavigate();
@@ -26,18 +25,8 @@ export default function Product({ userLogged }) {
   });
 
   useEffect(() => {
-    if (userLogged == undefined) {
-      alert("Login needed. Please login and try again");
-      navigate("/login");
-    }
-  }, []);
-
-  useEffect(() => {
     const fetchData = async () => {
-      const productData = await productServices.getProduct(
-        productId,
-        userLogged.oauthToken
-      );
+      const productData = await productServices.getProduct(productId);
 
       if (productData._id) {
         setProduct(productData);
@@ -46,20 +35,14 @@ export default function Product({ userLogged }) {
         return;
       }
 
-      const bidsData = await bidServices.getBids(
-        productId,
-        userLogged.oauthToken
-      );
+      const bidsData = await bidServices.getBids(productId);
       setBids(bidsData);
 
       if (bidsData.length > 0) {
         setNewBid(bidsData[0].amount + 0.1);
       }
 
-      const ownerData = await clientServices.getClient(
-        productData.userID,
-        userLogged.oauthToken
-      );
+      const ownerData = await clientServices.getClient(productData.userID);
       setOwner(ownerData);
     };
 
@@ -222,7 +205,7 @@ export default function Product({ userLogged }) {
           &#8250;
         </button>
         <div className="product-owner-options">
-          {userLogged._id == product.userID ? (
+          {userLogged != undefined && userLogged._id == product.userID ? (
             <>
               <button id="product-modify" onClick={() => modifyProduct()}>
                 <span className="material-icons">edit</span>
@@ -251,7 +234,7 @@ export default function Product({ userLogged }) {
               }
             ></img>
             <Link to={`/profile/${owner._id}`}>{owner.email}</Link>
-            {userLogged._id != product.userID ? (
+            {userLogged != undefined && userLogged._id != product.userID ? (
               <div className="asksomething" onClick={handleChat}>
                 <p> Any question? </p>
                 <span className="material-icons"> chat </span>
@@ -284,7 +267,7 @@ export default function Product({ userLogged }) {
         <div className="product-bids-container">
           <h3>Bids</h3>
 
-          {userLogged._id != product.userID ? (
+          {userLogged != undefined && userLogged._id != product.userID ? (
             bids.length > 0 ? (
               <div
                 className={`product-lastbid ${
@@ -306,13 +289,13 @@ export default function Product({ userLogged }) {
           )}
 
           <div className="product-bids-list">
-            {bids.map((bid) => {
+            {bids.map((bid, key) => {
               return (
                 <div
                   className={`product-bid ${
-                    bid.userId == userLogged._id ? "own-bid" : "other-bid"
+                    userLogged != undefined && bid.userId == userLogged._id ? "own-bid" : "other-bid"
                   }`}
-                  key={bid._id}
+                  key={key}
                 >
                   <p>{bid.amount}€</p>
                   <p>{handleDate(bid.date)}</p>
@@ -326,13 +309,13 @@ export default function Product({ userLogged }) {
               type="number"
               step={0.1}
               value={newBid}
-              disabled={endedBid() || userLogged._id == product.userID}
+              disabled={endedBid() || userLogged == undefined || userLogged._id == product.userID}
               onChange={(event) => setNewBid(event.target.value)}
             ></input>
             <button
               className="bid-form-btn"
               onClick={addBid}
-              disabled={userLogged._id == product.userID}
+              disabled={userLogged == undefined || userLogged._id == product.userID}
             >
               <span className="material-icons">gavel</span>
             </button>
