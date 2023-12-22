@@ -8,6 +8,7 @@ import bidServices from "../../services/bidServices";
 import clientServices from "../../services/clientServices";
 import chatService from "../../services/chatService";
 import loginServices from "../../services/loginServices";
+import climatiqServices from "../../services/climatiqServices";
 
 export default function Product({ userLogged }) {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ export default function Product({ userLogged }) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [owner, setOwner] = useState({});
   const [newBid, setNewBid] = useState(0.0);
+  const [carbonFee, setCarbonFee] = useState(0.0);
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -65,6 +67,23 @@ export default function Product({ userLogged }) {
 
     fetchData().catch(console.error);
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!owner.location) return;
+      const carbonFeeData = await climatiqServices.getCarbonFee(
+        owner.location.coordinates[0],
+        owner.location.coordinates[1],
+        userLogged.location.coordinates[0],
+        userLogged.location.coordinates[1],
+        userLogged.oauthToken
+      );
+      setCarbonFee(carbonFeeData);
+
+    };
+
+    fetchData().catch(console.error);
+  }, [owner]);
 
   useEffect(() => {
     const calculateTimeLeft = (startDate) => {
@@ -337,6 +356,10 @@ export default function Product({ userLogged }) {
               <span className="material-icons">gavel</span>
             </button>
           </form>
+
+          <p className="product-carbonfee"> Due to the {carbonFee.distance} km of travel distance between you and this seller,
+            you'll have to pay an additional {carbonFee.shipping_tax}€ as a carbon fee for the transport of this product</p>
+           
         </div>
       </div>
     </div>
