@@ -146,7 +146,8 @@ const createEmptyProduct = async (loggedUserId, token) => {
 
 const getBidProductsByUser = async (id, token) => {
   const getBids = await bidServices.getBidsByUser(id, token);
-  const productIdsArray = getBids.map((bid) => bid.productId);
+  let productIdsArray = getBids.map((bid) => bid.productId);
+  productIdsArray = productIdsArray.filter((value, index) => productIdsArray.indexOf(value) === index);
 
   const products = await Promise.all(
     productIdsArray.map(async (id) => {
