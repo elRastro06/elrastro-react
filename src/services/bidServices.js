@@ -38,7 +38,7 @@ const getBidsByUser = async (id) => {
 
 const getHighestBidByUserAndProduct = async (userId, productId, token) => {
   const bids = await axios.get(
-    `http://${bidsConn}:5002/v1/?userId=${userId}&productId=${productId}`,
+    `${bidsConn}/v1/?userId=${userId}&productId=${productId}`,
     {
       headers: {
         Authorization: token,
