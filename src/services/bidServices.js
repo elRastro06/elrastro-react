@@ -36,6 +36,31 @@ const getBidsByUser = async (id) => {
   return response.data;
 };
 
-const bidServices = { getBids, addBid, getBidsByUser };
+const getHighestBidByUserAndProduct = async (userId, productId, token) => {
+  const bids = await axios.get(
+    `http://${bidsConn}:5002/v1/?userId=${userId}&productId=${productId}`,
+    {
+      headers: {
+        Authorization: token,
+      },
+    }
+  );
+  loginServices.checkResponse(bids.data);
+
+  let highestBid = {};
+  bids.data.forEach((b) => {
+    if (highestBid.amount == undefined || highestBid.amount < b.amount)
+      highestBid = b;
+  });
+
+  return highestBid;
+};
+
+const bidServices = {
+  getBids,
+  addBid,
+  getBidsByUser,
+  getHighestBidByUserAndProduct,
+};
 
 export default bidServices;

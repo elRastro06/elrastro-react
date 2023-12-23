@@ -194,6 +194,11 @@ input[type="number"] {
     background-color: #fcc1c1;
 }
 
+.product-carbonfee {
+    font-style: italic;
+    color: #888;
+  }
+
 /**
 ================================================================================================
         PERFIL DEL VENDEDOR
