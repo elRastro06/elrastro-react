@@ -46,7 +46,7 @@
 
 }
 
-.products-filter span {
+#search-icon {
   padding: 10px;
   margin-left: 5px;
   background-color: #3498db;
@@ -249,3 +249,17 @@
     width: 75%;
   }
 }
+
+.slider-container{
+  padding: 20px;
+}
+
+.price-filter{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: -10px;
+  margin-right: 20px;
+  width: 200px;
+}
+
