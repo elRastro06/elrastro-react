@@ -1,6 +1,8 @@
 import axios from "axios";
 import bidServices from "./bidServices";
 import loginServices from "./loginServices";
+import clientServices from "./clientServices";
+import climatiqServices from "./climatiqServices";
 
 const productsConn =
   import.meta.env.PRODUCTS != undefined
@@ -171,6 +173,7 @@ const getActiveBidProductsByUser = async (id, token) => {
 
 const getWonProductsByUser = async (id, token) => {
   try {
+    const user = await clientServices.getClient(id, token);
     const products = await getBidProductsByUser(id, token);
     const wonProducts = [];
 
@@ -195,8 +198,18 @@ const getWonProductsByUser = async (id, token) => {
         await bidServices.getHighestBidByUserAndProduct(id, product._id, token);
       const userHighestBid = userHighestBidResponse.amount;
 
-      if (highestBid === userHighestBid && today > limitDate && !product.payed) {
-        wonProducts.push({ ...product, highestBid });
+      if (highestBid === userHighestBid && today > limitDate && !product.payed) { //en este punto hemos confirmado que este producto es uno que el user ha ganado
+        const seller = await clientServices.getClient(product.userID, token);
+        const carbonFee = await climatiqServices.getCarbonFee(
+          seller.location.coordinates[0],
+          seller.location.coordinates[1],
+          user.location.coordinates[0],
+          user.location.coordinates[1],
+          token
+        )
+
+
+        wonProducts.push({ ...product, highestBid, carbonFee });
       }
     }
     return wonProducts;

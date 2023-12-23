@@ -310,7 +310,7 @@ export default function Profile({ userLogged }) {
                       </div>
                       <PayPalButton
                         createOrder={(data, actions) =>
-                          createOrder(data, actions, product.highestBid)
+                          createOrder(data, actions, product.highestBid+product.carbonFee.shipping_tax)
                         }
                         onApprove={(data, actions) =>
                           onApprove(data, actions, product)
