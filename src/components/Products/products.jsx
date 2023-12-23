@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Map from "../Map/map";
-
+import loginServices from "../../services/loginServices";
 import "../../assets/styles/products.css";
 
 
@@ -13,7 +13,13 @@ import Box from '@mui/material/Box';
 
 export default function Products({ userLogged }) {
     const navigate = useNavigate();
-    const userPosition = [36.602274, -4.531727];
+
+    let userPosition = [36.602274, -4.531727];
+    if(userLogged != undefined) {
+        userPosition = [userLogged.location.coordinates[1], userLogged.location.coordinates[0]];
+    }
+    
+    
 
     const [price, setPrice] = useState([0, 0]);
 
