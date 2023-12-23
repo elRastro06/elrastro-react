@@ -13,7 +13,7 @@ import Box from '@mui/material/Box';
 
 export default function Products({ userLogged }) {
     const navigate = useNavigate();
-    const defaultPosition = [36.602274, -4.531727];
+    const userPosition = [36.602274, -4.531727];
 
     const [price, setPrice] = useState([0, 0]);
 
@@ -35,7 +35,7 @@ export default function Products({ userLogged }) {
     const getProductsFromAPI = async () => {
         try {
             const productsResponse = await axios.get(
-                `${productsConn}/v2/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}&name=${productName}&description=${productName}`
+                `${productsConn}/v2/?lat=${userPosition[0]}&long=${userPosition[1]}&radius=${radius}&name=${productName}&description=${productName}`
             );
 
             loginServices.checkResponse(productsResponse.data);
@@ -106,7 +106,7 @@ export default function Products({ userLogged }) {
     const getClientsFromAPI = async () => {
         try {
             const clientsResponse = await axios.get(
-                `${clientsConn}/v1/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}`
+                `${clientsConn}/v1/?lat=${userPosition[0]}&long=${userPosition[1]}&radius=${radius}`
             );
             setClients(clientsResponse.data);
         } catch (error) {
@@ -127,7 +127,7 @@ export default function Products({ userLogged }) {
         const fetchData = async () => {
             setLoading(true);
             try {
-                if (defaultPosition) {
+                if (userPosition) {
                     await getClientsFromAPI();
                     await getProductsFromAPI();
                     await getBidsFromAPI();
@@ -257,7 +257,7 @@ export default function Products({ userLogged }) {
                                 update={updateProduct}
                                 products={products}
                                 clients={clients}
-                                userLogged={userLogged}
+                                userPosition={userPosition}
                             />
                         </div>
 
