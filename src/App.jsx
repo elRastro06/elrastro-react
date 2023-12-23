@@ -6,7 +6,6 @@ import Products from "./components/Products/products.jsx";
 import Product from "./components/Products/product.jsx";
 import ProductForm from "./components/Products/productForm.jsx";
 import Profile from "./components/Profile/profile.jsx";
-import MyProfile from "./components/Profile/myprofile.jsx";
 import NewProduct from "./components/Products/newProduct.jsx";
 
 import Navbar from "./NavBar.jsx";
