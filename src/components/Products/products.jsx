@@ -2,14 +2,29 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Map from "../Map/map";
-
+import loginServices from "../../services/loginServices";
 import "../../assets/styles/products.css";
-import loginServices from "../../services/loginServices.js";
+
+
+import Slider from '@mui/material/Slider';
+import Box from '@mui/material/Box';
+
+
 
 export default function Products({ userLogged }) {
     const navigate = useNavigate();
-    const defaultPosition = [36.602274, -4.531727];
 
+    let userPosition = [36.602274, -4.531727];
+    if(userLogged != undefined) {
+        userPosition = [userLogged.location.coordinates[1], userLogged.location.coordinates[0]];
+    }
+    
+    
+
+    const [price, setPrice] = useState([0, 0]);
+
+
+    const [minmaxPrice, setMinMaxPrice] = useState([0, 0]);
     const [products, setProducts] = useState([]);
     const [bids, setBids] = useState([]);
     const [clients, setClients] = useState([]);
@@ -19,45 +34,76 @@ export default function Products({ userLogged }) {
     const [updateProduct, setUpdateProduct] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if (userLogged == undefined) {
-            alert("Login needed. Please login and try again");
-            navigate("/login");
-        }
-    }, []);
-
-    const productsConn = import.meta.env.PRODUCTS != undefined ? import.meta.env.PRODUCTS : "localhost";
-    const clientsConn = import.meta.env.CLIENTS != undefined ? import.meta.env.CLIENTS : "localhost";
-    const pujasConn = import.meta.env.PUJAS != undefined ? import.meta.env.PUJAS : "localhost";
+    const productsConn = import.meta.env.VITE_PRODUCTS_URL;
+    const clientsConn = import.meta.env.VITE_CLIENTS_URL;
+    const pujasConn = import.meta.env.VITE_BIDS_URL;
 
     const getProductsFromAPI = async () => {
         try {
             const productsResponse = await axios.get(
-                `http://${productsConn}:5001/v2/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}&name=${productName}&description=${productName}`,
-                {
-                    headers: {
-                        "Authorization": userLogged.oauthToken
-                    }
-                }
+                `${productsConn}/v2/?lat=${userPosition[0]}&long=${userPosition[1]}&radius=${radius}&name=${productName}&description=${productName}`
             );
 
             loginServices.checkResponse(productsResponse.data);
 
-            setProducts(
-                productsResponse.data.filter((product) => {
-                    const limitDate = new Date(product.date);
-                    limitDate.setDate(limitDate.getDate() + product.length);
-                    if (product.name === "" || product.length === undefined) {
-                        return false;
-                    } else if (bidsFilter === "active") {
-                        return limitDate > new Date();
-                    } else if (bidsFilter === "finished") {
-                        return limitDate <= new Date();
-                    } else {
-                        return true;
+            // get the highest bid/initial price for each product
+            if(price[0] === 0 && price[1] === 0){
+                productsResponse.data.forEach((product) => {
+                    let highestProdPrice = product.price;
+                    
+                    if (minmaxPrice[1] < highestProdPrice) {
+                        console.log("minmaxPrice[1]: " + minmaxPrice[1] + " <  highestProdPrice: " + highestProdPrice);
+
+                        setMinMaxPrice([0, highestProdPrice]);
+                        console.log(setMinMaxPrice([0, highestProdPrice]));
+                        console.log(minmaxPrice);
+
                     }
-                })
-            );
+    
+                });
+                console.log("minmaxPrice: " + minmaxPrice);
+                setPrice(minmaxPrice);
+                console.log("price: " + price)
+            }
+
+
+            console.log(price);
+
+
+            // Filtrar por pujas activas o finalizadas
+            var filteredProducts = productsResponse.data.filter((product) => {
+                const limitDate = new Date(product.date);
+                limitDate.setDate(limitDate.getDate() + product.length);
+                if (product.name === "" || product.length === undefined) {
+                    return false;
+                } else if (bidsFilter === "active") {
+                    return limitDate > new Date();
+                } else if (bidsFilter === "finished") {
+                    return limitDate <= new Date();
+                }
+
+                else {
+                    return true;
+                }
+            })
+
+            // Filtrar por precio
+            filteredProducts = filteredProducts.filter((product) => {
+                if (price[0] === price[1] || price[1] === 0) {
+                    return true;
+                } else if (product.price >= price[0] && product.price <= price[1]) {
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+
+            )
+
+
+
+            setProducts(filteredProducts);
+
         } catch (error) {
             console.error("Error fetching products:", error);
         }
@@ -66,14 +112,8 @@ export default function Products({ userLogged }) {
     const getClientsFromAPI = async () => {
         try {
             const clientsResponse = await axios.get(
-                `http://${clientsConn}:5000/v1/?lat=${defaultPosition[0]}&long=${defaultPosition[1]}&radius=${radius}`,
-                {
-                    headers: {
-                        "Authorization": userLogged.oauthToken
-                    }
-                }
+                `${clientsConn}/v1/?lat=${userPosition[0]}&long=${userPosition[1]}&radius=${radius}`
             );
-            loginServices.checkResponse(clientsResponse.data);
             setClients(clientsResponse.data);
         } catch (error) {
             console.error("Error fetching clients:", error);
@@ -82,12 +122,7 @@ export default function Products({ userLogged }) {
 
     const getBidsFromAPI = async () => {
         try {
-            const bidsResponse = await axios.get(`http://${pujasConn}:5002/v1/`, {
-                headers: {
-                    "Authorization": userLogged.oauthToken
-                }
-            });
-            loginServices.checkResponse(bidsResponse.data);
+            const bidsResponse = await axios.get(`${pujasConn}/v1/`);
             setBids(bidsResponse.data);
         } catch (error) {
             console.error("Error fetching bids:", error);
@@ -98,7 +133,7 @@ export default function Products({ userLogged }) {
         const fetchData = async () => {
             setLoading(true);
             try {
-                if (defaultPosition) {
+                if (userPosition) {
                     await getClientsFromAPI();
                     await getProductsFromAPI();
                     await getBidsFromAPI();
@@ -130,6 +165,11 @@ export default function Products({ userLogged }) {
                 products.find((product) => product._id === productId).userID ===
                 cliente._id
         );
+    };
+
+    const handleChange = (event, newValue) => {
+        console.log("minmax: " + minmaxPrice + " price: " + price + " newValue: " + newValue);
+        setPrice(newValue);
     };
 
     return (
@@ -177,14 +217,40 @@ export default function Products({ userLogged }) {
                         <option value="50">50km</option>
                     </select>
                     <span
-                        className="material-icons"
+                        className="material-icons span-search"
+                        id="search-icon"
                         onClick={() => {
                             setUpdateProduct(!updateProduct);
                         }}
                     >
                         search
                     </span>
+
+                    <div className="price-filter">
+                        <p>Price range</p>
+                        <p>{price[0]}€ - {price[1]}€</p>
+                    </div>
+
+
+                    <div className="slider-container">
+                        <Box sx={{ width: 300 }}>
+                            <Slider
+                                value={price}
+                                onChange={handleChange}
+                                valueLabelDisplay="auto"
+                                min={minmaxPrice[0]}
+                                max={minmaxPrice[1]}
+                            />
+                        </Box>
+                    </div>
+
                 </div>
+
+
+                {/* Filtro para el precio con un slider donde se pueda elegir el precio máximo y mínimo de los productos que se quieren ver. */}
+
+
+
 
                 {loading ? (
                     <div className="loading-spinner"></div>
@@ -197,6 +263,7 @@ export default function Products({ userLogged }) {
                                 update={updateProduct}
                                 products={products}
                                 clients={clients}
+                                userPosition={userPosition}
                             />
                         </div>
 

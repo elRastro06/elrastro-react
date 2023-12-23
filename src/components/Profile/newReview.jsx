@@ -2,17 +2,13 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import "../../assets/styles/reviewForm.css";
-import loginServices from "../../services/loginServices";
 import axios from "axios";
 
 export default function NewReview({ userLogged }) {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const reviewsConn =
-    import.meta.env.REVIEWS != undefined
-      ? import.meta.env.REVIEWS
-      : "localhost";
+  const reviewsConn = import.meta.env.VITE_REVIEWS_URL;
 
   let reviewId;
 
@@ -31,7 +27,7 @@ export default function NewReview({ userLogged }) {
       text: "",
     };
 
-    const response = await axios.post(`http://${reviewsConn}:5008/v2/`, body, {
+    const response = await axios.post(`${reviewsConn}/v2/`, body, {
       headers: {
         Authorization: userLogged.oauthToken,
       },

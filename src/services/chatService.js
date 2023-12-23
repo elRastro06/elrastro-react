@@ -1,16 +1,16 @@
 import Axios from "axios";
 import loginServices from "./loginServices";
 
-const chatsConn = import.meta.env.CHATS != undefined ? import.meta.env.CHATS : "localhost";
-const productsConn = import.meta.env.PRODUCTS != undefined ? import.meta.env.PRODUCTS : "localhost";
-const clientsConn = import.meta.env.CLIENTS != undefined ? import.meta.env.CLIENTS : "localhost";
+const chatsConn = import.meta.env.VITE_CHATS_URL;
+const productsConn = import.meta.env.VITE_PRODUCTS_URL;
+const clientsConn = import.meta.env.VITE_CLIENTS_URL;
 
-const url_chats = `http://${chatsConn}:5007/v1/chats`;
-const url_chatsV2 = `http://${chatsConn}:5007/v2/chats`;
-const url_chat = `http://${chatsConn}:5007/v1/chat`;
-const url_chatV2 = `http://${chatsConn}:5007/v2/chat`;
-const url_product = `http://${productsConn}:5001/v1`;
-const url_clients = `http://${clientsConn}:5000/v1`;
+const url_chats = `${chatsConn}/v1/chats`;
+const url_chatsV2 = `${chatsConn}/v2/chats`;
+const url_chat = `${chatsConn}/v1/chat`;
+const url_chatV2 = `${chatsConn}/v2/chat`;
+const url_product = `${productsConn}/v1`;
+const url_clients = `${clientsConn}/v1`;
 
 
 const getAllChatsFromUser = async (userId, token) => {

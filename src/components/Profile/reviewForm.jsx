@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import "../../assets/styles/reviewForm.css";
-import loginServices from "../../services/loginServices";
 
 export default function ReviewForm({ passedReview, reviewedID, reviewer, userLogged }) {
     const navigate = useNavigate();
@@ -14,7 +13,7 @@ export default function ReviewForm({ passedReview, reviewedID, reviewer, userLog
     });
     const [reviewerUser, setReviewerUser] = useState({});
 
-    const reviewsConn = import.meta.env.REVIEWS != undefined ? import.meta.env.REVIEWS : "localhost";
+    const reviewsConn = import.meta.env.VITE_REVIEWS_URL;
 
     useEffect(() => {
         if (passedReview) setReview(passedReview);
@@ -43,7 +42,7 @@ export default function ReviewForm({ passedReview, reviewedID, reviewer, userLog
 
     const handleDelete = async () => {
         const response = await axios.delete(
-            `http://${reviewsConn}:5008/v2/${review._id}`,
+            `${reviewsConn}/v2/${review._id}`,
             {
                 headers: {
                     "Authorization": userLogged.oauthToken
@@ -79,7 +78,7 @@ export default function ReviewForm({ passedReview, reviewedID, reviewer, userLog
         };
         if (passedReview) {
             const response = await axios.put(
-                `http://${reviewsConn}:5008/v2/${review._id}`,
+                `${reviewsConn}/v2/${review._id}`,
                 body,
                 {
                     headers: {
@@ -91,7 +90,7 @@ export default function ReviewForm({ passedReview, reviewedID, reviewer, userLog
             window.location.reload();
         } else {
             try {
-                const response = await axios.post(`http://${reviewsConn}:5008/v2/`, body, {
+                const response = await axios.post(`${reviewsConn}/v2/`, body, {
                     headers: {
                         "Authorization": userLogged.oauthToken
                     }
@@ -136,7 +135,7 @@ export default function ReviewForm({ passedReview, reviewedID, reviewer, userLog
                                 navigate("/profile/" + reviewerUser._id);
                             }}
                         >
-                            <img src="http://localhost:5173/user.jpg" />
+                            <img src={"/user.jpg"} />
                             <p className="reviewer-user-name">{reviewerUser.name}</p>
                         </div>
                         {userLogged._id == reviewerUser._id && (

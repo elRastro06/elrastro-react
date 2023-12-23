@@ -1,15 +1,9 @@
 import axios from "axios";
-import loginServices from "./loginServices";
 
-const geoapiConn = import.meta.env.GEOAPI != undefined ? import.meta.env.GEOAPI : "localhost";
+const geoapiConn = import.meta.env.VITE_GEOAPI_URL;
 
-const getCoordinates = async (str, token) => {
-    const response = await axios.get(`http://${geoapiConn}:5006/v1/geocoding?location=${str},Spain`, {
-        headers: {
-            "Authorization": token
-        }
-    });
-    loginServices.checkResponse(response.data);
+const getCoordinates = async (str) => {
+    const response = await axios.get(`${geoapiConn}/v1/geocoding?location=${str},Spain`);
     return response.data;
 }
 
