@@ -171,6 +171,7 @@ export default function Products({ userLogged }) {
                                 update={updateProduct}
                                 products={products}
                                 clients={clients}
+                                userLogged={userLogged}
                             />
                         </div>
 

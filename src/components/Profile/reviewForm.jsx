@@ -135,7 +135,7 @@ export default function ReviewForm({ passedReview, reviewedID, reviewer, userLog
                                 navigate("/profile/" + reviewerUser._id);
                             }}
                         >
-                            <img src="localhost:5173/jpg" />
+                            <img src={"/user.jpg"} />
                             <p className="reviewer-user-name">{reviewerUser.name}</p>
                         </div>
                         {userLogged._id == reviewerUser._id && (

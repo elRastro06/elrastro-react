@@ -6,8 +6,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../../assets/styles/map.css";
 
 const Map = (props) => {
-  // TODO (when login implemented) : get the user's location and set it as the default position
-  const defaultPosition = [36.602274, -4.531727];
+  //const userPosition = [36.602274, -4.531727];
+  const userPosition = [props.userLogged.location.coordinates[1], props.userLogged.location.coordinates[0]];
 
   const [loading, setLoading] = useState(false);
   const [radius, setRadius] = useState(props.radius ? props.radius : 25);
@@ -29,7 +29,7 @@ const Map = (props) => {
     <div className={props.className}>
       <div style={{ height: "100%", width: "100%", border: "solid 1px black" }}>
         <MapContainer
-          center={defaultPosition}
+          center={userPosition}
           zoom={10}
           style={{ height: "100%", width: "100%" }}
         >
@@ -37,7 +37,7 @@ const Map = (props) => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
-          <Circle center={defaultPosition} radius={radius * 1000} />
+          <Circle center={userPosition} radius={radius * 1000} />
           {clientsWithProducts.map(
             (cliente) =>
               cliente.products &&

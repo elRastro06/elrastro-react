@@ -40,6 +40,8 @@ export default function Product({ userLogged }) {
 
       if (bidsData.length > 0) {
         setNewBid(bidsData[0].amount + 0.1);
+      } else {
+        setNewBid(productData.price + 0.1);
       }
 
       const ownerData = await clientServices.getClient(productData.userID);
@@ -308,7 +310,7 @@ export default function Product({ userLogged }) {
             <input
               type="number"
               step={0.1}
-              value={newBid}
+              value={parseFloat(newBid.toFixed(2))}
               disabled={endedBid() || userLogged == undefined || userLogged._id == product.userID}
               onChange={(event) => setNewBid(event.target.value)}
             ></input>
