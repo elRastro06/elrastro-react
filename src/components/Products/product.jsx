@@ -142,7 +142,7 @@ export default function Product({ userLogged }) {
     if (res.error != undefined || res.information != undefined) {
       alert("Bid not inserted. Price must be higher than current highest bid");
     } else {
-      //navigate(0);    //refresh
+      navigate(0);    //refresh
       console.log(res);
     }
   };
