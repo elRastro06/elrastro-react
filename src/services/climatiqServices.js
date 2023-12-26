@@ -1,21 +1,23 @@
 import axios from "axios";
 import loginServices from "./loginServices";
 
-const climatiqConn = import.meta.env.CLIMATIQ != undefined ? import.meta.env.CLIMATIQ : "localhost";
+const climatiqConn = import.meta.env.VITE_CLIMATIQ_URL;
 
-const getCarbonFee = async (long1, lat1, long2, lat2, token) => {   //usuario1 es el origen, usuario2 el destino
+const getCarbonFee = async (long1, lat1, long2, lat2, token) => {
+  //usuario1 es el origen, usuario2 el destino
 
+  const response = await axios.get(
+    `http://${climatiqConn}/v2/co2/${long1}/${lat1}/${long2}/${lat2}`,
+    {
+      headers: {
+        Authorization: token,
+      },
+    }
+  );
 
-    const response = await axios.get(`http://${climatiqConn}:5003/v2/co2/${long1}/${lat1}/${long2}/${lat2}`, {
-        headers: {
-            "Authorization": token
-        }
-    });
-
-    
-    loginServices.checkResponse(response.data);
-    return response.data;
-}
+  loginServices.checkResponse(response.data);
+  return response.data;
+};
 
 const climatiqServices = { getCarbonFee };
 
