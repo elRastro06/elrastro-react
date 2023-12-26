@@ -251,9 +251,7 @@ export default function Product({ userLogged }) {
           </p>
 
           <div className="product-owner">
-            <img
-              src={owner.image != undefined ? owner.image : "user.jpg"}
-            ></img>
+            <img src={"/user.jpg"} />
             <Link to={`/profile/${owner._id}`}>{owner.email}</Link>
             {userLogged != undefined && userLogged._id != product.userID ? (
               <div className="asksomething" onClick={handleChat}>
