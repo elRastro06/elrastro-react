@@ -41,11 +41,13 @@ export default function Product({ userLogged }) {
       const bidsData = await bidServices.getBids(productId);
       setBids(bidsData);
 
+      let value;
       if (bidsData.length > 0) {
-        setNewBid(bidsData[0].amount + 0.1);
+        value = bidsData[0].amount + 0.1;
       } else {
-        setNewBid(productData.price + 0.1);
+        value = productData.price + 0.1;
       }
+      setNewBid(parseFloat(parseFloat(value).toFixed(2)));
 
       const ownerData = await clientServices.getClient(productData.userID);
       setOwner(ownerData);
@@ -120,16 +122,18 @@ export default function Product({ userLogged }) {
   const addBid = async (event) => {
     event.preventDefault();
 
+    const value = parseFloat(parseFloat(newBid).toFixed(2));
+
     if (endedBid()) {
       alert("Bid is over. You can not make a new bid");
       return;
-    } else if (parseFloat(newBid) < product.price) {
+    } else if (value < product.price) {
       alert("The amount must be greater than the initial price");
       return;
     }
 
     const bid = {
-      amount: parseFloat(newBid),
+      amount: value,
       userId: userLogged._id,
       productId: product._id,
     };
@@ -329,10 +333,10 @@ export default function Product({ userLogged }) {
           <form className="bid-form">
             <input
               type="number"
-              step={0.1}
-              value={parseFloat(newBid.toFixed(2))}
+              step={0.01}
+              value={newBid}
               disabled={endedBid() || userLogged == undefined || userLogged._id == product.userID}
-              onChange={(event) => setNewBid(event.target.value)}
+              onChange={(event) => setNewBid(parseFloat(parseFloat(event.target.value).toFixed(2)))}
             ></input>
             <button
               className="bid-form-btn"
