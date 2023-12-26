@@ -52,22 +52,13 @@ export default function Products({ userLogged }) {
                     let highestProdPrice = product.price;
                     
                     if (minmaxPrice[1] < highestProdPrice) {
-                        console.log("minmaxPrice[1]: " + minmaxPrice[1] + " <  highestProdPrice: " + highestProdPrice);
-
                         setMinMaxPrice([0, highestProdPrice]);
-                        console.log(setMinMaxPrice([0, highestProdPrice]));
-                        console.log(minmaxPrice);
 
                     }
     
                 });
-                console.log("minmaxPrice: " + minmaxPrice);
                 setPrice(minmaxPrice);
-                console.log("price: " + price)
             }
-
-
-            console.log(price);
 
 
             // Filtrar por pujas activas o finalizadas
@@ -168,7 +159,6 @@ export default function Products({ userLogged }) {
     };
 
     const handleChange = (event, newValue) => {
-        console.log("minmax: " + minmaxPrice + " price: " + price + " newValue: " + newValue);
         setPrice(newValue);
     };
 

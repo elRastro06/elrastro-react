@@ -154,7 +154,7 @@ const getActiveBidProductsByUser = async (id, token) => {
   return products.filter((product) => {
     const productDate = new Date(product.date);
     const limitDate = new Date(productDate);
-    limitDate.setDate(productDate.getDate() + 14);
+    limitDate.setDate(productDate.getDate() + product.length);
     const today = new Date();
 
     return !product.payed && today < limitDate;
@@ -170,7 +170,7 @@ const getWonProductsByUser = async (id, token) => {
     for (const product of products) {
       const productDate = new Date(product.date);
       const limitDate = new Date(productDate);
-      limitDate.setDate(productDate.getDate() + 14);
+      limitDate.setDate(productDate.getDate() + product.length);
       const today = new Date();
 
       const response = await axios.get(`${bidsConn}/v1/highest`, {
