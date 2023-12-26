@@ -67,7 +67,6 @@ export default function Product({ userLogged }) {
         userLogged.oauthToken
       );
       setCarbonFee(carbonFeeData);
-
     };
 
     fetchData().catch(console.error);
@@ -142,7 +141,7 @@ export default function Product({ userLogged }) {
     if (res.error != undefined || res.information != undefined) {
       alert("Bid not inserted. Price must be higher than current highest bid");
     } else {
-      navigate(0);    //refresh
+      //navigate(0);    //refresh
       console.log(res);
     }
   };
@@ -253,11 +252,7 @@ export default function Product({ userLogged }) {
 
           <div className="product-owner">
             <img
-              src={
-                owner.image != undefined
-                  ? owner.images
-                  : "http://localhost:5173/user.jpg"
-              }
+              src={owner.image != undefined ? owner.image : "user.jpg"}
             ></img>
             <Link to={`/profile/${owner._id}`}>{owner.email}</Link>
             {userLogged != undefined && userLogged._id != product.userID ? (
@@ -319,7 +314,9 @@ export default function Product({ userLogged }) {
               return (
                 <div
                   className={`product-bid ${
-                    userLogged != undefined && bid.userId == userLogged._id ? "own-bid" : "other-bid"
+                    userLogged != undefined && bid.userId == userLogged._id
+                      ? "own-bid"
+                      : "other-bid"
                   }`}
                   key={key}
                 >
@@ -335,21 +332,33 @@ export default function Product({ userLogged }) {
               type="number"
               step={0.01}
               value={newBid}
-              disabled={endedBid() || userLogged == undefined || userLogged._id == product.userID}
-              onChange={(event) => setNewBid(parseFloat(parseFloat(event.target.value).toFixed(2)))}
+              disabled={
+                endedBid() ||
+                userLogged == undefined ||
+                userLogged._id == product.userID
+              }
+              onChange={(event) =>
+                setNewBid(parseFloat(parseFloat(event.target.value).toFixed(2)))
+              }
             ></input>
             <button
               className="bid-form-btn"
               onClick={addBid}
-              disabled={userLogged == undefined || userLogged._id == product.userID}
+              disabled={
+                userLogged == undefined || userLogged._id == product.userID
+              }
             >
               <span className="material-icons">gavel</span>
             </button>
           </form>
 
-          <p className="product-carbonfee"> Due to the {carbonFee.distance} km of travel distance between you and this seller,
-            you'll have to pay an additional {carbonFee.shipping_tax}€ as a carbon fee for the transport of this product</p>
-           
+          <p className="product-carbonfee">
+            {" "}
+            Due to the {carbonFee.distance} km of travel distance between you
+            and this seller, you'll have to pay an additional{" "}
+            {carbonFee.shipping_tax}€ as a carbon fee for the transport of this
+            product
+          </p>
         </div>
       </div>
     </div>
