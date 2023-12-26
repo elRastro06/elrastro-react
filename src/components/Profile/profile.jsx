@@ -118,7 +118,7 @@ export default function Profile({ userLogged }) {
         .then((response) => {
           setWonProducts(response);
         });
-      }
+    }
   }, [id]);
 
   useEffect(() => {
@@ -207,31 +207,35 @@ export default function Profile({ userLogged }) {
       <h2 className="profile-products-title">Products</h2>
       {Array.isArray(products) && products.length > 0 && (
         <div className="profile-container">
-          {products.map((product) => (
-            <div
-              className="profile-product"
-              key={product._id}
-              onClick={() => {
-                navigate("/product/" + product._id);
-              }}
-            >
-              {product.images ? (
-                <div className="profile-product-image">
-                  <img src={product.images[0].url} alt={product.name} />
+          {
+            products.map((product) => {
+              if (product.name !== "" && product.length !== undefined)
+                return (
+                <div
+                className="profile-product"
+                key={product._id}
+                onClick={() => {
+                  navigate("/product/" + product._id);
+                }}
+              >
+                {product.images ? (
+                  <div className="profile-product-image">
+                    <img src={product.images[0].url} alt={product.name} />
+                  </div>
+                ) : (
+                  <div className="profile-product-image">
+                    <img src="/no_image.png" alt="No image available" />
+                  </div>
+                )}
+                <div className="profile-product-info">
+                  <h3 className="profile-product-name">{product.name}</h3>
+                  <p className="profile-product-description">
+                    {product.description}
+                  </p>
                 </div>
-              ) : (
-                <div className="profile-product-image">
-                  <img src="/no_image.png" alt="No image available" />
-                </div>
-              )}
-              <div className="profile-product-info">
-                <h3 className="profile-product-name">{product.name}</h3>
-                <p className="profile-product-description">
-                  {product.description}
-                </p>
-              </div>
-            </div>
-          ))}
+              </div>)
+            }
+            )}
         </div>
       )}
 
@@ -249,39 +253,40 @@ export default function Profile({ userLogged }) {
             {Array.isArray(wonProducts) && wonProducts.length > 0 && (
               <div className="profile-container">
                 {wonProducts.map((product) => {
-                  return (
-                    <div
-                      className="profile-product"
-                      key={product._id}
-                      onClick={() => {
-                        navigate("/product/" + product._id);
-                      }}
-                    >
-                      {product.images ? (
-                        <div className="profile-product-image">
-                          <img src={product.images[0].url} alt={product.name} />
+                  if (product.name !== "" && product.length !== undefined)
+                    return (
+                      <div
+                        className="profile-product"
+                        key={product._id}
+                        onClick={() => {
+                          navigate("/product/" + product._id);
+                        }}
+                      >
+                        {product.images ? (
+                          <div className="profile-product-image">
+                            <img src={product.images[0].url} alt={product.name} />
+                          </div>
+                        ) : (
+                          <div className="profile-product-image">
+                            <img src="/no_image.png" alt="No image available" />
+                          </div>
+                        )}
+                        <div className="profile-product-info">
+                          <h3 className="profile-product-name">{product.name}</h3>
+                          <p className="profile-product-description">
+                            {product.description}
+                          </p>
                         </div>
-                      ) : (
-                        <div className="profile-product-image">
-                          <img src="/no_image.png" alt="No image available" />
-                        </div>
-                      )}
-                      <div className="profile-product-info">
-                        <h3 className="profile-product-name">{product.name}</h3>
-                        <p className="profile-product-description">
-                          {product.description}
-                        </p>
+                        <PayPalButton
+                          createOrder={(data, actions) =>
+                            createOrder(data, actions, parseFloat(product.highestBid+product.carbonFee.shipping_tax).toFixed(2))
+                          }
+                          onApprove={(data, actions) =>
+                            onApprove(data, actions, product)
+                          }
+                        />
                       </div>
-                      <PayPalButton
-                        createOrder={(data, actions) =>
-                          createOrder(data, actions, product.highestBid+product.carbonFee.shipping_tax)
-                        }
-                        onApprove={(data, actions) =>
-                          onApprove(data, actions, product)
-                        }
-                      />
-                    </div>
-                  );
+                    );
                 })}
               </div>
             )}
