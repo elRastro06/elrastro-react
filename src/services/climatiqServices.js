@@ -7,7 +7,7 @@ const getCarbonFee = async (long1, lat1, long2, lat2, token) => {
   //usuario1 es el origen, usuario2 el destino
 
   const response = await axios.get(
-    `http://${climatiqConn}/v2/co2/${long1}/${lat1}/${long2}/${lat2}`,
+    `${climatiqConn}/v2/co2/${long1}/${lat1}/${long2}/${lat2}`,
     {
       headers: {
         Authorization: token,
