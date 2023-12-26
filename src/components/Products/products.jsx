@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Map from "../Map/map";
-
+import loginServices from "../../services/loginServices";
 import "../../assets/styles/products.css";
 
 
@@ -41,27 +41,20 @@ export default function Products({ userLogged }) {
             loginServices.checkResponse(productsResponse.data);
 
             // get the highest bid/initial price for each product
-            if(price[0] === 0 && price[1] === 0){
+            if (price[0] === 0 && price[1] === 0) {
                 productsResponse.data.forEach((product) => {
                     let highestProdPrice = product.price;
-                    
-                    if (minmaxPrice[1] < highestProdPrice) {
-                        console.log("minmaxPrice[1]: " + minmaxPrice[1] + " <  highestProdPrice: " + highestProdPrice);
 
+                    if (minmaxPrice[1] < highestProdPrice) {
                         setMinMaxPrice([0, highestProdPrice]);
-                        console.log(setMinMaxPrice([0, highestProdPrice]));
-                        console.log(minmaxPrice);
 
                     }
-    
+
                 });
-                console.log("minmaxPrice: " + minmaxPrice);
                 setPrice(minmaxPrice);
-                console.log("price: " + price)
             }
 
 
-            console.log(price);
 
 
             // Filtrar por pujas activas o finalizadas
@@ -87,7 +80,7 @@ export default function Products({ userLogged }) {
                     return true;
                 } else if (product.price >= price[0] && product.price <= price[1]) {
                     return true;
-                }else{
+                } else {
                     return false;
                 }
             }
@@ -162,7 +155,6 @@ export default function Products({ userLogged }) {
     };
 
     const handleChange = (event, newValue) => {
-        console.log("minmax: " + minmaxPrice + " price: " + price + " newValue: " + newValue);
         setPrice(newValue);
     };
 
@@ -241,7 +233,6 @@ export default function Products({ userLogged }) {
                 </div>
 
 
-                {/* Filtro para el precio con un slider donde se pueda elegir el precio máximo y mínimo de los productos que se quieren ver. */}
 
 
 
