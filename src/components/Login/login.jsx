@@ -33,7 +33,7 @@ export default function Login({ userLogged, setUserLogged }) {
             }
 
             const result = await clientServices.addClient(bdUser, import.meta.env.VITE_GOOGLE_CLIENT_ID);
-            bdUser._id = result.insertedId;
+            bdUser = await clientServices.getClient(result.insertedId);
         } else {
             await clientServices.modifyClient(bdUser._id, {
                 oauthToken: user.jti,
